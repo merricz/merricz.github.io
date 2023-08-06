@@ -19,23 +19,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Myoboku">
-<meta property="og:url" content="http://example.com/index.html">
+    <meta name="description" content="上次说了code review 在开发中的重要性。这次说一说怎么才能让 code review 有效发挥它的作用。 使用方便的工具。要在团队中成功推行 code review，有好的工具是很重要的。谁都不愿意在工作中加入繁琐的过程，所以如果要让人接受一个新的步骤，最好让它有尽可能好的体验。在我用过的开源 code review 工具中，Phabricator 是最完善的。Review Board">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何有效地做 Code Review？">
+<meta property="og:url" content="http://example.com/2020/01/11/code-review1/index.html">
 <meta property="og:site_name" content="Myoboku">
+<meta property="og:description" content="上次说了code review 在开发中的重要性。这次说一说怎么才能让 code review 有效发挥它的作用。 使用方便的工具。要在团队中成功推行 code review，有好的工具是很重要的。谁都不愿意在工作中加入繁琐的过程，所以如果要让人接受一个新的步骤，最好让它有尽可能好的体验。在我用过的开源 code review 工具中，Phabricator 是最完善的。Review Board">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-11T09:53:23.000Z">
+<meta property="article:modified_time" content="2023-08-06T03:05:17.355Z">
 <meta property="article:author" content="merric">
+<meta property="article:tag" content="研发规范">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2020/01/11/code-review1/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2020/01/11/code-review1/","path":"2020/01/11/code-review1/","title":"如何有效地做 Code Review？"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Myoboku</title>
+<title>如何有效地做 Code Review？ | Myoboku</title>
   
 
 
@@ -68,7 +73,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Myoboku</h1>
+      <p class="site-title">Myoboku</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -146,100 +151,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/11/code-review/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="merric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/01/11/code-review/" class="post-title-link" itemprop="url">是否要进行Code Review？</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2020-01-11 09:53:23" itemprop="dateCreated datePublished" datetime="2020-01-11T09:53:23+00:00">2020-01-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">工作</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>不少开发团队和创业公司都在纠结是否要执行 code review，既希望改进代码质量，又担心带来的负担会拖慢项目进度。实时上，在软件开发中质量和效率往往并不是二选其一的关系。能产出高质量代码的团队通常效率也非常高。</p>
-<p>在我作为工程师的职业经历中，自动化测试和 code review 可说是能同时提高代码质量和开发效率的两个最有效的手段。所谓 code review，和学术界的 peer review 类似。Peer review 是由同事或同行对一位作者的作品进行查阅并提出建议和问题，只有当所有提出的问题都得到满意的答案后，作品才能发表。对于 code review 来说，作品就是代码，发表就是把代码 commit 到官方代码库。</p>
-<p>在 Code Complete 这本书中讲述了两个很有说服力的案例。在一项对同一个团队开发的很多个程序进行对比的研究中，没有经过 review 的程序平均每 100 行有 4.5 个错误，而经过 review 的程序平均每 100 行只有 0.82 个错误，也就是说 80% 的错误在 review 中被修正了。AT &amp; T 的一个 200 多人的部门在开始执行 code review 后，开发效率提高了 14%，而错误减少了 90% 左右。</p>
-<p>除了减少缺陷，避免在诊断错误上浪费时间，review 的过程还可以通过相互的督促保证代码有好的可读性、文档、风格，并同时检查测试覆盖率等开发过程中的规范，从而提高团队的协作效率。对于所有复杂的事情来说，总是越早发现问题，解决问题的成本越低。</p>
-<p>对于经验不足或者刚开始一份新工作的人来说，通过 code review 可以得到更资深的人帮助，更快熟悉现有的规范和架构，在新的环境和团队中快速提升。</p>
-<p>对于资深的工程师来说，让其他同事 review 代码，有利于在团队中传播经验、知识和好的实践。身边的同事水平提高会让自己的工作也更高效。并且谁都有需要休假的时候，无论是公司还是个人都不希望有太多工作因此而停滞，如果有平时就熟悉自己工作的同事，这个问题就很好解决。</p>
-<p>像很多其他事情一样，code review 最难的就是迈出第一步。一旦开始，花在 review 过程的每一分钟都会很快被成倍地赚回来。如果你不在一个可以一下改变团队流程的位置上，那么至少可以和认同这件事的少数同事先开始实践，当价值开始体现的时候，相信其他人会乐于效仿。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/11/code-review1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -253,13 +175,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="name" content="如何有效地做 Code Review？ | Myoboku">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/01/11/code-review1/" class="post-title-link" itemprop="url">如何有效地做 Code Review？</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          如何有效地做 Code Review？
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -290,8 +212,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <p>上次说了code review 在开发中的重要性。这次说一说怎么才能让 code review 有效发挥它的作用。</p>
+    <div class="post-body" itemprop="articleBody"><p>上次说了code review 在开发中的重要性。这次说一说怎么才能让 code review 有效发挥它的作用。</p>
 <p>使用方便的工具。要在团队中成功推行 code review，有好的工具是很重要的。谁都不愿意在工作中加入繁琐的过程，所以如果要让人接受一个新的步骤，最好让它有尽可能好的体验。在我用过的开源 code review 工具中，Phabricator 是最完善的。Review Board 应该也是不错的选择，只是我很久没实际用了，不知道最新状态。GitHub 在支持 side-by-side diff 后，它的 pull request 也提供了很好的 code review 体验，唯一不足的是无法从机制上强制所有 commit 都经过 pull request 的过程。</p>
 <p>把简单的检查自动化。有很多检查是可以自动化的，比如一些风格规范（缩进、空行、行尾空格、命名等），这类问题应该尽可能写脚本检查。一方面可以让负责 review 的工程师把更多注意力放在更高层面的问题上；另一方面，从接受 review 的人心理上说，由程序提出这些细节问题比让另一个人来挑刺要更容易接受些。当然，这并不是说人工 review 的时候应该忽略细节问题。</p>
 <p>控制每次 review 的代码量。每次 review 包含 200 行左右代码是比较理想的，最多不要超过 400 行。因为如果代码太多，review 的人容易因为注意力分散而忽略一些问题，另外也可能让时间拖得过长。因此，开发的时候需要把大的改动分解成多个小的步骤，每完成一个步骤就提交一次 review。</p>
@@ -304,7 +225,6 @@
 <p>Review 所有的代码，包括很简单的改动。每一个 commit，无论多小都应该经过 review。一方面，很难界定什么算简单的改动，如果一行的 commit 不用 review，那两行是不是差不多同样简单，三行呢？另一方面，我已经不记得自己曾有多少次觉得「这个改动太简单，不用跑测试就可以提交了」，然后很快因为测试通不过而很尴尬地被别人 rollback。所以无论多小的改动都应该有测试、都应该通过 review。</p>
 <p>循序渐进。如果现在完全没有做 code review，那么到整个团队都能严格有效地进行 code review 是一个循序渐进的过程。如果你所处的角色无法很快改变团队的工作方式，那么可以从把自己的代码发给别人 review 开始，实际可见的价值是最有说服力的。</p>
 
-      
     </div>
 
     
@@ -312,89 +232,28 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/" rel="tag"># 研发规范</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/10/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-angle-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/11/code-review/" rel="next" title="是否要进行Code Review？">
+                  是否要进行Code Review？ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/10/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="merric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/01/10/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2020-01-10 22:53:43" itemprop="dateCreated datePublished" datetime="2020-01-10T22:53:43+00:00">2020-01-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>hello hexo</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
