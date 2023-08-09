@@ -118,7 +118,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -146,6 +146,109 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/17/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E5%8E%9F%E7%90%861/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/17/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E5%8E%9F%E7%90%861/" class="post-title-link" itemprop="url">Https中数字证书的原理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-17 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-17T22:30:00+00:00">2020-01-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>网络请求方式通常分为两种，分别是HTTP请求和HTTPS请求，其中HTTP的传输属于明文传输，在传输的过程中容易被人截取并且偷窥其中的内容，而HTTPS是一种在HTTP的基础上加了SSL&#x2F;TLS层（安全套接层）的安全的超文本传输协议，其传输的内容是通过加密得到的，所以说是一种安全的传输。</p>
+<p>说到加密算法，先来了解一下两种常用的加密方式，分别是对称加密和非对称加密：</p>
+<p>1.对称加密：加密使用的秘钥和解密使用的秘钥是相同的，也就是说加密和解密都使用同一个秘钥，加密算法是公开的，秘钥是加密者和解密者绝对保密的。</p>
+<p>2.非对称加密：加密使用的秘钥和解密使用的秘钥是不相同的，HTTPS在数字证书验证的时候，采用的RSA密码体制就是一种非对称加密。</p>
+<p>RSA是一种公钥秘钥密码体制，现在使用非常广泛，这个密码体制分为三部分，公钥、私钥、加密算法，其中公钥和加密算法是公布的，私钥是自己保密的。这种机制最大的特点是，通过公钥加密的密文只有对应的私钥才能解密，同样通过私钥加密的密文也只有对应的公钥才能解密。下面我们将会讲到HTTPS是如何通过RSA这种密码体制去验证身份的。</p>
+<p>首先了解一下数字证书，它有点像身份证，是由权威的CA机构颁发的，证书的主要内容有：公钥（Public Key）、ISSUER（证书的发布机构）、Subject（证书持有者）、证书有效期、签名算法、指纹及指纹算法。</p>
+<p>下面csdn博客的CA证书内容：</p>
+<p><img src="/images/csdnCA%E8%AF%81%E4%B9%A6%E5%86%85%E5%AE%B9.png" alt="图片" title="csdnCA证书内容"></p>
+<p>可以看到公钥是一串很长的2048 Bits的字符串，同时也可以看到&lt;使用者&gt;的内容包含了csdn.net网址，这个网址是CSDN唯一拥有的，后面验证链接url是否正确的时候用到，还有颁发者、有效期、签名哈希算法等等。当然还有指纹及指纹算法等其他内容，我们滚动到下面看看另外一个截图</p>
+<p><img src="/images/%E8%AF%81%E4%B9%A6%E8%AF%A6%E6%83%85.png" alt="图片" title="证书详情"></p>
+<p>上面是CSDN网站CA证书，颁发者是GeoTrust，它就是权威的CA机构之一。到这里特别说明一下，CA机构除了给别人颁发证书以外，它也有自己的证书，为了区分我们称它为根证书，根证书也有自己的公钥和私钥，我们称之为根公钥和根私钥。然后根公钥和加密算法是向外公布的，而根私钥是机构自己绝对保密的。这个根证书在验证证书的过程中起着核心的作用。</p>
+<p>指纹是什么？指纹是一个证书的签名，是通过指纹算法sha1计算出来的一个hash值，是用来验证证书内容有没有被篡改的。证书在发布之前，CA机构会把所颁发证书的内容用自己的根私钥通过指纹算法计算得到一个hash值，这个hash值只有对应的根公钥才能解密，所以在验证证书的时候，我们通过同样的指纹算法将证书内容通过计算得到另一个hash值，如果这个hash值跟证书上的签名解析出来的hash值相同，就代表证书没有被篡改过。</p>
+<p>下面基于一个简单的图例，去分析整个HTTPS的数字证书验证过程：</p>
+<p>图示如下：</p>
+<p><img src="/images/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E8%BF%87%E7%A8%8B.png" alt="图片" title="HTTPS的数字证书验证过程"></p>
+<p>假设这是一个浏览器的HTTPS请求</p>
+<p>一：首先浏览器通过URL网址去请求某个后台服务器，后台接收到请求后，就会给浏览器发送一个自己的CA数字证书。</p>
+<p>二：浏览器接收到数字证书以后，就要开始进行验证工作了。首先从证书的内容中获取证书的颁发机构，然后从浏览器系统中去寻找此颁发机构是否为浏览器的信任机构。这里解析一下，世界上就几个权威的CA机构，这几个机构的信息都是预先嵌入到我们的浏览器系统中的。如果收到的一个数字证书但其颁发机构没有在我们浏览器系统中的，那么就会有警告提示无法确认证书的真假。如果是受信任的机构，那么就到下一步。</p>
+<p>此时我们就可以从浏览器中找到CA机构的根公钥，用这个公钥去解析证书的签名得到一个hash值H1，上面提到过，这个签名是证书发布之前CA机构用自己的根私钥加密而成的，所以这里只能由根证书的根公钥去解密。然后用证书的指纹算法对证书的内容再进行hash计算得到另一个hash值H2，如果此时H1和H2是相等的，就代表证书没有被修改过。在证书没有被修改过的基础上，再检查证书上的使用者的URL（比如csdn.net）和我们请求的URL是否相等，如果相等，那么就可以证明当前浏览器连接的网址也是正确的，而不是一些钓鱼网之类的。</p>
+<p>这里我们假设，如果浏览器的连接被某个钓鱼网截取了，钓鱼网也可以发一个自己的证书给浏览器，然后也可以通过证书没有被篡改的验证，但是在证书没有被篡改的情况下，通过对比证书上的URL和我们请求的URL，就可以发现这个证书的URL不是我们所要连接的网址，所以说钓鱼网也骗不了我们。</p>
+<p>看到这里如果还不是很明白证书验证过程的话，我特别解析一下，我们知道CA机构有自己的根公钥和根私钥。在证书颁发之前，机构会用根私钥将这个证书内容加密得到一个签名，这个签名只能用对应的根公钥去解密。在客户端（浏览器）收到服务端发过来的证书以后，我们首先从浏览器中拿到机构的根公钥，用这个根公钥去解析证书的签名得到一个哈希值H1，这个H1代表证书的原始内容，假设这个证书上的签名是不法分子伪造的，但是伪造的签名不可能是根私钥加密生成的（因为根私钥是CA机构私有），所以根公钥也不可能去解密任何第三方生成的签名（加密内容只能由对应的公钥私钥解析）。然后我们再用同样的哈希算法对收证书内容进行计算得到哈希值H2，通过对比H1和H2是否相等就知道证书有没有被褚篡改过了。讲到这里，我们应该明白证书是否被篡改的验证机制了吧。</p>
+<p>三：到这里，已经验证了证书是没有被篡改的并且确认连接的URL也是正确的，然后我们获取到了证书上的公钥。下一步有一个很重要的任务就是，如何将一个对称加密算法的秘钥安全地发给服务器。</p>
+<p>首先随机生成一个字符串S作为我们的秘钥，然后通过证书公钥加密成密文，将密文发送给服务器。因为此密文是用公钥加密的，这是一个非对称加密，我们知道，这个密文只有私钥的持有者才能进行解密，所以说任何第三方截取到密文也是没用的，因为没有对应的私钥所以解析不出来。</p>
+<p>一个关键步骤，发送密文的时候也会对消息内容进行签名操作。签名上面讲解过，就是对密文内容进行hash计算得到的一个hash值，将这个签名加密以后和消息内容一起发送出去。接收方收到消息以后，通过私钥解析出密文和签名的hash值，同时也会对接收的消息内容进行同样的计算得到另一个hash值，通过比对两个hash值是否相同来判断密文是否有修改过。</p>
+<p>四：通过了上面的步骤以后，此时客户端和服务端都持有了对称加密算法的秘钥，然后兄弟两就可以愉快地安全通信了。</p>
+<p>总结：数字证书的验证有两个重要的步骤，第一是验证数字证书没有被篡改以及连接的URL是否正确，第二是通过RSA机制的原理安全地将对称加密算法的秘钥发送给对方。这两步都完成以后，整个HTTPS的数字证书的验证就算是成功了。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
