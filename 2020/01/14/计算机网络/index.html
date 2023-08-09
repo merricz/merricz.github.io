@@ -25,11 +25,18 @@
 <meta property="og:site_name" content="Myoboku">
 <meta property="og:description" content="计算机网络体系结构在计算机网络的基本概念中，分层次的体系结构是最基本的。计算机网络体系结构的抽象概念较多，在学习时要多思考。这些概念对后面的学习很有帮助。 网络协议是什么？在计算机网络要做到有条不紊地交换数据，就必须遵守一些事先约定好的规则，比如交换数据的格式、是否需要发送一个应答信息。这些规则被称为网络协议。 为什么要对网络协议分层？ 简化问题难度和复杂度。由于各层之间独立，我们可以分割大问题为">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS81LzkvMTZhOWM5Y2Q1MjNlMDU5OQ?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS80LzcvMTY5ZjY5NjZjMjRhZjM0NQ?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxOWU2YzEzNA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxZWE1MDdlOA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IyMWEwN2YwYw?x-oss-process=image/format,png">
 <meta property="article:published_time" content="2020-01-14T22:30:00.000Z">
-<meta property="article:modified_time" content="2023-08-09T13:51:55.079Z">
+<meta property="article:modified_time" content="2023-08-09T14:21:34.766Z">
 <meta property="article:author" content="merric">
 <meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png">
 
 
 <link rel="canonical" href="http://example.com/2020/01/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
@@ -229,6 +236,7 @@
 <li>五层协议的体系结构主要包括：应用层、运输层、网络层，数据链路层和物理层。</li>
 <li>OSI七层协议模型主要包括是：应用层（Application）、表示层（Presentation）、会话层（Session）、运输层（Transport）、网络层（Network）、数据链路层（Data Link）、物理层（Physical）。</li>
 </ul>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="图片" title="计算机网络体系结构"></p>
 <p>注：五层协议的体系结构只是为了介绍网络原理而设计的，实际应用还是 TCP&#x2F;IP 四层体系结构。</p>
 <h2 id="TCP-IP-协议族"><a href="#TCP-IP-协议族" class="headerlink" title="TCP&#x2F;IP 协议族"></a>TCP&#x2F;IP 协议族</h2><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层( application-layer ）的任务是通过应用进程间的交互来完成特定网络应用。应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。</p>
 <p>对于不同的网络应用需要不同的应用层协议。在互联网中应用层协议很多，如域名系统 DNS，支持万维网应用的 HTTP 协议，支持电子邮件的 SMTP 协议等等。</p>
@@ -304,9 +312,11 @@
 <p>在两个相邻节点之间传送数据时，数据链路层将网络层交下来的 IP 数据报组装成帧，在两个相邻节点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
 <p>在接收数据时，控制信息使接收端能够知道一个帧从哪个比特开始和到哪个比特结束。</p>
 <p>一般的web应用的通信传输流是这样的：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS81LzkvMTZhOWM5Y2Q1MjNlMDU5OQ?x-oss-process=image/format,png" alt="图片"></p>
 <p>发送端在层与层之间传输数据时，每经过一层时会被打上一个该层所属的首部信息。反之，接收端在层与层之间传输数据时，每经过一层时会把对应的首部信息去除。</p>
 <h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><p>在物理层上所传送的数据单位是比特。 物理层(physical layer)的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。使其上面的数据链路层不必考虑网络的具体传输介质是什么。“透明传送比特流”表示经实际电路传送后的比特流没有发生变化，对传送的比特流来说，这个电路好像是看不见的。</p>
 <h3 id="TCP-IP-协议族-1"><a href="#TCP-IP-协议族-1" class="headerlink" title="TCP&#x2F;IP 协议族"></a>TCP&#x2F;IP 协议族</h3><p>在互联网使用的各种协议中最重要和最著名的就是 TCP&#x2F;IP 两个协议。现在人们经常提到的 TCP&#x2F;IP 并不一定是单指 TCP 和 IP 这两个具体的协议，而往往是表示互联网所使用的整个 TCP&#x2F;IP 协议族。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS80LzcvMTY5ZjY5NjZjMjRhZjM0NQ?x-oss-process=image/format,png" alt="图片"></p>
 <blockquote>
 <p>互联网协议套件（英语：Internet Protocol Suite，缩写<code>IPS</code>）是一个网络通讯模型，以及一整个网络传输协议家族，为网际网络的基础通讯架构。它常被通称为TCP&#x2F;IP协议族（英语：<code>TCP/IP Protocol Suite</code>，或<code>TCP/IP Protocols</code>），简称<code>TCP/IP</code>。因为该协定家族的两个核心协定：<code>TCP（传输控制协议）和IP（网际协议）</code>，为该家族中最早通过的标准。</p>
 </blockquote>
@@ -315,6 +325,7 @@
 <p>一个TCP连接由一个4元组构成，分别是两个IP地址和两个端口号。一个TCP连接通常分为三个阶段：连接、数据传输、退出（关闭）。<strong>通过三次握手建立一个链接，通过四次挥手来关闭一个连接</strong>。</p>
 <p><strong>当一个连接被建立或被终止时，交换的报文段只包含TCP头部，而没有数据</strong>。</p>
 <h2 id="TCP报文的头部结构"><a href="#TCP报文的头部结构" class="headerlink" title="TCP报文的头部结构"></a>TCP报文的头部结构</h2><p>在了解TCP连接之前先来了解一下TCP报文的头部结构。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxOWU2YzEzNA?x-oss-process=image/format,png" alt="图片"></p>
 <p>上图中有几个字段需要重点介绍下：</p>
 <p>（1）序号：seq序号，占32位，用来标识从TCP源端向目的端发送的字节流，发起方发送数据时对此进行标记。</p>
 <p>（2）确认序号：ack序号，占32位，只有ACK标志位为1时，确认序号字段才有效，ack&#x3D;seq+1。</p>
@@ -338,6 +349,7 @@
 <p>首先，我让信使运输一份信件给对方，<strong>对方收到了，那么他就知道了我的发件能力和他的收件能力是可以的</strong>。</p>
 <p>于是他给我回信，<strong>我若收到了，我便知我的发件能力和他的收件能力是可以的，并且他的发件能力和我的收件能力是可以</strong>。</p>
 <p>然而此时他还不知道他的发件能力和我的收件能力到底可不可以，于是我最后回馈一次，<strong>他若收到了，他便清楚了他的发件能力和我的收件能力是可以的</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxZWE1MDdlOA?x-oss-process=image/format,png" alt="图片"></p>
 <ul>
 <li><code>第一次握手</code>：客户端要向服务端发起连接请求，首先客户端随机生成一个起始序列号ISN(比如是100)，那客户端向服务端发送的报文段包含SYN标志位(也就是SYN&#x3D;1)，序列号seq&#x3D;100。</li>
 <li><code>第二次握手</code>：服务端收到客户端发过来的报文后，发现SYN&#x3D;1，知道这是一个连接请求，于是将客户端的起始序列号100存起来，并且随机生成一个服务端的起始序列号(比如是300)。然后给客户端回复一段报文，回复报文包含SYN和ACK标志(也就是SYN&#x3D;1,ACK&#x3D;1)、序列号seq&#x3D;300、确认号ack&#x3D;101(客户端发过来的序列号+1)。</li>
@@ -346,6 +358,7 @@
 <h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><blockquote>
 <p>四次挥手的目的是关闭一个连接</p>
 </blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IyMWEwN2YwYw?x-oss-process=image/format,png" alt="图片"></p>
 <p>比如客户端初始化的序列号ISA&#x3D;100，服务端初始化的序列号ISA&#x3D;300。TCP连接成功后客户端总共发送了1000个字节的数据，服务端在客户端发FIN报文前总共回复了2000个字节的数据。</p>
 <ul>
 <li><code>第一次挥手</code>：当客户端的数据都传输完成后，客户端向服务端发出连接释放报文(当然数据没发完时也可以发送连接释放报文并停止发送数据)，释放连接报文包含FIN标志位(FIN&#x3D;1)、序列号seq&#x3D;1101(100+1+1000，其中的1是建立连接时占的一个序列号)。需要注意的是客户端发出FIN报文段后只是不能发数据了，但是还可以正常收数据；另外FIN报文段即使不携带数据也要占据一个序列号。</li>
