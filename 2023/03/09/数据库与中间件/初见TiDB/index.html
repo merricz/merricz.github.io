@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="首先放TiDB的gitbook，里面对于tidb的大部分内容都有详细的介绍：https:&#x2F;&#x2F;book.tidb.io&#x2F; 其次实际的应用当然需要PingCAP的官方文档：https:&#x2F;&#x2F;docs.pingcap.com&#x2F;zh&#x2F;tidb&#x2F;stable&#x2F;overview，因为自己只是想了解下TiDB，感觉这个数据库有点火，大致了解一下工作原理，自己在上一家公司有实际使用接触过，但是因为当时自己经验不足，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初见TiDB">
+<meta property="og:url" content="http://example.com/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/index.html">
+<meta property="og:site_name" content="Myoboku">
+<meta property="og:description" content="首先放TiDB的gitbook，里面对于tidb的大部分内容都有详细的介绍：https:&#x2F;&#x2F;book.tidb.io&#x2F; 其次实际的应用当然需要PingCAP的官方文档：https:&#x2F;&#x2F;docs.pingcap.com&#x2F;zh&#x2F;tidb&#x2F;stable&#x2F;overview，因为自己只是想了解下TiDB，感觉这个数据库有点火，大致了解一下工作原理，自己在上一家公司有实际使用接触过，但是因为当时自己经验不足，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter2/tidb-storage/1.png">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter2/tidb-storage/2.png">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter2/tidb-storage/3.png">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter6/optimistic-txn/1.png">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter6/pessimistic-txn/1.png">
+<meta property="og:image" content="https://book.tidb.io/res/session1/chapter6/pessimistic-txn/2.png">
+<meta property="article:published_time" content="2023-03-09T22:30:00.000Z">
+<meta property="article:modified_time" content="2023-08-12T07:35:32.203Z">
+<meta property="article:author" content="merric">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="TiDB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://book.tidb.io/res/session1/chapter2/tidb-storage/1.png">
+
+
+<link rel="canonical" href="http://example.com/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/","path":"2023/03/09/数据库与中间件/初见TiDB/","title":"初见TiDB"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>初见TiDB | Myoboku</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Myoboku</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TiDB%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">TiDB简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E5%A4%A7%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">五大核心特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%A4%A7%E6%A0%B8%E5%BF%83%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">四大核心应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TiDB%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">TiDB整体架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8"><span class="nav-number">2.1.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Key-Value-Pairs-%E9%94%AE%E5%80%BC%E5%AF%B9"><span class="nav-number">2.1.1.</span> <span class="nav-text">Key-Value Pairs (键值对)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%EF%BC%88RocksDB%EF%BC%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">本地存储（RocksDB）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Raft-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.1.3.</span> <span class="nav-text">Raft 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Region"><span class="nav-number">2.1.4.</span> <span class="nav-text">Region</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MVCC"><span class="nav-number">2.1.5.</span> <span class="nav-text">MVCC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F-ACID-%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.1.6.</span> <span class="nav-text">分布式 ACID 事务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97"><span class="nav-number">2.2.</span> <span class="nav-text">计算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E6%95%B0%E6%8D%AE%E4%B8%8E-Key-Value-%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.1.</span> <span class="nav-text">表数据与 Key-Value 的映射关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E6%95%B0%E6%8D%AE%E4%B8%8E-Key-Value-%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">表数据与 Key-Value 的映射关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E5%92%8C-Key-Value-%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.3.</span> <span class="nav-text">索引数据和 Key-Value 的映射关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E5%B0%8F%E7%BB%93"><span class="nav-number">2.2.4.</span> <span class="nav-text">映射关系小结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Key-Value-%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.2.5.</span> <span class="nav-text">Key-Value 映射关系示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86"><span class="nav-number">2.2.6.</span> <span class="nav-text">元信息管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL-%E5%B1%82%E7%AE%80%E4%BB%8B"><span class="nav-number">2.2.7.</span> <span class="nav-text">SQL 层简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL-%E8%BF%90%E7%AE%97"><span class="nav-number">2.2.8.</span> <span class="nav-text">SQL 运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F-SQL-%E8%BF%90%E7%AE%97"><span class="nav-number">2.2.9.</span> <span class="nav-text">分布式 SQL 运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL-%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="nav-number">2.2.10.</span> <span class="nav-text">SQL 层架构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TiDB%E5%92%8CMysql%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">TiDB和Mysql的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9%E7%AD%96%E7%95%A5"><span class="nav-number">3.1.</span> <span class="nav-text">兼容策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E7%82%B9%E8%AF%A6%E8%BF%B0%E5%8F%8A%E5%BA%94%E5%AF%B9%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.</span> <span class="nav-text">区别点详述及应对方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E9%9B%86%E6%94%AF%E6%8C%81"><span class="nav-number">3.2.1.</span> <span class="nav-text">字符集支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%B6%E5%8C%BA"><span class="nav-number">3.2.2.</span> <span class="nav-text">系统时区</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.1.</span> <span class="nav-text">乐观事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">4.1.1.</span> <span class="nav-text">隔离级别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6"><span class="nav-number">4.1.2.</span> <span class="nav-text">并发控制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-%E4%B9%90%E8%A7%82%E4%BA%8B%E5%8A%A1%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">TiDB 乐观事务实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Snapshot-Isolation"><span class="nav-number">4.2.1.</span> <span class="nav-text">Snapshot Isolation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%EF%BC%882PC%EF%BC%89"><span class="nav-number">4.2.2.</span> <span class="nav-text">两阶段提交（2PC）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.3.</span> <span class="nav-text">两阶段提交过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.3.</span> <span class="nav-text">悲观事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.3.1.</span> <span class="nav-text">悲观锁解决的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Percolator-%E7%9A%84%E6%82%B2%E8%A7%82%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.3.2.</span> <span class="nav-text">基于 Percolator 的悲观事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%89%E9%94%81%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.3.3.</span> <span class="nav-text">等锁顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B"><span class="nav-number">4.3.4.</span> <span class="nav-text">分布式死锁检测</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">merric</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="初见TiDB | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          初见TiDB
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-03-09 22:30:00" itemprop="dateCreated datePublished" datetime="2023-03-09T22:30:00+00:00">2023-03-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">数据库与中间件</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>首先放TiDB的gitbook，里面对于tidb的大部分内容都有详细的介绍：<a target="_blank" rel="noopener" href="https://book.tidb.io/">https://book.tidb.io/</a></p>
+<p>其次实际的应用当然需要PingCAP的官方文档：<a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb/stable/overview%EF%BC%8C%E5%9B%A0%E4%B8%BA%E8%87%AA%E5%B7%B1%E5%8F%AA%E6%98%AF%E6%83%B3%E4%BA%86%E8%A7%A3%E4%B8%8BTiDB%EF%BC%8C%E6%84%9F%E8%A7%89%E8%BF%99%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%89%E7%82%B9%E7%81%AB%EF%BC%8C%E5%A4%A7%E8%87%B4%E4%BA%86%E8%A7%A3%E4%B8%80%E4%B8%8B%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%8C%E8%87%AA%E5%B7%B1%E5%9C%A8%E4%B8%8A%E4%B8%80%E5%AE%B6%E5%85%AC%E5%8F%B8%E6%9C%89%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E6%8E%A5%E8%A7%A6%E8%BF%87%EF%BC%8C%E4%BD%86%E6%98%AF%E5%9B%A0%E4%B8%BA%E5%BD%93%E6%97%B6%E8%87%AA%E5%B7%B1%E7%BB%8F%E9%AA%8C%E4%B8%8D%E8%B6%B3%EF%BC%8C%E4%B8%8D%E8%A7%89%E5%BE%97%E4%BB%96%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E5%88%AB%E6%88%96%E8%80%85%E4%B8%8D%E5%90%8C%EF%BC%8C%E5%B0%B1%E6%B2%A1%E6%9C%89%E8%BF%87%E5%A4%9A%E4%BA%86%E8%A7%A3%E3%80%82%E7%8E%B0%E5%9C%A8%E5%9C%A8%E7%BE%8E%E5%9B%A2%E5%85%AC%E5%8F%B8%E5%86%85%E9%83%A8%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%8C%E4%BD%86%E6%98%AF%E6%88%91%E8%B4%9F%E8%B4%A3%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E5%AE%9E%E9%99%85%E7%94%A8%E4%B8%8D%E5%88%B0%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BB%A5Mysql%E4%B8%BA%E4%B8%BB%EF%BC%8C%E6%89%80%E4%BB%A5%E5%9C%A8%E8%BF%99%E9%87%8C%E6%A0%B9%E6%8D%AE%E7%BD%91%E7%BB%9C%E4%B8%8A%E7%9A%84%E8%BF%99%E4%BA%9B%E8%B5%84%E6%96%99%EF%BC%8C%E5%AF%B9TiDB%E5%81%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%80%BB%E7%BB%93%E3%80%82">https://docs.pingcap.com/zh/tidb/stable/overview，因为自己只是想了解下TiDB，感觉这个数据库有点火，大致了解一下工作原理，自己在上一家公司有实际使用接触过，但是因为当时自己经验不足，不觉得他有什么特别或者不同，就没有过多了解。现在在美团公司内部有自己的分布式数据库，但是我负责的业务场景实际用不到，还是以Mysql为主，所以在这里根据网络上的这些资料，对TiDB做一个简单的学习和总结。</a></p>
+<h2 id="TiDB简介"><a href="#TiDB简介" class="headerlink" title="TiDB简介"></a>TiDB简介</h2><p><a target="_blank" rel="noopener" href="https://github.com/pingcap/tidb">TiDB</a> 是 [PingCAP](<a target="_blank" rel="noopener" href="https://pingcap.com/about-">https://pingcap.com/about-</a><br>cn&#x2F;) 公司自主设计、研发的开源分布式关系型数据库，是一款同时支持在线事务处理与在线分析处理 (Hybrid Transactional and<br>Analytical Processing, HTAP) 的融合型分布式数据库产品，具备水平扩容或者缩容、金融级高可用、实时<br>HTAP、云原生的分布式数据库、兼容 MySQL 5.7 协议和 MySQL 生态等重要特性。目标是为用户提供一站式 OLTP (Online<br>Transactional Processing)、OLAP (Online Analytical Processing)、HTAP 解决方案。TiDB<br>适合高可用、强一致要求较高、数据规模较大等各种应用场景。</p>
+<h3 id="五大核心特性"><a href="#五大核心特性" class="headerlink" title="五大核心特性"></a>五大核心特性</h3><ul>
+<li>一键水平扩容或者缩容</li>
+</ul>
+<p>得益于 TiDB 存储计算分离的架构的设计，可按需对计算、存储分别进行在线扩容或者缩容，扩容或者缩容过程中对应用运维人员透明。</p>
+<ul>
+<li>金融级高可用</li>
+</ul>
+<p>数据采用多副本存储，数据副本通过 Multi-Raft<br>协议同步事务日志，多数派写入成功事务才能提交，确保数据强一致性且少数副本发生故障时不影响数据的可用性。可按需配置副本地理位置、副本数量等策略满足不同容灾级别的要求。</p>
+<ul>
+<li>实时 HTAP</li>
+</ul>
+<p>提供行存储引擎 <a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb/stable/tikv-overview">TiKV</a>、列存储引擎<br><a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb/stable/tiflash-overview">TiFlash</a><br>两款存储引擎，TiFlash 通过 Multi-Raft Learner 协议实时从 TiKV 复制数据，确保行存储引擎 TiKV 和列存储引擎<br>TiFlash 之间的数据强一致。TiKV、TiFlash 可按需部署在不同的机器，解决 HTAP 资源隔离的问题。</p>
+<ul>
+<li>云原生的分布式数据库</li>
+</ul>
+<p>专为云而设计的分布式数据库，通过 [TiDB Operator](<a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb-in-">https://docs.pingcap.com/zh/tidb-in-</a><br>kubernetes&#x2F;stable&#x2F;tidb-operator-overview) 可在公有云、私有云、混合云中实现部署工具化、自动化。</p>
+<ul>
+<li>兼容 MySQL 5.7 协议和 MySQL 生态</li>
+</ul>
+<p>兼容 MySQL 5.7 协议、MySQL 常用的功能、MySQL 生态，应用无需或者修改少量代码即可从 MySQL 迁移到<br>TiDB。提供丰富的[数据迁移工具](<a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb/stable/ecosystem-tool-">https://docs.pingcap.com/zh/tidb/stable/ecosystem-tool-</a><br>user-guide)帮助应用便捷完成数据迁移。</p>
+<h3 id="四大核心应用场景"><a href="#四大核心应用场景" class="headerlink" title="四大核心应用场景"></a>四大核心应用场景</h3><ul>
+<li>对数据一致性及高可靠、系统高可用、可扩展性、容灾要求较高的金融行业属性的场景</li>
+</ul>
+<p>众所周知，金融行业对数据一致性及高可靠、系统高可用、可扩展性、容灾要求较高。传统的解决方案是同城两个机房提供服务、异地一个机房提供数据容灾能力但不提供服务，此解决方案存在以下缺点：资源利用率低、维护成本高、RTO<br>(Recovery Time Objective) 及 RPO (Recovery Point Objective) 无法真实达到企业所期望的值。TiDB<br>采用多副本 + Multi-Raft 协议的方式将数据调度到不同的机房、机架、机器，当部分机器出现故障时系统可自动进行切换，确保系统的 RTO &lt;&#x3D; 30s<br>及 RPO &#x3D; 0。</p>
+<ul>
+<li>对存储容量、可扩展性、并发要求较高的海量数据及高并发的 OLTP 场景</li>
+</ul>
+<p>随着业务的高速发展，数据呈现爆炸性的增长，传统的单机数据库无法满足因数据爆炸性的增长对数据库的容量要求，可行方案是采用分库分表的中间件产品或者 NewSQL<br>数据库替代、采用高端的存储设备等，其中性价比最大的是 NewSQL 数据库，例如：TiDB。TiDB<br>采用计算、存储分离的架构，可对计算、存储分别进行扩容和缩容，计算最大支持 512 节点，每个节点最大支持 1000 并发，集群容量最大支持 PB 级别。</p>
+<ul>
+<li>Real-time HTAP 场景</li>
+</ul>
+<p>随着 5G、物联网、人工智能的高速发展，企业所生产的数据会越来越多，其规模可能达到数百 TB 甚至 PB 级别，传统的解决方案是通过 OLTP<br>型数据库处理在线联机交易业务，通过 ETL 工具将数据同步到 OLAP 型数据库进行数据分析，这种处理方案存在存储成本高、实时性差等多方面的问题。TiDB<br>在 4.0 版本中引入列存储引擎 TiFlash 结合行存储引擎 TiKV 构建真正的 HTAP<br>数据库，在增加少量存储成本的情况下，可以在同一个系统中做联机交易处理、实时数据分析，极大地节省企业的成本。</p>
+<ul>
+<li>数据汇聚、二次加工处理的场景</li>
+</ul>
+<p>当前绝大部分企业的业务数据都分散在不同的系统中，没有一个统一的汇总，随着业务的发展，企业的决策层需要了解整个公司的业务状况以便及时做出决策，故需要将分散在各个系统的数据汇聚在同一个系统并进行二次加工处理生成<br>T+0 或 T+1 的报表。传统常见的解决方案是采用 ETL + Hadoop 来完成，但 Hadoop<br>体系太复杂，运维、存储成本太高无法满足用户的需求。与 Hadoop 相比，TiDB 就简单得多，业务通过 ETL 工具或者 TiDB 的同步工具将数据同步到<br>TiDB，在 TiDB 中可通过 SQL 直接生成报表。</p>
+<h2 id="TiDB整体架构"><a href="#TiDB整体架构" class="headerlink" title="TiDB整体架构"></a>TiDB整体架构</h2><p>在内核设计上，TiDB 分布式数据库将整体架构拆分成了多个模块，各模块之间互相通信，组成完整的 TiDB 系统。对应的架构图如下：</p>
+<p>![architecture](<a target="_blank" rel="noopener" href="https://download.pingcap.com/images/docs-cn/tidb-">https://download.pingcap.com/images/docs-cn/tidb-</a><br>architecture-v6.png)</p>
+<ul>
+<li>TiDB Server：SQL 层，对外暴露 MySQL 协议的连接 endpoint，负责接受客户端的连接，执行 SQL 解析和优化，最终生成分布式执行计划。TiDB 层本身是无状态的，实践中可以启动多个 TiDB 实例，通过负载均衡组件（如 LVS、HAProxy 或 F5）对外提供统一的接入地址，客户端的连接可以均匀地分摊在多个 TiDB 实例上以达到负载均衡的效果。TiDB Server 本身并不存储数据，只是解析 SQL，将实际的数据读取请求转发给底层的存储节点 TiKV（或 TiFlash）。</li>
+<li>PD (Placement Driver) Server：整个 TiDB 集群的元信息管理模块，负责存储每个 TiKV 节点实时的数据分布情况和集群的整体拓扑结构，提供 TiDB Dashboard 管控界面，并为分布式事务分配事务 ID。PD 不仅存储元信息，同时还会根据 TiKV 节点实时上报的数据分布状态，下发数据调度命令给具体的 TiKV 节点，可以说是整个集群的“大脑”。此外，PD 本身也是由至少 3 个节点构成，拥有高可用的能力。建议部署奇数个 PD 节点。</li>
+<li>存储节点<ul>
+<li>TiKV Server：负责存储数据，从外部看 TiKV 是一个分布式的提供事务的 Key-Value 存储引擎。存储数据的基本单位是 Region，每个 Region 负责存储一个 Key Range（从 StartKey 到 EndKey 的左闭右开区间）的数据，每个 TiKV 节点会负责多个 Region。TiKV 的 API 在 KV 键值对层面提供对分布式事务的原生支持，默认提供了 SI (Snapshot Isolation) 的隔离级别，这也是 TiDB 在 SQL 层面支持分布式事务的核心。TiDB 的 SQL 层做完 SQL 解析后，会将 SQL 的执行计划转换为对 TiKV API 的实际调用。所以，数据都存储在 TiKV 中。另外，TiKV 中的数据都会自动维护多副本（默认为三副本），天然支持高可用和自动故障转移。</li>
+<li>TiFlash：TiFlash 是一类特殊的存储节点。和普通 TiKV 节点不一样的是，在 TiFlash 内部，数据是以列式的形式进行存储，主要的功能是为分析型的场景加速。</li>
+</ul>
+</li>
+</ul>
+<h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><h4 id="Key-Value-Pairs-键值对"><a href="#Key-Value-Pairs-键值对" class="headerlink" title="Key-Value Pairs (键值对)"></a>Key-Value Pairs (键值对)</h4><p>作为保存数据的系统，首先要决定的是数据的存储模型，也就是数据以什么样的形式保存下来。TiKV 的选择是 Key-Value 模型，并且提供有序遍历方法。<br>TiKV 数据存储的两个关键点：</p>
+<ol>
+<li>这是一个巨大的 Map（可以类比一下 C++ 的 std::map），也就是存储的是 Key-Value Pairs（键值对）</li>
+<li>这个 Map 中的 Key-Value pair 按照 Key 的二进制顺序有序，也就是可以 Seek 到某一个 Key 的位置，然后不断地调用 Next 方法以递增的顺序获取比这个 Key 大的 Key-Value。</li>
+</ol>
+<p>有人可能会问，这里讲的存储模型和 SQL 中表是什么关系？在这里有一件重要的事情需要强调：</p>
+<p><strong>TiKV 的 KV 存储模型和 SQL 中的 Table 无关！</strong></p>
+<p>现在让我们忘记 SQL 中的任何概念，专注于讨论如何实现 TiKV 这样一个高性能、高可靠性、分布式的 Key-Value 存储。</p>
+<h4 id="本地存储（RocksDB）"><a href="#本地存储（RocksDB）" class="headerlink" title="本地存储（RocksDB）"></a>本地存储（RocksDB）</h4><p>任何持久化的存储引擎，数据终归要保存在磁盘上，TiKV 也不例外。但是 TiKV 没有选择直接向磁盘上写数据，而是把数据保存在 RocksDB<br>中，具体的数据落地由 RocksDB 负责。这个选择的原因是开发一个单机存储引擎工作量很大，特别是要做一个高性能的单机引擎，需要做各种细致的优化，而<br>RocksDB 是由 Facebook 开源的一个非常优秀的单机 KV 存储引擎，可以满足 TiKV 对单机引擎的各种要求。这里可以简单的认为<br>RocksDB 是一个单机的持久化 Key-Value Map。</p>
+<h4 id="Raft-协议"><a href="#Raft-协议" class="headerlink" title="Raft 协议"></a>Raft 协议</h4><p>接下来 TiKV 的实现面临一件更难的事情：如何保证单机失效的情况下，数据不丢失，不出错？</p>
+<p>简单来说，需要想办法把数据复制到多台机器上，这样一台机器挂了，其他的机器上的副本还能提供服务；<br>复杂来说，还需要这个数据复制方案是可靠和高效的，并且能处理副本失效的情况。TiKV 选择了 Raft 算法。Raft 是一个一致性协议，它和 Multi<br>Paxos 实现一样的功能，但是更加易于理解。<a target="_blank" rel="noopener" href="https://raft.github.io/raft.pdf">这里</a> 是 Raft<br>的论文，感兴趣的可以看一下。下面对 Raft 做一个简要的介绍，细节问题可以参考论文。 Raft 提供几个重要的功能：</p>
+<ol>
+<li>Leader（主副本）选举</li>
+<li>成员变更（如添加副本、删除副本、转移 Leader 等操作）</li>
+<li>日志复制</li>
+</ol>
+<p>TiKV 利用 Raft 来做数据复制，每个数据变更都会落地为一条 Raft 日志，通过 Raft<br>的日志复制功能，将数据安全可靠地同步到复制组的每一个节点中。不过在实际写入中，根据 Raft 的协议，只需要同步复制到多数节点，即可安全地认为数据写入成功。</p>
+<p><img src="https://book.tidb.io/res/session1/chapter2/tidb-storage/1.png" alt="1.png"></p>
+<p>总结一下，通过单机的 RocksDB，TiKV 可以将数据快速地存储在磁盘上；通过 Raft，将数据复制到多台机器上，以防单机失效。数据的写入是通过<br>Raft 这一层的接口写入，而不是直接写 RocksDB。通过实现 Raft，TiKV 变成了一个分布式的 Key-Value<br>存储，少数几台机器宕机也能通过原生的 Raft 协议自动把副本补全，可以做到对业务无感知。</p>
+<h4 id="Region"><a href="#Region" class="headerlink" title="Region"></a>Region</h4><p>讲到这里，我们需要提到一个非常重要的概念：Region。这个概念是理解后续一系列机制的基础，请仔细阅读这一小节。 前面提到，我们将 TiKV<br>看做一个巨大的有序的 KV Map，那么为了实现存储的水平扩展，我们需要将数据分散在多台机器上。这里提到的数据分散在多台机器上和 Raft<br>的数据复制不是一个概念，在这一节我们先忘记 Raft，假设所有的数据都只有一个副本，这样更容易理解。 对于一个 KV<br>系统，将数据分散在多台机器上有两种比较典型的方案：</p>
+<ul>
+<li>Hash：按照 Key 做 Hash，根据 Hash 值选择对应的存储节点</li>
+<li>Range：按照 Key 分 Range，某一段连续的 Key 都保存在一个存储节点上</li>
+</ul>
+<p>TiKV 选择了第二种方式，将整个 Key-Value 空间分成很多段，每一段是一系列连续的 Key，将每一段叫做一个 Region，并且会尽量保持每个<br>Region 中保存的数据不超过一定的大小，目前在 TiKV 中默认是 96MB。每一个 Region 都可以用 [StartKey，EndKey)<br>这样一个左闭右开区间来描述。</p>
+<p><img src="https://book.tidb.io/res/session1/chapter2/tidb-storage/2.png" alt="2.png"></p>
+<p>注意，这里的 Region 还是和 SQL 中的表没什么关系！ 请各位继续忘记 SQL，只谈 KV。 将数据划分成 Region 后，TiKV<br>将会做两件重要的事情：</p>
+<ul>
+<li>以 Region 为单位，将数据分散在集群中所有的节点上，并且尽量保证每个节点上服务的 Region 数量差不多</li>
+<li>以 Region 为单位做 Raft 的复制和成员管理</li>
+</ul>
+<p>这两点非常重要，我们一点一点来说。 先看第一点，数据按照 Key 切分成很多 Region，每个 Region<br>的数据只会保存在一个节点上面（暂不考虑多副本）。TiDB 系统会有一个组件（PD）来负责将 Region<br>尽可能均匀的散布在集群中所有的节点上，这样一方面实现了存储容量的水平扩展（增加新的节点后，会自动将其他节点上的 Region<br>调度过来），另一方面也实现了负载均衡（不会出现某个节点有很多数据，其他节点上没什么数据的情况）。同时为了保证上层客户端能够访问所需要的数据，系统中也会有一个组件（PD）记录<br>Region 在节点上面的分布情况，也就是通过任意一个 Key 就能查询到这个 Key 在哪个 Region 中，以及这个 Region<br>目前在哪个节点上（即 Key 的位置路由信息）。至于负责这两项重要工作的组件（PD），会在后续介绍。</p>
+<p>对于第二点，TiKV 是以 Region 为单位做数据的复制，也就是一个 Region 的数据会保存多个副本，TiKV 将每一个副本叫做一个<br>Replica。Replica 之间是通过 Raft 来保持数据的一致，一个 Region 的多个 Replica 会保存在不同的节点上，构成一个 Raft<br>Group。其中一个 Replica 会作为这个 Group 的 Leader，其他的 Replica 作为 Follower。所有的读和写都是通过<br>Leader 进行，读操作在 Leader 上即可完成，而写操作再由 Leader 复制给 Follower。 大家理解了 Region<br>之后，应该可以理解下面这张图：</p>
+<p><img src="https://book.tidb.io/res/session1/chapter2/tidb-storage/3.png" alt="3.png"></p>
+<p>以 Region 为单位做数据的分散和复制，就有了一个分布式的具备一定容灾能力的 KeyValue<br>系统，不用再担心数据存不下，或者是磁盘故障丢失数据的问题。</p>
+<h4 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h4><p>很多数据库都会实现多版本并发控制（MVCC），TiKV 也不例外。设想这样的场景，两个客户端同时去修改一个 Key 的<br>Value，如果没有数据的多版本控制，就需要对数据上锁，在分布式场景下，可能会带来性能以及死锁问题。 TiKV 的 MVCC 实现是通过在 Key<br>后面添加版本号来实现，简单来说，没有 MVCC 之前，可以把 TiKV 看做这样的：</p>
+<pre><code>Key1 -&gt; Value  
+Key2 -&gt; Value  
+……  
+KeyN -&gt; Value  
+  
+</code></pre>
+<p>有了 MVCC 之后，TiKV 的 Key 排列是这样的：</p>
+<pre><code>Key1_Version3 -&gt; Value  
+Key1_Version2 -&gt; Value  
+Key1_Version1 -&gt; Value  
+……  
+Key2_Version4 -&gt; Value  
+Key2_Version3 -&gt; Value  
+Key2_Version2 -&gt; Value  
+Key2_Version1 -&gt; Value  
+……  
+KeyN_Version2 -&gt; Value  
+KeyN_Version1 -&gt; Value  
+……  
+  
+</code></pre>
+<p>注意，对于同一个 Key 的多个版本，我们把版本号较大的放在前面，版本号小的放在后面（回忆一下 Key-Value 一节我们介绍过的 Key<br>是有序的排列），这样当用户通过一个 Key + Version 来获取 Value 的时候，可以通过 Key 和 Version 构造出 MVCC 的<br>Key，也就是 Key_Version。然后可以直接通过 RocksDB 的 SeekPrefix(Key_Version)<br>API，定位到第一个大于等于这个 Key_Version 的位置。</p>
+<h4 id="分布式-ACID-事务"><a href="#分布式-ACID-事务" class="headerlink" title="分布式 ACID 事务"></a>分布式 ACID 事务</h4><p>TiKV 的事务采用的是 Google 在 BigTable<br>中使用的事务模型：<a target="_blank" rel="noopener" href="https://research.google.com/pubs/pub36726.html">Percolator</a>，TiKV<br>根据这篇论文实现，并做了大量的优化。这个在后续的章节中会有详细的介绍。</p>
+<p>在 TiKV 层的事务 API 的语义类似下面的伪代码：</p>
+<pre><code>tx = tikv.Begin()  
+    tx.Set(Key1, Value1)  
+    tx.Set(Key2, Value2)  
+    tx.Set(Key3, Value3)  
+tx.Commit()  
+  
+</code></pre>
+<p>这个事务中包含3条 Set 操作，TiKV 能保证这些操作要么全部成功，要么全部失败，不会出现中间状态或脏数据。 就如前面提到的，TiDB 的 SQL<br>层会将 SQL 的执行计划转换成多个 KV 操作，对于上层的同一个业务层的 SQL 事务，在底层也是对应一个 KV 层的事务，这是 TiDB 实现<br>MySQL 的事务语义的关键。</p>
+<h3 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h3><h4 id="表数据与-Key-Value-的映射关系"><a href="#表数据与-Key-Value-的映射关系" class="headerlink" title="表数据与 Key-Value 的映射关系"></a>表数据与 Key-Value 的映射关系</h4><p>本小节介绍 TiDB 中数据到 (Key, Value) 键值对的映射方案。这里的数据主要包括以下两个方面：</p>
+<ul>
+<li>表中每一行的数据，以下简称表数据</li>
+<li>表中所有索引的数据，以下简称索引数据</li>
+</ul>
+<h4 id="表数据与-Key-Value-的映射关系-1"><a href="#表数据与-Key-Value-的映射关系-1" class="headerlink" title="表数据与 Key-Value 的映射关系"></a>表数据与 Key-Value 的映射关系</h4><p>在关系型数据库中，一个表可能有很多列。要将一行中各列数据映射成一个 (Key, Value) 键值对，需要考虑如何构造 Key。首先，OLTP<br>场景下有大量针对单行或者多行的增、删、改、查等操作，要求数据库具备快速读取一行数据的能力。因此，对应的 Key 最好有一个唯一 ID（显示或隐式的<br>ID），以方便快速定位。其次，很多 OLAP 型查询需要进行全表扫描。如果能够将一个表中所有行的 Key<br>编码到一个区间内，就可以通过范围查询高效完成全表扫描的任务。</p>
+<p>基于上述考虑，TiDB 中的表数据与 Key-Value 的映射关系作了如下设计：</p>
+<ul>
+<li>为了保证同一个表的数据放在一起，方便查找，TiDB 会为每个表分配一个表 ID，用 <code>TableID</code> 表示。表 ID 是一个整数，在整个集群内唯一。</li>
+<li>TiDB 会为表中每行数据分配一个行 ID，用 <code>RowID</code> 表示。行 ID 也是一个整数，在表内唯一。对于行 ID，TiDB 做了一个小优化，如果某个表有整数型的主键，TiDB 会使用主键的值当做这一行数据的行 ID。</li>
+</ul>
+<p>每行数据按照如下规则编码成 (Key, Value) 键值对：</p>
+<pre><code>Key:   tablePrefix&#123;TableID&#125;_recordPrefixSep&#123;RowID&#125;  
+Value: [col1, col2, col3, col4]  
+  
+</code></pre>
+<p>其中 <code>tablePrefix</code> 和 <code>recordPrefixSep</code> 都是特定的字符串常量，用于在 Key<br>空间内区分其他数据。其具体值在后面的小结中给出。</p>
+<h4 id="索引数据和-Key-Value-的映射关系"><a href="#索引数据和-Key-Value-的映射关系" class="headerlink" title="索引数据和 Key-Value 的映射关系"></a>索引数据和 Key-Value 的映射关系</h4><p>TiDB 同时支持主键和二级索引（包括唯一索引和非唯一索引）。与表数据映射方案类似，TiDB 为表中每个索引分配了一个索引 ID，用 <code>IndexID</code><br>表示。</p>
+<p>对于主键和唯一索引，需要根据键值快速定位到对应的 RowID，因此，按照如下规则编码成 (Key, Value) 键值对：</p>
+<pre><code>Key:   tablePrefix&#123;tableID&#125;_indexPrefixSep&#123;indexID&#125;_indexedColumnsValue  
+Value: RowID  
+  
+</code></pre>
+<p>对于不需要满足唯一性约束的普通二级索引，一个键值可能对应多行，需要根据键值范围查询对应的 RowID。因此，按照如下规则编码成 (Key, Value)<br>键值对：</p>
+<pre><code>Key:   tablePrefix&#123;TableID&#125;_indexPrefixSep&#123;IndexID&#125;_indexedColumnsValue_&#123;RowID&#125;  
+Value: null  
+  
+</code></pre>
+<h4 id="映射关系小结"><a href="#映射关系小结" class="headerlink" title="映射关系小结"></a>映射关系小结</h4><p>上述所有编码规则中的 <code>tablePrefix</code>、<code>recordPrefixSep</code> 和 <code>indexPrefixSep</code> 都是字符串常量，用于在 Key<br>空间内区分其他数据，定义如下：</p>
+<pre><code>tablePrefix     = []byte&#123;&#39;t&#39;&#125;  
+recordPrefixSep = []byte&#123;&#39;r&#39;&#125;  
+indexPrefixSep  = []byte&#123;&#39;i&#39;&#125;  
+  
+</code></pre>
+<p>另外请注意，上述方案中，无论是表数据还是索引数据的 Key 编码方案，一个表内所有的行都有相同的 Key<br>前缀，一个索引的所有数据也都有相同的前缀。这样具有相同的前缀的数据，在 TiKV 的 Key<br>空间内，是排列在一起的。因此只要小心地设计后缀部分的编码方案，保证编码前和编码后的比较关系不变，就可以将表数据或者索引数据有序地保存在 TiKV<br>中。采用这种编码后，一个表的所有行数据会按照 <code>RowID</code> 顺序地排列在 TiKV 的 Key<br>空间中，某一个索引的数据也会按照索引数据的具体的值（编码方案中的 <code>indexedColumnsValue</code>）顺序地排列在 Key 空间内。</p>
+<h4 id="Key-Value-映射关系示例"><a href="#Key-Value-映射关系示例" class="headerlink" title="Key-Value 映射关系示例"></a>Key-Value 映射关系示例</h4><p>最后通过一个简单的例子，来理解 TiDB 的 Key-Value 映射关系。假设 TiDB 中有如下这个表：</p>
+<pre><code>CREATE TABLE User (  
+    ID int,  
+    Name varchar(20),  
+    Role varchar(20),  
+    Age int,  
+    PRIMARY KEY (ID),  
+    KEY idxAge (Age)  
+);  
+</code></pre>
+<p>假设该表中有 3 行数据：</p>
+<pre><code>1, &quot;TiDB&quot;, &quot;SQL Layer&quot;, 10  
+2, &quot;TiKV&quot;, &quot;KV Engine&quot;, 20  
+3, &quot;PD&quot;, &quot;Manager&quot;, 30  
+  
+</code></pre>
+<p>首先每行数据都会映射为一个 (Key, Value) 键值对，同时该表有一个 <code>int</code> 类型的主键，所以 <code>RowID</code> 的值即为该主键的值。假设该表的<br><code>TableID</code> 为 10，则其存储在 TiKV 上的表数据为：</p>
+<pre><code>t10_r1 --&gt; [&quot;TiDB&quot;, &quot;SQL Layer&quot;, 10]  
+t10_r2 --&gt; [&quot;TiKV&quot;, &quot;KV Engine&quot;, 20]  
+t10_r3 --&gt; [&quot;PD&quot;, &quot;Manager&quot;, 30]  
+</code></pre>
+<p>除了主键外，该表还有一个非唯一的普通二级索引 <code>idxAge</code>，假设这个索引的 <code>IndexID</code> 为 1，则其存储在 TiKV 上的索引数据为：</p>
+<pre><code>t10_i1_10_1 --&gt; null  
+t10_i1_20_2 --&gt; null  
+t10_i1_30_3 --&gt; null  
+  
+</code></pre>
+<p>以上例子展示了 TiDB 中关系模型到 Key-Value 模型的映射规则，以及选择该方案背后的考量。</p>
+<h4 id="元信息管理"><a href="#元信息管理" class="headerlink" title="元信息管理"></a>元信息管理</h4><p>TiDB 中每个 <code>Database</code> 和 <code>Table</code> 都有元信息，也就是其定义以及各项属性。这些信息也需要持久化，TiDB 将这些信息也存储在了<br>TiKV 中。</p>
+<p>每个 <code>Database</code>&#x2F;<code>Table</code> 都被分配了一个唯一的 ID，这个 ID 作为唯一标识，并且在编码为 Key-Value 时，这个 ID<br>都会编码到 Key 中，再加上 <code>m_</code> 前缀。这样可以构造出一个 Key，Value 中存储的是序列化后的元信息。</p>
+<p>除此之外，TiDB 还用一个专门的 (Key, Value) 键值对存储当前所有表结构信息的最新版本号。这个键值对是全局的，每次 DDL<br>操作的状态改变时其版本号都会加 1。目前，TiDB 把这个键值对持久化存储在 PD Server 中，其 Key 是<br>“&#x2F;tidb&#x2F;ddl&#x2F;global_schema_version”，Value 是类型为 int64 的版本号值。TiDB 采用 Online Schema<br>变更算法，有一个后台线程在不断地检查 PD Server 中存储的表结构信息的版本号是否发生变化，并且保证在一定时间内一定能够获取版本的变化。</p>
+<h4 id="SQL-层简介"><a href="#SQL-层简介" class="headerlink" title="SQL 层简介"></a>SQL 层简介</h4><p>TiDB 的 SQL 层，即 TiDB Server，负责将 SQL 翻译成 Key-Value 操作，将其转发给共用的分布式 Key-Value 存储层<br>TiKV，然后组装 TiKV 返回的结果，最终将查询结果返回给客户端。</p>
+<p>这一层的节点都是无状态的，节点本身并不存储数据，节点之间完全对等。</p>
+<h4 id="SQL-运算"><a href="#SQL-运算" class="headerlink" title="SQL 运算"></a>SQL 运算</h4><p>最简单的方案就是通过上一节所述的[表数据与 Key-Value<br>的映射关系](<a target="_blank" rel="noopener" href="https://docs.pingcap.com/zh/tidb/stable/tidb-">https://docs.pingcap.com/zh/tidb/stable/tidb-</a><br>computing#%E8%A1%A8%E6%95%B0%E6%8D%AE%E4%B8%8E-key-<br>value-%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB)方案，将 SQL 查询映射为对 KV 的查询，再通过<br>KV 接口获取对应的数据，最后执行各种计算。</p>
+<p>比如 <code>select count(*) from user where name = &quot;TiDB&quot;</code> 这样一个 SQL<br>语句，它需要读取表中所有的数据，然后检查 <code>name</code> 字段是否是 <code>TiDB</code>，如果是的话，则返回这一行。具体流程如下：</p>
+<ol>
+<li>构造出 Key Range：一个表中所有的 <code>RowID</code> 都在 <code>[0, MaxInt64)</code> 这个范围内，使用 <code>0</code> 和 <code>MaxInt64</code> 根据行数据的 <code>Key</code> 编码规则，就能构造出一个 <code>[StartKey, EndKey)</code>的左闭右开区间。</li>
+<li>扫描 Key Range：根据上面构造出的 Key Range，读取 TiKV 中的数据。</li>
+<li>过滤数据：对于读到的每一行数据，计算 <code>name = &quot;TiDB&quot;</code> 这个表达式，如果为真，则向上返回这一行，否则丢弃这一行数据。</li>
+<li>计算 <code>Count(*)</code>：对符合要求的每一行，累计到 <code>Count(*)</code> 的结果上面。</li>
+</ol>
+<p><strong>整个流程示意图如下：</strong></p>
+<p>![naive sql flow](<a target="_blank" rel="noopener" href="https://download.pingcap.com/images/docs-cn/tidb-computing-">https://download.pingcap.com/images/docs-cn/tidb-computing-</a><br>native-sql-flow.jpeg)</p>
+<p>这个方案是直观且可行的，但是在分布式数据库的场景下有一些显而易见的问题：</p>
+<ul>
+<li>在扫描数据的时候，每一行都要通过 KV 操作从 TiKV 中读取出来，至少有一次 RPC 开销，如果需要扫描的数据很多，那么这个开销会非常大。</li>
+<li>并不是所有的行都满足过滤条件 <code>name = &quot;TiDB&quot;</code>，如果不满足条件，其实可以不读取出来。</li>
+<li>此查询只要求返回符合要求行的数量，不要求返回这些行的值。</li>
+</ul>
+<h4 id="分布式-SQL-运算"><a href="#分布式-SQL-运算" class="headerlink" title="分布式 SQL 运算"></a>分布式 SQL 运算</h4><p>为了解决上述问题，计算应该需要尽量靠近存储节点，以避免大量的 RPC 调用。首先，SQL 中的谓词条件 <code>name = &quot;TiDB&quot;</code><br>应被下推到存储节点进行计算，这样只需要返回有效的行，避免无意义的网络传输。然后，聚合函数 <code>Count(*)</code><br>也可以被下推到存储节点，进行预聚合，每个节点只需要返回一个 <code>Count(*)</code> 的结果即可，再由 SQL 层将各个节点返回的 <code>Count(*)</code><br>的结果累加求和。</p>
+<p>以下是数据逐层返回的示意图：</p>
+<p>![dist sql flow](<a target="_blank" rel="noopener" href="https://download.pingcap.com/images/docs-cn/tidb-computing-">https://download.pingcap.com/images/docs-cn/tidb-computing-</a><br>dist-sql-flow.png)</p>
+<h4 id="SQL-层架构"><a href="#SQL-层架构" class="headerlink" title="SQL 层架构"></a>SQL 层架构</h4><p>通过上面的例子，希望大家对 SQL 语句的处理有一个基本的了解。实际上 TiDB 的 SQL<br>层要复杂得多，模块以及层次非常多，下图列出了重要的模块以及调用关系：</p>
+<p>![tidb sql layer](<a target="_blank" rel="noopener" href="https://download.pingcap.com/images/docs-cn/tidb-computing-">https://download.pingcap.com/images/docs-cn/tidb-computing-</a><br>tidb-sql-layer.png)</p>
+<p>用户的 SQL 请求会直接或者通过 <code>Load Balancer</code> 发送到 TiDB Server，TiDB Server 会解析 <code>MySQL Protocol Packet</code>，获取请求内容，对 SQL 进行语法解析和语义分析，制定和优化查询计划，执行查询计划并获取和处理数据。数据全部存储在<br>TiKV 集群中，所以在这个过程中 TiDB Server 需要和 TiKV 交互，获取数据。最后 TiDB Server 需要将查询结果返回给用户。</p>
+<h2 id="TiDB和Mysql的区别"><a href="#TiDB和Mysql的区别" class="headerlink" title="TiDB和Mysql的区别"></a>TiDB和Mysql的区别</h2><p>TiDB 作为开源 NewSQL 数据库的典型代表之一，同样支持 SQL，支持事务 ACID 特性。在通讯协议上，TiDB 选择与 MySQL<br>完全兼容，并尽可能兼容 MySQL 的语法。因此，基于 MySQL 数据库开发的系统，大多数可以平滑迁移至<br>TiDB，而几乎不用修改代码。对用户来说，迁移成本极低，过渡自然。</p>
+<p>然而，仍有一些 MySQL 的特性和行为，TiDB 目前暂时不支持或表现与 MySQL 有差异。除此之外，TiDB<br>提供了一些扩展语法和功能，为用户提供更多的便利。</p>
+<p>TiDB 仍处在快速发展的道路上，对 MySQL 功能和行为的支持方面，正按 [路线图](<a target="_blank" rel="noopener" href="https://pingcap.com/docs-">https://pingcap.com/docs-</a><br>cn&#x2F;stable&#x2F;roadmap&#x2F;) 的规划在前行。</p>
+<h3 id="兼容策略"><a href="#兼容策略" class="headerlink" title="兼容策略"></a>兼容策略</h3><p>先从总体上概括 TiDB 和 MySQL 兼容策略，如下表：</p>
+<table>
+<thead>
+<tr>
+<th>通讯协议</th>
+<th>SQL语法</th>
+<th>功能和行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>完全兼容</td>
+<td>兼容绝大多数</td>
+<td>兼容大多数</td>
+</tr>
+</tbody></table>
+<p>截至 4.0 版本，TiDB 与 MySQL 的区别总结如下表：</p>
+<p>| MySQL | TiDB<br>—|—|—<br>隔离级别 | 支持读未提交、读已提交、可重复读、串行化，默认为可重复读 | 乐观事务支持快照隔离，悲观事务支持快照隔离和读已提交<br>锁机制 | 悲观锁 | 乐观锁、悲观锁<br>存储过程 | 支持 | 不支持<br>触发器 | 支持 | 不支持<br>事件 | 支持 | 不支持<br>自定义函数 | 支持 | 不支持<br>窗口函数 | 支持 | 部分支持<br>JSON | 支持 | 不支持部分 MySQL 8.0 新增的函数<br>外键约束 | 支持 | 忽略外键约束<br>字符集 |  | 只支持 ascii、latin1、binary、utf8、utf8mb4<br>增加&#x2F;删除主键 | 支持 | 通过 [alter-primary-key](<a target="_blank" rel="noopener" href="https://pingcap.com/docs-">https://pingcap.com/docs-</a><br>cn&#x2F;dev&#x2F;reference&#x2F;configuration&#x2F;tidb-server&#x2F;configuration-file&#x2F;#alter-primary-<br>key) 配置开关提供<br>CREATE TABLE tblName AS SELECT stmt | 支持 | 不支持<br>CREATE TEMPORARY TABLE | 支持 | TiDB 忽略 TEMPORARY 关键字，按照普通表创建<br>DML affected rows | 支持 | 不支持<br>AutoRandom 列属性 | 不支持 | 支持<br>Sequence 序列生成器 | 不支持 | 支持  </p>
+<h3 id="区别点详述及应对方案"><a href="#区别点详述及应对方案" class="headerlink" title="区别点详述及应对方案"></a>区别点详述及应对方案</h3><h4 id="字符集支持"><a href="#字符集支持" class="headerlink" title="字符集支持"></a>字符集支持</h4><p>TiDB 目前支持以下字符集：</p>
+<pre><code>tidb&gt; SHOW CHARACTER SET;  
++---------|---------------|-------------------|--------+  
+| Charset | Description   | Default collation | Maxlen |  
++---------|---------------|-------------------|--------+  
+| utf8    | UTF-8 Unicode | utf8_bin          |      3 |  
+| utf8mb4 | UTF-8 Unicode | utf8mb4_bin       |      4 |  
+| ascii   | US ASCII      | ascii_bin         |      1 |  
+| latin1  | Latin1        | latin1_bin        |      1 |  
+| binary  | binary        | binary            |      1 |  
++---------|---------------|-------------------|--------+  
+5 rows in set (0.00 sec)  
+  
+</code></pre>
+<p>注意：TiDB 的默认字符集为 <code>utf8mb4</code>，MySQL 5.7 中为 <code>latin1</code>，MySQL 8.0 中修改为 <code>utf8mb4</code>。<br>当指定的字符集为 <code>utf8</code> 或 <code>utf8mb4</code> 时，TiDB 仅支持合法的 UTF8 字符。对于不合法的字符，会报错：<code>incorrect utf8 value</code>，该字符合法性检查与 MySQL 8.0 一致。对于 MySQL 5.7 及以下版本，会存在允许插入非法 UTF8 字符，但同步到 TiDB<br>报错的情况。此时，可以通过 TiDB 配置<br>[“tidb_skip_utf8_check”](<a target="_blank" rel="noopener" href="https://pingcap.com/docs/stable/faq/upgrade/#issue-3-error-1366-hy000-incorrect-">https://pingcap.com/docs/stable/faq/upgrade/#issue-3-error-1366-hy000-incorrect-</a><br>utf8-value-f09f8c80-for-column-a) 跳过 UTF8 字符合法性检查强制写入 TiDB。</p>
+<p>每一个字符集，都有一个默认的 Collation，例如 <code>utf8</code> 的默认 Collation 为 <code>utf8_bin</code>，TiDB 中字符集的默认<br>Collation 与 MySQL 不一致，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>字符集</th>
+<th>TiDB 默认 Collation</th>
+<th>MySQL 5.7 默认 Collation</th>
+<th>MySQL 8.0 默认 Collation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>utf8</td>
+<td>utf8_bin</td>
+<td>utf8_general_ci</td>
+<td>utf8_general_ci</td>
+</tr>
+<tr>
+<td>utf8mb4</td>
+<td>utf8mb4_bin</td>
+<td>utf8mb4_general_ci</td>
+<td>utf8mb4_0900_ai_ci</td>
+</tr>
+<tr>
+<td>ascii</td>
+<td>ascii_bin</td>
+<td>ascii_general_ci</td>
+<td>ascii_general_ci</td>
+</tr>
+<tr>
+<td>latin1</td>
+<td>latin1_bin</td>
+<td>latin1_swedish_ci</td>
+<td>latin1_swedish_ci</td>
+</tr>
+<tr>
+<td>binary</td>
+<td>binary</td>
+<td>binary</td>
+<td>binary</td>
+</tr>
+</tbody></table>
+<p>在 4.0 版本之前，TiDB 中可以任意指定字符集对应的所有 Collation，并把它们按照默认 Collation<br>处理，即以编码字节序为字符定序。同时，并未像 MySQL 一样，在比较前按照 Collation 的 <code>PADDING</code><br>属性将字符补齐空格。因此，会造成以下的行为区别：</p>
+<pre><code>tidb&gt; create table t(a varchar(20) charset utf8mb4 collate utf8mb4_general_ci primary key);  
+Query OK, 0 rows affected  
+tidb&gt; insert into t values (&#39;A&#39;);  
+Query OK, 1 row affected  
+tidb&gt; insert into t values (&#39;a&#39;);  
+Query OK, 1 row affected // MySQL 中，由于 utf8mb4_general_ci 大小写不敏感，报错 Duplicate entry &#39;a&#39;.  
+tidb&gt; insert into t1 values (&#39;a &#39;);  
+Query OK, 1 row affected // MySQL 中，由于补齐空格比较，报错 Duplicate entry &#39;a &#39;  
+</code></pre>
+<p>TiDB 4.0 新增了完整的 Collation 支持框架，允许实现所有 MySQL 中的 Collation，并新增了配置开关<br><code>new_collation_enabled_on_first_boostrap</code>，在集群初次初始化时决定是否启用新 Collation<br>框架。在该配置开关打开之后初始化集群，可以通过 <code>mysql</code>.<code>tidb</code> 表中的 <code>new_collation_enabled</code> 变量确认新<br>Collation 是否启用：</p>
+<pre><code>tidb&gt; select VARIABLE_VALUE from mysql.tidb where VARIABLE_NAME=&#39;new_collation_enabled&#39;;  
++----------------+  
+| VARIABLE_VALUE |  
++----------------+  
+| True           |  
++----------------+  
+1 row in set (0.00 sec)  
+</code></pre>
+<p>在新 Collation 启用后，TiDB 修正了 <code>utf8mb4_general_bin</code> 和 <code>utf8_general_bin</code> 的<br><code>PADDING</code> 行为，会将字符串补齐空格后比较；同时支持了 <code>utf8mb4_general_ci</code> 和 <code>utf8_general_ci</code>，这两个<br>Collation 与 MySQL 保持兼容。</p>
+<h4 id="系统时区"><a href="#系统时区" class="headerlink" title="系统时区"></a>系统时区</h4><p>在 MySQL 中，系统时区 <code>system_time_zone</code> 在 MySQL 服务启动时通过 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/time-zone-support.html">环境变量 <code>TZ</code> 或命令行参数<br><code>--timezone</code></a><br>指定。</p>
+<p>对于 TiDB 而言，作为一个分布式数据库，TiDB 需要保证整个集群的系统时区始终一致。因此 TiDB 的系统时区在集群初始化时，由负责初始化的 TiDB<br>节点环境变量 <code>TZ</code> 决定。集群初始化后，固定在集群状态表 <code>mysql</code>.<code>tidb</code> 中：</p>
+<pre><code>tidb&gt; select VARIABLE_VALUE from mysql.tidb where VARIABLE_NAME=&#39;system_tz&#39;;  
++----------------+  
+| VARIABLE_VALUE |  
++----------------+  
+| Asia/Shanghai  |  
++----------------+  
+1 row in set (0.00 sec)  
+  
+</code></pre>
+<p>通过查看 <code>system_time_zone</code> 变量，可以看到该值与状态表中的 <code>system_tz</code> 保持一致：</p>
+<pre><code>tidb&gt; select @@system_time_zone;  
++--------------------+  
+| @@system_time_zone |  
++--------------------+  
+| Asia/Shanghai      |  
++--------------------+  
+1 row in set (0.00 sec)  
+</code></pre>
+<p>请注意，这意味着 TiDB 的系统时区在初始化后不再更改。若需要改变集群的时区，可以显式指定 <code>time_zone</code> 系统变量，例如：</p>
+<pre><code>tidb&gt; set @@global.time_zone=&#39;UTC&#39;;  
+Query OK, 0 rows affected (0.00 sec)  
+</code></pre>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="乐观事务"><a href="#乐观事务" class="headerlink" title="乐观事务"></a>乐观事务</h3><p>事务是数据库的基础，提供高效的、支持完整 ACID 的分布式事务更是分布式数据库的立足之本。本章节会首先介绍事务的基本概念，然后介绍 TiDB 基于<br>Percolator 实现的乐观事务以及在使用上的最佳实践。</p>
+<h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><p>对用户来说，最友好的并发事务执行顺序为每个事务独占整个数据库，并发事务执行的结果与一个个串行执行相同，也就是串行化，能够避免所有的异常情况。但在这种隔离级别下，并发执行的事务性能较差，提供更弱保证的隔离级别能够显著提升系统的性能。根据允许出现的异常，SQL-92<br>标准定义了 4 种隔离级别：读未提交 (READ UNCOMMITTED)、读已提交 (READ COMMITTED)、可重复读 (REPEATABLE<br>READ)、串行化 (SERIALIZABLE)。详见下表：</p>
+<table>
+<thead>
+<tr>
+<th>Isolation Level</th>
+<th>Dirty Write</th>
+<th>Dirty Read</th>
+<th>Fuzzy Read</th>
+<th>Phantom</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>READ UNCOMMITTED</td>
+<td>Not Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>READ COMMITTED</td>
+<td>Not Possible</td>
+<td>Not possible</td>
+<td>Possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>Not Possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Possible</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>Not Possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+<td>Not possible</td>
+</tr>
+</tbody></table>
+<h4 id="并发控制"><a href="#并发控制" class="headerlink" title="并发控制"></a>并发控制</h4><p>数据库有多种并发控制方法，这里只介绍以下两种：</p>
+<ul>
+<li>乐观并发控制（OCC）：在事务提交阶段检测冲突</li>
+<li>悲观并发控制（PCC）：在事务执行阶段检测冲突</li>
+</ul>
+<p>乐观并发控制期望事务间数据冲突不多，只在提交阶段检测冲突能够获取更高的性能。悲观并发控制更适合数据冲突较多的场景，能够避免乐观事务在这类场景下事务因冲突而回滚的问题，但相比乐观并发控制，在没有数据冲突的场景下，性能相对要差。</p>
+<h3 id="TiDB-乐观事务实现"><a href="#TiDB-乐观事务实现" class="headerlink" title="TiDB 乐观事务实现"></a>TiDB 乐观事务实现</h3><p>TiDB 基于 Google [Percolator](<a target="_blank" rel="noopener" href="https://storage.googleapis.com/pub-tools-public-">https://storage.googleapis.com/pub-tools-public-</a><br>publication-data&#x2F;pdf&#x2F;36726.pdf) 实现了支持完整 ACID、基于快照隔离级别（Snapshot<br>Isolation）的分布式乐观事务。TiDB 乐观事务需要将事务的所有修改都保存在内存中，直到提交时才会写入 TiKV 并检测冲突。</p>
+<h4 id="Snapshot-Isolation"><a href="#Snapshot-Isolation" class="headerlink" title="Snapshot Isolation"></a>Snapshot Isolation</h4><p>Percolator 使用多版本并发控制（MVCC）来实现快照隔离级别，与可重复读的区别在于整个事务是在一个一致的快照上执行。TiDB 使用<br><a target="_blank" rel="noopener" href="https://github.com/pingcap/pd">PD</a> 作为全局授时服务（TSO）来提供单调递增的版本号：</p>
+<ul>
+<li>事务开始时获取 start timestamp，也是快照的版本号；事务提交时获取 commit timestamp，同时也是数据的版本号</li>
+<li>事务只能读到在事务 start timestamp 之前最新已提交的数据</li>
+<li>事务在提交时会根据 timestamp 来检测数据冲突</li>
+</ul>
+<h4 id="两阶段提交（2PC）"><a href="#两阶段提交（2PC）" class="headerlink" title="两阶段提交（2PC）"></a>两阶段提交（2PC）</h4><p>TiDB 使用两阶段提交(Two-Phase Commit）来保证分布式事务的原子性，分为 Prewrite 和 Commit 两个阶段：</p>
+<ul>
+<li>Prewrite：对事务修改的每个 Key 检测冲突并写入 lock 防止其他事务修改。对于每个事务，TiDB 会从涉及到改动的所有 Key 中选中一个作为当前事务的 Primary Key，事务提交或回滚都需要先修改 Primary Key，以它的提交与否作为整个事务执行结果的标识。</li>
+<li>Commit：Prewrite 全部成功后，先同步提交 Primary Key，成功后事务提交成功，其他 Secondary Keys 会异步提交。</li>
+</ul>
+<p>Percolator<br>将事务的所有状态都保存在底层支持高可用、强一致性的存储系统中，从而弱化了传统两阶段提交中协调者（Coordinator）的作用，所有的客户端都可以根据存储系统中的事务状态对事务进行提交或回滚。</p>
+<h4 id="两阶段提交过程"><a href="#两阶段提交过程" class="headerlink" title="两阶段提交过程"></a>两阶段提交过程</h4><p>事务的两阶段提交过程如下：</p>
+<p><img src="https://book.tidb.io/res/session1/chapter6/optimistic-txn/1.png" alt="1.png"></p>
+<ol>
+<li><p>客户端开始一个事务。</p>
+</li>
+<li><p>TiDB 向 PD 获取 tso 作为当前事务的 start timestamp。</p>
+</li>
+<li><p>客户端发起读或写请求。</p>
+</li>
+<li><p>客户端发起 Commit。</p>
+</li>
+<li><p>TiDB 开始 <strong>两阶段提交</strong> ，保证分布式事务的原子性，让数据真正落盘。</p>
+</li>
+</ol>
+<p>i. TiDB 从当前要写入的数据中选择一个 Key 作为当前事务的 Primary Key。</p>
+<p>ii. TiDB 并发地向所有涉及的 TiKV 发起 Prewrite 请求。TiKV 收到 Prewrite<br>请求后，检查数据版本信息是否存在冲突，符合条件的数据会被加锁。</p>
+<p>iii. TiDB 收到所有 Prewrite 响应且所有 Prewrite 都成功。</p>
+<p>iv. TiDB 向 PD 获取第二个全局唯一递增版本号，定义为本次事务的 commit timestamp。</p>
+<p>v. TiDB 向 Primary Key 所在 TiKV 发起第二阶段提交。TiKV 收到 Commit 操作后，检查锁是否存在并清理 Prewrite<br>阶段留下的锁。</p>
+<ol start="6">
+<li><p>TiDB 向客户端返回事务提交成功的信息。</p>
+</li>
+<li><p>TiDB 异步清理本次事务遗留的锁信息。</p>
+</li>
+</ol>
+<h3 id="悲观事务"><a href="#悲观事务" class="headerlink" title="悲观事务"></a>悲观事务</h3><p>乐观事务模型在分布式系统中有着极大的性能优势，但为了让 TiDB 的使用方式更加贴近传统单机数据库，更好的适配用户场景，TiDB v3.0<br>及之后版本在乐观事务模型的基础上实现了悲观事务模型。本文将介绍 TiDB 悲观事务模型特点。</p>
+<h4 id="悲观锁解决的问题"><a href="#悲观锁解决的问题" class="headerlink" title="悲观锁解决的问题"></a>悲观锁解决的问题</h4><p>通过支持悲观事务，降低用户修改代码的难度甚至不用修改代码：</p>
+<ul>
+<li>在 v3.0.8 之前，TiDB 默认使用的乐观事务模式会导致事务提交时因为冲突而失败。为了保证事务的成功率，需要修改应用程序，加上重试的逻辑。</li>
+<li>乐观事务模型在冲突严重的场景和重试代价大的场景无法满足用户需求，支持悲观事务可以 弥补这方面的缺陷，拓展 TiDB 的应用场景。</li>
+</ul>
+<p>以发工资场景为例：对于一个用人单位来说，发工资的过程其实就是从企业账户给多个员工的个人账户转账的过程，一般来说都是批量操作，在一个大的转账事务中可能涉及到成千上万的更新，想象一下如果这个大事务执行的这段时间内，某个个人账户发生了消费（变更），如果这个大事务是乐观事务模型，提交的时候肯定要回滚，涉及上万个个人账户发生消费是大概率事件，如果不做任何处理，最坏的情况是这个大事务永远没办法执行，一直在重试和回滚（饥饿）。</p>
+<h4 id="基于-Percolator-的悲观事务"><a href="#基于-Percolator-的悲观事务" class="headerlink" title="基于 Percolator 的悲观事务"></a>基于 Percolator 的悲观事务</h4><p>悲观事务在 Percolator 乐观事务基础上实现，在 Prewrite 之前增加了 Acquire Pessimistic Lock 阶段用于避免<br>Prewrite 时发生冲突：</p>
+<ul>
+<li>每个 DML 都会加悲观锁，锁写到 TiKV 里，同样会通过 raft 同步。</li>
+<li>悲观事务在加悲观锁时检查各种约束，如 Write Conflict、key 唯一性约束等。</li>
+<li>悲观锁不包含数据，只有锁，只用于防止其他事务修改相同的 Key，不会阻塞读，但 Prewrite 后会阻塞读（和 Percolator 相同，但有了大事务支持后将不会阻塞读）。</li>
+<li>提交时同 Percolator，悲观锁的存在保证了 Prewrite 不会发生 Write Conflict，保证了提交一定成功。</li>
+</ul>
+<p><img src="https://book.tidb.io/res/session1/chapter6/pessimistic-txn/1.png" alt="1.png"></p>
+<h4 id="等锁顺序"><a href="#等锁顺序" class="headerlink" title="等锁顺序"></a>等锁顺序</h4><p>TiKV 中实现了 <code>Waiter Manager</code> 用于管理等锁的事务，当悲观事务加锁遇到其他事务的锁时，将会进入 <code>Waiter Manager</code><br>中等待锁被释放，TiKV 会尽可能按照事务 start timestamp 的顺序来依次获取锁，从而避免事务间无用的竞争。</p>
+<h4 id="分布式死锁检测"><a href="#分布式死锁检测" class="headerlink" title="分布式死锁检测"></a>分布式死锁检测</h4><p>在 <code>Waiter Manager</code> 中等待锁的事务间可能发生死锁，而且可能发生在不同的机器上，<code>TiDB</code> 采用分布式死锁检测来解决死锁问题：</p>
+<ul>
+<li>在整个 TiKV 集群中，有一个死锁检测器 leader。</li>
+<li>当要等锁时，其他节点会发送检测死锁的请求给 leader。</li>
+</ul>
+<p><img src="https://book.tidb.io/res/session1/chapter6/pessimistic-txn/2.png" alt="2.png"></p>
+<p>死锁检测器基于 Raft 实现了高可用，等锁事务也会定期发送死锁检测请求给死锁检测器的 leader，从而保证了即使之前 leader<br>宕机的情况下也能检测到死锁。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/TiDB/" rel="tag"># TiDB</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/29/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/HIVE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="Hive学习笔记">
+                  <i class="fa fa-angle-left"></i> Hive学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/04/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/" rel="next" title="ES索引生命周期管理(ILM)">
+                  ES索引生命周期管理(ILM) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2020 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">merric</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

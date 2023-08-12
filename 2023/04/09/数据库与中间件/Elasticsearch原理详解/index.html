@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介ES是使用 Java 编写的一种开源搜索引擎，它在内部使用 Lucene做索引与搜索，通过对Lucene的封装，隐藏了Lucene的复杂性，取而代之的提供一套简单一致的 RESTful API然而，Elasticsearch 不仅仅是 Lucene，并且也不仅仅只是一个全文搜索引擎。 它可以被下面这样准确的形容：  一个分布式的实时文档存储，每个字段可以被索引与搜索。 一个分布式实时分析搜索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES索引生命周期管理(ILM)">
+<meta property="og:url" content="http://example.com/2023/04/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Myoboku">
+<meta property="og:description" content="简介ES是使用 Java 编写的一种开源搜索引擎，它在内部使用 Lucene做索引与搜索，通过对Lucene的封装，隐藏了Lucene的复杂性，取而代之的提供一套简单一致的 RESTful API然而，Elasticsearch 不仅仅是 Lucene，并且也不仅仅只是一个全文搜索引擎。 它可以被下面这样准确的形容：  一个分布式的实时文档存储，每个字段可以被索引与搜索。 一个分布式实时分析搜索引">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/ES%E9%9B%86%E7%BE%A4.png">
+<meta property="og:image" content="http://example.com/images/3%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84ES%E9%9B%86%E7%BE%A4.png">
+<meta property="og:image" content="http://example.com/images/%E5%86%99%E8%AF%B7%E6%B1%82.png">
+<meta property="og:image" content="http://example.com/images/%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E5%90%8E%E5%86%99%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/images/%E6%AE%B5%E5%90%88%E5%B9%B6.png">
+<meta property="og:image" content="http://example.com/images/FST.jpeg">
+<meta property="article:published_time" content="2023-04-09T22:30:00.000Z">
+<meta property="article:modified_time" content="2023-08-12T07:35:32.203Z">
+<meta property="article:author" content="merric">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/ES%E9%9B%86%E7%BE%A4.png">
+
+
+<link rel="canonical" href="http://example.com/2023/04/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2023/04/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/","path":"2023/04/09/数据库与中间件/Elasticsearch原理详解/","title":"ES索引生命周期管理(ILM)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ES索引生命周期管理(ILM) | Myoboku</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Myoboku</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%EF%BC%8C%E5%89%AF%E6%9C%AC%EF%BC%8C%E6%98%A0%E5%B0%84"><span class="nav-number">2.</span> <span class="nav-text">分片，副本，映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%EF%BC%88Shards%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">分片（Shards）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%EF%BC%88Replicas%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">副本（Replicas）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%EF%BC%88Mapping%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">映射（Mapping）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">ES机制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">写索引原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">存储原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%AE%B5%E5%AD%98%E5%82%A8"><span class="nav-number">3.2.1.</span> <span class="nav-text">分段存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E5%86%99%E7%AD%96%E7%95%A5"><span class="nav-number">3.2.2.</span> <span class="nav-text">延迟写策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AE%B5%E5%90%88%E5%B9%B6"><span class="nav-number">3.2.3.</span> <span class="nav-text">段合并</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">4.1.</span> <span class="nav-text">存储设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">内部索引优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E6%95%B4%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">调整配置参数</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">merric</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/Elasticsearch%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ES索引生命周期管理(ILM) | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ES索引生命周期管理(ILM)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-04-09 22:30:00" itemprop="dateCreated datePublished" datetime="2023-04-09T22:30:00+00:00">2023-04-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">数据库与中间件</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><code>ES</code>是使用 <code>Java</code> 编写的一种开源搜索引擎，它在内部使用 <code>Lucene</code>做索引与搜索，通过对<br><code>Lucene</code>的封装，隐藏了<code>Lucene</code>的复杂性，取而代之的提供一套简单一致的 <code>RESTful API</code><br>然而，<code>Elasticsearch</code> 不仅仅是 <code>Lucene</code>，并且也不仅仅只是一个全文搜索引擎。</p>
+<p>它可以被下面这样准确的形容：</p>
+<ul>
+<li>一个分布式的<code>实时</code>文档存储，每个字段可以被索引与搜索。</li>
+<li>一个分布式实时分析搜索引擎。</li>
+<li>能胜任上百个服务节点的扩展，并支持 PB 级别的结构化或者非结构化数据。</li>
+</ul>
+<p>官网对 <code>Elasticsearch</code> 的介绍是 <code>Elasticsearch</code> 是一个分布式、可扩展、近实时的搜索与数据分析引擎。</p>
+<p>其中主要有如下几个核心术语需要理解：</p>
+<ul>
+<li>词条（<code>Term</code>）： 索引里面最小的存储和查询单元，对于英文来说是一个单词，对于中文来说一般指分词后的一个词。</li>
+<li>词典（<code>Term Dictionary</code>）： 或字典，是词条 <code>Term</code> 的集合。搜索引擎的通常索引单位是<code>单词</code>，单词词典是由文档集合中出现过的所有单词构成的字符串集合，单词词典内每条索引项记载单词本身的一些信息以及指向<code>倒排列表</code>的指针。</li>
+<li>倒排表（<code>Post list</code>）：一个文档通常由多个词组成，倒排表记录的是某个词在哪些文档里出现过以及出现的位置。每条记录称为一个倒排项（<code>Posting</code>）。倒排表记录的不仅是文档编号，还存储了词频等信息。</li>
+<li>倒排文件（<code>Inverted File</code>）： 所有单词的倒排列表往往顺序地存储在磁盘的某个文件里，这个文件被称之为<code>倒排文件</code>，倒排文件是存储倒排索引的物理文件<br>**<code>由属性值来确定记录的位置的结构就是倒排索引</code>**。带有倒排索引的文件称为<code>倒排文件</code></li>
+</ul>
+<p><code>词典</code>和<code>倒排表</code>是 <code>Lucene</code><br>中很重要的两种数据结构，是实现快速检索的重要基石。<code>词典</code>和<code>倒排文件</code>是分两部分存储的，<code>词典在内存中</code>而<code>倒排文件存储在磁盘</code>上</p>
+<h2 id="分片，副本，映射"><a href="#分片，副本，映射" class="headerlink" title="分片，副本，映射"></a>分片，副本，映射</h2><h3 id="分片（Shards）"><a href="#分片（Shards）" class="headerlink" title="分片（Shards）"></a>分片（Shards）</h3><p><code>ES</code> 支持 <code>PB</code> 级全文搜索，当索引上的数据量太大的时候，<code>ES</code><br>通过水平拆分的方式将一个索引上的数据拆分出来分配到不同的数据块上，拆分出来的数据库块称之为一个分片。<br>这类似于 <code>MySQL</code> 的分库分表，只不过 <code>MySQL</code> 分库分表需要借助第三方组件而 <code>ES</code> 内部自身实现了此功能。</p>
+<p>在一个多分片的索引中写入数据时，通过路由来确定具体写入哪一个分片中，所以在创建索引的时候需要指定分片的数量，并且分片的数量一旦确定就不能修改。<br>分片的数量和下面介绍的副本数量都是可以通过创建索引时的 <code>Settings</code> 来配置，<code>ES</code> 默认为一个索引创建 5 个主分片,<br>并分别为每个分片创建一个副本。</p>
+<pre><code>PUT /myIndex    
+&#123;    
+   &quot;settings&quot; : &#123;    
+      &quot;number_of_shards&quot; : 5,    
+      &quot;number_of_replicas&quot; : 1    
+   &#125;    
+&#125;    
+  
+</code></pre>
+<p><code>ES</code> 通过分片的功能使得索引在规模上和性能上都得到提升，每个分片都是 <code>Lucene</code><br>中的一个索引文件，每个分片必须有一个<code>主分片</code>和<code>零到多个副本</code>。</p>
+<h3 id="副本（Replicas）"><a href="#副本（Replicas）" class="headerlink" title="副本（Replicas）"></a>副本（Replicas）</h3><p><code>副本</code>就是对分片的 <code>Copy</code>，每个主分片都有一个或多个副本分片，当主分片异常时，副本可以提供数据的查询等操作。<br>主分片和对应的副本分片是不会在同一个节点上的，所以副本分片数的最大值是 N-1（其中 N 为节点数）。<br>对文档的新建、索引和删除请求都是写操作，必须在主分片上面完成之后才能被复制到相关的副本分片。</p>
+<p><code>ES</code> 为了提高写入的能力这个过程是并发写的，同时为了解决并发写的过程中数据冲突的问题，<code>ES</code> 通过乐观锁的方式控制，每个文档都有一个<br><code>_version （版本）</code>号，当文档被修改时版本号递增。<br>一旦所有的副本分片都报告写成功才会向协调节点报告成功，协调节点向客户端报告成功</p>
+<p><img src="/images/ES%E9%9B%86%E7%BE%A4.png" alt="ES集群"></p>
+<p>从上图可以看出为了达到高可用，<code>Master</code> 节点会避免将主分片和副本分片放在同一个节点上。</p>
+<p>假设这时节点 <code>Node1</code> 服务宕机了或者网络不可用了，那么主节点上主分片 S0 也就不可用了。幸运的是还存在另外两个节点能正常工作，这时 <code>ES</code><br>会重新选举新的主节点，而且这两个节点上存在我们所需要的 <code>S0</code> 的所有数据。我们会将 <code>S0</code><br>的副本分片提升为主分片，这个提升主分片的过程是瞬间发生的。此时集群的状态将会为 <code>Yellow</code>。</p>
+<p>为什么我们集群状态是 <code>Yellow</code> 而不是 <code>Green</code> 呢？虽然我们拥有所有的 2<br>个主分片，但是同时设置了每个主分片需要对应两份副本分片，而此时只存在一份副本分片。所以集群不能为 <code>Green</code> 的状态。<br>如果我们同样关闭了 <code>Node2</code> ，我们的程序依然可以保持在不丢失任何数据的情况下运行，因为 <code>Node3</code> 为每一个分片都保留着一份副本。<br>如果我们重新启动 <code>Node1</code> ，集群可以将缺失的副本分片再次进行分配，那么集群的状态又将恢复到原来的正常状态。<br>如果 <code>Node1</code> 依然拥有着之前的分片，它将尝试去重用它们，只不过这时 <code>Node1</code><br>节点上的分片不再是主分片而是副本分片了，如果期间有更改的数据只需要从主分片上复制修改的数据文件即可。</p>
+<p>小结：</p>
+<ul>
+<li>将数据分片是为了提高可处理数据的容量和易于进行水平扩展，为分片做副本是为了提高集群的稳定性和提高并发量。</li>
+<li>副本是乘法，越多消耗越大，但也越保险。分片是除法，分片越多，单分片数据就越少也越分散。</li>
+<li>副本越多，集群的可用性就越高，但是由于每个分片都相当于一个 Lucene 的索引文件，会占用一定的文件句柄、内存及 CPU。并且分片间的数据同步也会占用一定的网络带宽，所以索引的分片数和副本数也不是越多越好。</li>
+</ul>
+<h3 id="映射（Mapping）"><a href="#映射（Mapping）" class="headerlink" title="映射（Mapping）"></a>映射（Mapping）</h3><p><code>映射</code>是用于定义 <code>ES</code> 对索引中字段的存储类型、分词方式和是否存储等信息，就像数据库中的<code>Schema</code><br>，描述了文档可能具有的字段或属性、每个字段的数据类型。<br>只不过关系型数据库建表时必须指定字段类型，而 <code>ES</code> 对于字段类型可以不指定然后动态对字段类型猜测，也可以在创建索引时具体指定字段的类型。<br>对字段类型根据数据格式自动识别的映射称之为动态映射（<code>Dynamic Mapping</code>），我们创建索引时具体定义字段类型的映射称之为静态映射或显示映射（<code>Explicit Mapping</code>）。</p>
+<p>在讲解动态映射和静态映射的使用前，我们先来了解下 ES 中的数据有哪些字段类型？之后我们再讲解为什么我们创建索引时需要建立静态映射而不使用动态映射。</p>
+<p><code>ES（v6.8）</code>中字段数据类型主要有以下几类：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心类型</td>
+<td>text，keywords，long，integer，short，double，data，boolean</td>
+</tr>
+<tr>
+<td>复杂类型</td>
+<td>Object，Nested</td>
+</tr>
+<tr>
+<td>地理类型</td>
+<td>geo_point，geo_shape</td>
+</tr>
+<tr>
+<td>特殊类型</td>
+<td>ip，completion，token_count，join</td>
+</tr>
+</tbody></table>
+<p><code>Text</code> 用于索引全文值的字段，例如电子邮件正文或产品说明。这些字段是被分词的，它们通过分词器传递<br>，以在被索引之前将字符串转换为单个术语的列表。分析过程允许 <code>Elasticsearch</code><br>搜索单个单词中每个完整的文本字段。文本字段不用于排序，很少用于聚合。<br><code>Keyword</code> 用于索引结构化内容的字段，例如电子邮件地址，主机名，状态代码，邮政编码或标签。它们通常用于过滤，排序，和聚合。Keyword<br>字段只能按其确切值进行搜索。</p>
+<p>通过对字段类型的了解我们知道有些字段需要明确定义的，例如某个字段是 Text 类型还是 Keyword<br>类型差别是很大的，时间字段也许我们需要指定它的时间格式，还有一些字段我们需要指定特定的分词器等等。</p>
+<p>如果采用动态映射是不能精确做到这些的，自动识别常常会与我们期望的有些差异。所以创建索引的时候一个完整的格式应该是指定<code>分片和副本数以及 Mapping</code>的定义，如下：</p>
+<pre><code>PUT my_index     
+&#123;    
+   &quot;settings&quot; : &#123;    
+      &quot;number_of_shards&quot; : 5,    
+      &quot;number_of_replicas&quot; : 1    
+   &#125;    
+  &quot;mappings&quot;: &#123;    
+    &quot;_doc&quot;: &#123;     
+      &quot;properties&quot;: &#123;     
+        &quot;title&quot;:    &#123; &quot;type&quot;: &quot;text&quot;  &#125;,     
+        &quot;name&quot;:     &#123; &quot;type&quot;: &quot;text&quot;  &#125;,     
+        &quot;age&quot;:      &#123; &quot;type&quot;: &quot;integer&quot; &#125;,      
+        &quot;created&quot;:  &#123;    
+          &quot;type&quot;:   &quot;date&quot;,     
+          &quot;format&quot;: &quot;strict_date_optional_time||epoch_millis&quot;    
+        &#125;    
+      &#125;    
+    &#125;    
+  &#125;    
+&#125;    
+  
+</code></pre>
+<h2 id="ES机制原理"><a href="#ES机制原理" class="headerlink" title="ES机制原理"></a>ES机制原理</h2><h3 id="写索引原理"><a href="#写索引原理" class="headerlink" title="写索引原理"></a>写索引原理</h3><p>下图描述了 3 个节点的集群，共拥有 12 个分片，其中有 4 个主分片（S0、S1、S2、S3）和 8<br>个副本分片（R0、R1、R2、R3），每个主分片对应两个副本分片，节点 1 是主节点（Master 节点）负责整个集群的状态。</p>
+<p><img src="/images/3%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84ES%E9%9B%86%E7%BE%A4.png" alt="3个节点的ES集群"></p>
+<p><code>写索引</code>是<code>只能写在主分片</code>上，然后同步到副本分片。这里有四个主分片，一条数据 <code>ES</code> 是根据什么规则写到特定分片上的呢？<br>这条索引数据为什么被写到 S0 上而不写到 S1 或 S2 上？那条数据为什么又被写到 S3 上而不写到 S0 上了？</p>
+<p>首先这肯定不会是随机的，否则将来要获取文档的时候我们就不知道从何处寻找了。实际上，这个过程是根据下面这个公式决定的：</p>
+<pre><code>shard = hash(routing) % number_of_primary_shards    
+  
+</code></pre>
+<p><code>Routing</code> 是一个可变值，默认是文档的 <code>_id</code> ，也可以设置成一个自定义的值。<br><code>Routing</code> 通过 <code>Hash</code> 函数生成一个数字，然后这个数字再除以 <code>number_of_primary_shards</code><br>（主分片的数量）后得到余数。这个在 <code>0</code> 到 <code>number_of_primary_shards-1</code> 之间的余数，就是我们所寻求的文档所在分片的位置。</p>
+<p>这就解释了为什么我们要在创建索引的时候就确定好主分片的数量并且永远不会改变这个数量：**<code>因为如果数量变化了，那么所有之前路由的值都会无效，文档也再也找不到了</code>**</p>
+<p>由于在 <code>ES</code> 集群中每个节点通过上面的计算公式都知道集群中的文档的存放位置，所以每个节点都有处理读写请求的能力。<br>在一个写请求被发送到某个节点后，该节点即为前面说过的<code>协调节点</code>，<code>协调节点</code>会根据路由公式计算出需要写到哪个分片上，再将请求转发到该分片的主分片节点上</p>
+<p><img src="/images/%E5%86%99%E8%AF%B7%E6%B1%82.png" alt="写请求"></p>
+<p>假如此时数据通过路由计算公式取余后得到的值是</p>
+<pre><code>shard=hash(routing)%4=0  
+  
+</code></pre>
+<p>则具体流程如下：</p>
+<ul>
+<li>客户端向 <code>ES1</code> 节点（协调节点）发送写请求，通过路由计算公式得到值为 0，则当前数据应被写到主分片 S0 上。</li>
+<li><code>ES1</code> 节点将请求转发到 <code>S0</code> 主分片所在的节点 ES3，ES3 接受请求并写入到磁盘。</li>
+<li>并发将数据复制到两个副本分片 <code>R0</code> 上，其中通过乐观并发控制数据的冲突。一旦所有的副本分片都报告成功，则节点 <code>ES3</code> 将向协调节点报告成功，协调节点向客户端报告成功。</li>
+</ul>
+<h3 id="存储原理"><a href="#存储原理" class="headerlink" title="存储原理"></a>存储原理</h3><p>上面介绍了在 <code>ES</code> 内部索引的写处理流程，这个流程是在 <code>ES</code><br>的<code>内存</code>中执行的，数据被分配到特定的<code>分片</code>和<code>副本</code>上之后，最终是存储到磁盘上的，这样在断电的时候就不会丢失数据。<br>具体的存储路径可在配置文件 <code>../config/elasticsearch.yml</code> 中进行设置，默认存储在安装目录的 <code>Data</code> 文件夹下。<br>建议不要使用默认值，因为若 <code>ES</code> 进行了升级，则有可能导致数据全部丢失：</p>
+<pre><code>path.data: /path/to/data  //索引数据    
+path.logs: /path/to/logs  //日志记录    
+  
+</code></pre>
+<h4 id="分段存储"><a href="#分段存储" class="headerlink" title="分段存储"></a>分段存储</h4><p>索引文档以<code>段</code>的形式存储在磁盘上，索引文件被拆分为多个<code>子文件</code>，则每个<code>子文件</code>叫作<code>段</code>，每一个段本身都是一个<code>倒排索引</code>，并且段具有不变性，一旦索引的数据被写入硬盘，就不可再修改。</p>
+<p>在底层采用了<code>分段存储模式</code>，使它在读写时几乎完全避免了锁的出现，大大提升了读写性能。<br>段被写入到磁盘后会生成一个<code>提交点</code>，<code>提交点</code>是一个用来记录所有提交后段信息的文件。</p>
+<p><strong><code>一个段一旦拥有了提交点，就说明这个段只有读的权限，失去了写的权限</code></strong> 。相反，<br>**<code>当段在内存中时，就只有写的权限，而不具备读数据的权限，意味着不能被检索</code>**。</p>
+<p>段的概念提出主要是因为：在早期全文检索中为整个文档集合建立了一个很大的倒排索引，并将其写入磁盘中。如果索引有更新，就需要重新全量创建一个索引来替换原来的索引。这种方式在数据量很大时效率很低，并且由于创建一次索引的成本很高，所以对数据的更新不能过于频繁，也就不能保证时效性。</p>
+<p>索引文件分段存储并且不可修改，那么新增、更新和删除如何处理呢？</p>
+<ul>
+<li><code>新增</code>，新增很好处理，由于数据是新的，所以只需要对当前文档新增一个段就可以了。</li>
+<li><code>删除</code>，由于不可修改，所以对于删除操作，不会把文档从旧的段中移除而是通过新增一个 <code>.del</code> 文件，文件中会列出这些被删除文档的段信息。这个被标记删除的文档仍然可以被查询匹配到， 但它会在最终结果被返回前从结果集中移除。</li>
+<li><code>更新</code>，不能修改旧的段来进行反映文档的更新，其实更新相当于是<code>删除</code>和<code>新增</code>这两个动作组成。会将旧的文档在 <code>.del</code> 文件中标记删除，然后文档的新版本被索引到一个新的段中。可能两个版本的文档都会被一个查询匹配到，但被删除的那个旧版本文档在结果集返回前就会被移除。</li>
+</ul>
+<p>段被设定为不可修改具有一定的优势也有一定的缺点，优势主要表现在：</p>
+<ul>
+<li>不需要锁，如果从来不更新索引，那就不需要担心多进程同时修改数据的问题。</li>
+<li>一旦索引被读入内核的文件系统缓存，便会留在哪里，由于其不变性。只要文件系统缓存中还有足够的空间，那么大部分读请求会直接请求内存，而不会命中磁盘。这提供了很大的性能提升。</li>
+<li>其它缓存(像 <code>Filter</code> 缓存)，在索引的生命周期内始终有效。它们不需要在每次数据改变时被重建，因为数据不会变化。</li>
+<li>写入单个大的倒排索引允许数据被压缩，减少磁盘 <code>I/O</code> 和需要被缓存到内存的索引的使用量。</li>
+</ul>
+<p>段的不变性的缺点如下：</p>
+<ul>
+<li>当对旧数据进行删除时，旧数据不会马上被删除，而是在 <code>.del</code> 文件中被标记为删除。而旧数据只能等到段更新时才能被移除，这样会造成大量的空间浪费。</li>
+<li>若有一条数据频繁的更新，每次更新都是新增新的标记旧的，则会有大量的空间浪费。</li>
+<li>每次新增数据时都需要新增一个段来存储数据。当段的数量太多时，对服务器的资源例如文件句柄的消耗会非常大。</li>
+<li>在查询的结果中包含所有的结果集，需要排除被标记删除的旧数据，这增加了查询的负担。</li>
+</ul>
+<h4 id="延迟写策略"><a href="#延迟写策略" class="headerlink" title="延迟写策略"></a>延迟写策略</h4><p>介绍完了存储的形式，那么索引写入到磁盘的过程是怎样的？是否是直接调 <code>Fsync</code>物理性地写入磁盘？<br>答案是显而易见的，如果是直接写入到磁盘上，磁盘的 <code>I/O</code> 消耗上会严重影响性能。那么当写数据量大的时候会造成 <code>ES</code><br>停顿卡死，查询也无法做到快速响应。如果真是这样 <code>ES</code> 也就不会称之为近实时全文搜索引擎了。</p>
+<p>为了提升写的性能，<code>ES</code><br>并没有每新增一条数据就增加一个段到磁盘上，而是采用延迟写的策略。每当有新增的数据时，就将其先写入到内存中，在<code>内存</code>和<code>磁盘</code>之间是<code>文件系统缓存</code>。<br>当达到默认的时间（1 秒钟）或者内存的数据达到一定量时，会触发一次刷新（<code>Refresh</code>），将内存中的数据生成到一个新的段上并缓存到文件缓存系统<br>上，稍后再被刷新到磁盘中并生成提交点。<br>这里的<code>内存</code>使用的是 <code>ES</code> 的 <code>JVM</code> 内存，而文件缓存系统使用的是操作系统的内存。</p>
+<p>新的数据会继续的被写入内存，但内存中的数据并不是以段的形式存储的，因此不能提供检索功能。由<code>内存</code>刷新到文件缓存系统的时候会生成新的段，并<code>将段打开</code>以供<code>搜索使用</code>，而不需要等到被刷新到磁盘。</p>
+<p>在 <code>Elasticsearch</code> 中，写入和打开一个新段的轻量的过程叫做 <code>Refresh</code><br>（即内存刷新到文件缓存系统）。默认情况下每个分片会每秒自动刷新一次。这就是为什么我们说 <code>Elasticsearch</code><br>是<code>近实时搜索</code>，因为文档的变化并不是立即对搜索可见，但会在一秒之内变为可见。<br>我们也可以手动触发 <code>Refresh</code>，<code>POST /_refresh</code> 刷新所有索引，<code>POST /nba/_refresh</code> 刷新指定的索引。</p>
+<p><code>注意</code>：尽管刷新是比提交轻量很多的操作，它还是会有性能开销。当写测试的时候，<br>手动刷新很有用，但是不要在生产环境下每次索引一个文档都去手动刷新。而且并不是所有的情况都需要每秒刷新。</p>
+<p>假如正在使用 <code>Elasticsearch</code> 索引大量的日志文件， 想优化索引速度而不是近实时搜索。这时可以在创建索引时在 <code>Settings</code> 中通过调大<br><code>refresh_interval = &quot;30s&quot;</code> 的值 ， 降低每个索引的刷新频率，设值时需要注意后面带上时间单位，否则默认是毫秒。当<br><code>refresh_interval=-1</code> 时表示关闭索引的自动刷新。</p>
+<p>虽然通过延时写的策略可以减少数据往磁盘上写的次数并提升了整体的写入能力，但是我们知道文件缓存系统也是内存空间，属于操作系统的内存，只要是内存都存在断电或异常情况下丢失数据的危险。<br>为了避免丢失数据，<code>Elasticsearch</code> 添加了事务日志（<code>Translog</code>），事务日志记录了所有还没有持久化到磁盘的数据</p>
+<p><img src="/images/%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E5%90%8E%E5%86%99%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B5%81%E7%A8%8B.png" alt="事务日志后写索引的流程"></p>
+<p>添加了事务日志后整个写索引的流程如上图所示：</p>
+<ul>
+<li>一个新文档被索引之后，先被写入到内存中，但是为了防止数据的丢失，会追加一份数据到事务日志中。</li>
+<li>不断有新的文档被写入到内存，同时也都会记录到事务日志中。这时新数据还不能被检索和查询。</li>
+<li>当达到默认的刷新时间或内存中的数据达到一定量后，会触发一次 <code>Refresh</code>，将内存中的数据以一个新段形式刷新到文件缓存系统中并清空内存。这时虽然新段未被提交到磁盘，但是可以提供文档的检索功能且不能被修改。</li>
+<li>随着新文档索引不断被写入，当日志数据大小超过 <code>512M</code> 或者时间超过 30 分钟时，会触发一次 <code>Flush</code></li>
+<li>内存中的数据被写入到一个新段同时被写入到文件缓存系统，文件系统缓存中数据通过 <code>Fsync</code> 刷新到磁盘中，生成提交点，日志文件被删除，创建一个空的新日志。</li>
+</ul>
+<p>通过这种方式当断电或需要重启时，<code>ES</code> 不仅要根据提交点去加载已经持久化过的段，还需要工具 <code>Translog</code><br>里的记录，把未持久化的数据重新持久化到磁盘上，避免了数据丢失的可能。</p>
+<h4 id="段合并"><a href="#段合并" class="headerlink" title="段合并"></a>段合并</h4><p>由于自动刷新流程每秒会创建一个新的段 ，这样会导致短时间内的段数量暴增。而段数目太多会带来较大的麻烦。每一个段都会消耗文件句柄、内存和 CPU<br>运行周期。更重要的是，每个搜索请求都必须轮流检查每个段然后合并查询结果，所以段越多，搜索也就越慢。</p>
+<p><code>Elasticsearch</code> 通过在后台定期进行段合并来解决这个问题。小的段被合并到大的段，然后这些大的段再被合并到更大的段。</p>
+<p>段合并的时候会将那些旧的已删除文档从文件系统中清除。被删除的文档不会被拷贝到新的大段中。合并的过程中不会中断索引和搜索。</p>
+<p><img src="/images/%E6%AE%B5%E5%90%88%E5%B9%B6.png" alt="段合并"></p>
+<p>段合并在进行索引和搜索时会自动进行，合并进程选择一小部分大小相似的段，并且在后台将它们合并到更大的段中，**<code>这些段既可以是未提交的也可以是已提交的</code>**<br>合并结束后老的段会被删除，新的段被 <code>Flush</code> 到磁盘，同时写入一个包含新段且排除旧的和较小的段的新提交点，新的段被打开可以用来搜索。</p>
+<p>段合并的计算量庞大， 而且还要吃掉大量磁盘 I&#x2F;O，段合并会拖累写入速率，如果任其发展会影响搜索性能。<br><code>Elasticsearch</code> 在默认情况下会对合并流程进行资源限制，所以搜索仍然有足够的资源很好地执行。</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h3 id="存储设备"><a href="#存储设备" class="headerlink" title="存储设备"></a>存储设备</h3><p>磁盘在现代服务器上通常都是瓶颈。<code>Elasticsearch</code> 重度使用磁盘，磁盘能处理的吞吐量越大，节点就越稳定。</p>
+<p>这里有一些优化磁盘 I&#x2F;O 的技巧：</p>
+<ul>
+<li>使用 SSD。比机械磁盘优秀多了。</li>
+<li>使用 RAID 0。条带化 RAID 会提高磁盘 I&#x2F;O，代价显然就是当一块硬盘故障时整个就故障了。不要使用镜像或者奇偶校验 RAID 因为副本已经提供了这个功能。</li>
+<li>使用多块硬盘，并允许 <code>Elasticsearch</code> 通过多个 <code>path.data</code> 目录配置把数据条带化分配到它们上面。</li>
+<li>不要使用远程挂载的存储，比如 NFS 或者 SMB&#x2F;CIFS。这个引入的延迟对性能来说完全是背道而驰的。</li>
+</ul>
+<h3 id="内部索引优化"><a href="#内部索引优化" class="headerlink" title="内部索引优化"></a>内部索引优化</h3><p><code>Elasticsearch</code> 为了能快速找到某个 <code>Term</code>，先将所有的 <code>Term</code> 排个序，然后根据二分法查找 <code>Term</code>，时间复杂度为<br><code>logN</code>，就像通过字典查找一样，这就是 <code>Term Dictionary</code>。<br>现在再看起来，似乎和传统数据库通过 <code>B-Tree</code> 的方式类似。但是如果 Term 太多，<code>Term Dictionary</code><br>也会很大，放内存不现实，于是有了 <code>Term Index</code>。<br>就像字典里的索引页一样，A 开头的有哪些 Term，分别在哪页，可以理解 <code>Term Index</code>是一棵树。这棵树不会包含所有的 <code>Term</code>，它包含的是<br><code>Term</code> 的一些前缀。通过 <code>Term Index</code> 可以快速地定位到 <code>Term Dictionary</code> 的某个<br><code>Offset</code>，然后从这个位置再往后顺序查找。</p>
+<p>在内存中用 <code>FST</code> 方式压缩 <code>Term Index</code>，<code>FST</code> 以字节的方式存储所有的 <code>Term</code>，这种压缩方式可以有效的缩减存储空间，使得<br><code>Term Index</code> 足以放进内存，但这种方式也会导致查找时需要更多的 CPU 资源。</p>
+<p>对于存储在磁盘上的倒排表同样也采用了压缩技术减少存储所占用的空间。</p>
+<p><img src="/images/FST.jpeg" alt="FST"></p>
+<h3 id="调整配置参数"><a href="#调整配置参数" class="headerlink" title="调整配置参数"></a>调整配置参数</h3><p>调整配置参数建议如下：</p>
+<ul>
+<li>给每个文档指定有序的具有压缩良好的序列模式 ID，避免随机的 <code>UUID-4</code>这样的 ID，这样的 ID 压缩比很低，会明显拖慢 Lucene。</li>
+<li>对于那些不需要聚合和排序的索引字段禁用 <code>Doc values</code>。<code>Doc Values</code> 是有序的基于 <code>document=&gt;field value</code> 的映射列表。</li>
+<li>不需要做模糊检索的字段使用 <code>Keyword</code> 类型代替 Text 类型，这样可以避免在建立索引前对这些文本进行分词。</li>
+<li>如果搜索结果不需要近实时的准确度，考虑把每个索引的 <code>index.refresh_interval</code> 改到 <code>30s</code></li>
+<li>如果在做大批量导入，导入期间可以通过设置这个值为 <code>-1</code> 关掉刷新，还可以通过设置 <code>index.number_of_replicas: 0</code> 关闭副本。别忘记在完工的时候重新开启它。</li>
+<li>避免深度分页查询建议使用 <code>Scroll</code> 进行分页查询。普通分页查询时，会创建一个 <code>from+size</code> 的空优先队列，每个分片会返回 <code>from+size</code> 条数据，默认只包含文档 ID 和得分 Score 给协调节点。</li>
+<li>如果有 N 个分片，则协调节点再对<code>（from+size）×n</code>条数据进行二次排序，然后选择需要被取回的文档。当 <code>from</code> 很大时，排序过程会变得很沉重，占用 CPU 资源严重。</li>
+<li>减少映射字段，只提供需要检索，聚合或排序的字段。其他字段可存在其他存储设备上，例如 Hbase，在 ES 中得到结果后再去 Hbase 查询这些字段。</li>
+<li>创建索引和查询时指定路由 <code>Routing</code> 值，这样可以精确到具体的分片查询，提升查询效率。路由的选择需要注意数据的分布均衡。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/" rel="prev" title="初见TiDB">
+                  <i class="fa fa-angle-left"></i> 初见TiDB
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/05/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/ES%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" rel="next" title="ES索引生命周期管理(ILM)">
+                  ES索引生命周期管理(ILM) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2020 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">merric</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
