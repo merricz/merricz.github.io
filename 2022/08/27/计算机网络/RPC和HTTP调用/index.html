@@ -21,7 +21,7 @@
     <meta name="description" content="现在的公司基本上都是HTTP调用，个别服务会有RPC，突然发现之前自己知道这两个调用方式是不同的，具体有哪些不同还有点模糊，了解了之后发现难怪大厂都用RPC调用，包括gRPC和dubbo。 先说一下他们最本质的区别，就是RPC主要是基于TCP&#x2F;IP协议的，而HTTP服务主要是基于HTTP协议的，我们都知道HTTP协议是在传输层协议TCP之上的，所以效率来看的话，RPC当然是要更胜一筹啦！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RPC和HTTP调用对比">
-<meta property="og:url" content="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/index.html">
+<meta property="og:url" content="http://example.com/2022/08/27/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/index.html">
 <meta property="og:site_name" content="Myoboku">
 <meta property="og:description" content="现在的公司基本上都是HTTP调用，个别服务会有RPC，突然发现之前自己知道这两个调用方式是不同的，具体有哪些不同还有点模糊，了解了之后发现难怪大厂都用RPC调用，包括gRPC和dubbo。 先说一下他们最本质的区别，就是RPC主要是基于TCP&#x2F;IP协议的，而HTTP服务主要是基于HTTP协议的，我们都知道HTTP协议是在传输层协议TCP之上的，所以效率来看的话，RPC当然是要更胜一筹啦！">
 <meta property="og:locale" content="en_US">
@@ -34,19 +34,20 @@
 <meta property="og:image" content="http://example.com/images/HTTPS%E5%92%8CQUIC%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B.png">
 <meta property="og:image" content="http://example.com/images/QUIC%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png">
 <meta property="og:image" content="http://example.com/images/%E6%8A%A5%E6%96%87%E5%A4%B4%E9%83%A8.png">
-<meta property="article:published_time" content="2020-01-13T22:30:00.000Z">
-<meta property="article:modified_time" content="2023-08-12T07:35:32.203Z">
+<meta property="article:published_time" content="2022-08-27T22:30:00.000Z">
+<meta property="article:modified_time" content="2023-08-12T07:41:13.444Z">
 <meta property="article:author" content="merric">
 <meta property="article:tag" content="RPC">
+<meta property="article:tag" content="分布式">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/RPC%E6%9E%B6%E6%9E%84.jpeg">
 
 
-<link rel="canonical" href="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/">
+<link rel="canonical" href="http://example.com/2022/08/27/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/","path":"2020/01/13/计算机网络/RPC和HTTP调用/","title":"RPC和HTTP调用对比"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/08/27/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/","path":"2022/08/27/计算机网络/RPC和HTTP调用/","title":"RPC和HTTP调用对比"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>RPC和HTTP调用对比 | Myoboku</title>
@@ -172,7 +173,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/27/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -201,7 +202,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+      <time title="Created: 2022-08-27 22:30:00" itemprop="dateCreated datePublished" datetime="2022-08-27T22:30:00+00:00">2022-08-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -403,19 +404,20 @@ Last-Modified: Wed, 5 August 1996 15:55:28 GMT
     <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/RPC/" rel="tag"># RPC</a>
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/01/10/hello-world/" rel="prev" title="Hello World">
-                  <i class="fa fa-angle-left"></i> Hello World
+                <a href="/2021/05/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/UDP%E5%92%8CTCP/" rel="prev" title="TCP和UDP">
+                  <i class="fa fa-angle-left"></i> TCP和UDP
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP%E5%92%8CHTTPS/" rel="next" title="Http和Https">
-                  Http和Https <i class="fa fa-angle-right"></i>
+                <a href="/2022/10/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/zk%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="zk学习笔记">
+                  zk学习笔记 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
