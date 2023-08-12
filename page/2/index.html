@@ -118,18 +118,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -146,6 +146,1872 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/UDP%E5%92%8CTCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/UDP%E5%92%8CTCP/" class="post-title-link" itemprop="url">TCP和UDP</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-15 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-15T22:30:00+00:00">2020-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>先上两张图。</p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%88%86%E5%B1%82.jpg" alt="计算机网络体系结构分层"></p>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.jpg" alt="计算机网络体系结构"></p>
+<h1 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h1><p>TCP 与 UDP 的区别相当大。它充分地实现了数据传输时各种控制功能，可以进行丢包时的重发控制，还可以对次序乱掉的分包进行顺序控制。而这些在 UDP<br>中都没有。</p>
+<p>此外，TCP 作为一种面向有连接的协议，只有在确认通信对端存在时才会发送数据，从而可以控制通信流量的浪费。</p>
+<p>根据 TCP 的这些机制，在 IP 这种无连接的网络上也能够实现高可靠性的通信（<br>主要通过检验和、序列号、确认应答、重发控制、连接管理以及窗口控制等机制实现）。</p>
+<h2 id="通过序列号与确认应答提高可靠性"><a href="#通过序列号与确认应答提高可靠性" class="headerlink" title="通过序列号与确认应答提高可靠性"></a>通过序列号与确认应答提高可靠性</h2><ul>
+<li>在 TCP 中，当发送端的数据到达接收主机时，接收端主机会返回一个已收到消息的通知。这个消息叫做确认应答（ACK）。当发送端将数据发出之后会等待对端的确认应答。如果有确认应答，说明数据已经成功到达对端。 <strong>反之，则数据丢失的可能性很大</strong> 。</li>
+<li>在一定时间内没有等待到确认应答，发送端就可以认为数据已经丢失，并进行重发。由此，即使产生了丢包，仍然能够保证数据能够到达对端，实现可靠传输。</li>
+<li>未收到确认应答并不意味着数据一定丢失。也有可能是数据对方已经收到，只是返回的确认应答在途中丢失。这种情况也会导致发送端误以为数据没有到达目的地而重发数据。</li>
+<li>此外，也有可能因为一些其他原因导致确认应答延迟到达，在源主机重发数据以后才到达的情况也屡见不鲜。此时，源主机只要按照机制重发数据即可。</li>
+<li>对于目标主机来说，反复收到相同的数据是不可取的。为了对上层应用提供可靠的传输，目标主机必须放弃重复的数据包。为此我们引入了序列号。</li>
+<li><strong>序列号是按照顺序给发送数据的每一个字节（8位字节）都标上号码的编号。接收端查询接收数据 TCP 首部中的序列号和数据的长度，将自己下一步应该接收的序列号作为确认应答返送回去。通过序列号和确认应答号，TCP 能够识别是否已经接收数据，又能够判断是否需要接收，从而实现可靠传输。</strong></li>
+</ul>
+<p><img src="/images/%E5%BA%8F%E5%88%97%E5%8F%B7%E5%92%8C%E7%A1%AE%E8%AE%A4%E5%BA%94%E7%AD%94.jpg" alt="序列号和确认应答"></p>
+<h2 id="重发超时的确定"><a href="#重发超时的确定" class="headerlink" title="重发超时的确定"></a>重发超时的确定</h2><ul>
+<li><strong>重发超时是指在重发数据之前，等待确认应答到来的那个特定时间间隔。</strong> 如果超过这个时间仍未收到确认应答，发送端将进行数据重发。最理想的是，找到一个最小时间，它能保证“确认应答一定能在这个时间内返回”。</li>
+<li>TCP 要求不论处在何种网络环境下都要提供高性能通信，并且无论网络拥堵情况发生何种变化，都必须保持这一特性。为此，它在每次发包时都会计算往返时间及其偏差。将这个往返时间和偏差时间相加，重发超时的时间就是比这个总和要稍大一点的值。</li>
+<li>在 BSD 的 Unix 以及 Windows 系统中，超时都以0.5秒为单位进行控制，因此重发超时都是0.5秒的整数倍。不过，最初其重发超时的默认值一般设置为6秒左右。</li>
+<li>数据被重发之后若还是收不到确认应答，则进行再次发送。此时，等待确认应答的时间将会以2倍、4倍的指数函数延长。</li>
+<li>此外， <strong>数据也不会被无限、反复地重发。达到一定重发次数之后，如果仍没有任何确认应答返回，就会判断为网络或对端主机发生了异常，强制关闭连接。并且通知应用通信异常强行终止。</strong></li>
+</ul>
+<h2 id="以段为单位发送数据"><a href="#以段为单位发送数据" class="headerlink" title="以段为单位发送数据"></a>以段为单位发送数据</h2><ul>
+<li>在建立 TCP 连接的同时，也可以确定发送数据包的单位，我们也可以称其为“最大消息长度”（MSS）。最理想的情况是，最大消息长度正好是 IP 中不会被分片处理的最大数据长度。</li>
+<li>TCP 在传送大量数据时，是以 MSS 的大小将数据进行分割发送。进行重发时也是以 MSS 为单位。</li>
+<li>MSS 在三次握手的时候，在两端主机之间被计算得出。两端的主机在发出建立连接的请求时，会在 TCP 首部中写入 MSS 选项，告诉对方自己的接口能够适应的 MSS 的大小。然后会在两者之间选择一个较小的值投入使用。</li>
+</ul>
+<h2 id="利用窗口控制提高速度"><a href="#利用窗口控制提高速度" class="headerlink" title="利用窗口控制提高速度"></a>利用窗口控制提高速度</h2><p>TCP 以1个段为单位，每发送一个段进行一次确认应答的处理。这样的传输方式有一个缺点，就是包的往返时间越长通信性能就越低。</p>
+<p>为解决这个问题，TCP<br>引入了窗口这个概念。确认应答不再是以每个分段，而是以更大的单位进行确认，转发时间将会被大幅地缩短。也就是说，发送端主机，在发送了一个段以后不必要一直等待确认应答，而是继续发送。如下图所示：</p>
+<p><img src="/images/%E7%AA%97%E5%8F%A3%E6%8E%A7%E5%88%B6.jpg" alt="窗口控制"></p>
+<p>窗口大小就是指无需等待确认应答而可以继续发送数据的最大值。上图中窗口大小为4个段。这个机制实现了使用大量的缓冲区，通过对多个段同时进行确认应答的功能。</p>
+<h2 id="滑动窗口控制"><a href="#滑动窗口控制" class="headerlink" title="滑动窗口控制"></a>滑动窗口控制</h2><p><img src="/images/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.jpg" alt="滑动窗口"></p>
+<p>上图中的窗口内的数据即便没有收到确认应答也可以被发送出去。不过，在整个窗口的确认应答没有到达之前，如果其中部分数据出现丢包，那么发送端仍然要负责重传。为此，发送端主机需要设置缓存保留这些待被重传的数据，直到收到他们的确认应答。</p>
+<p>在滑动窗口以外的部分包括未发送的数据以及已经确认对端已收到的数据。当数据发出后若如期收到确认应答就可以不用再进行重发，此时数据就可以从缓存区清除。</p>
+<p>收到确认应答的情况下，将窗口滑动到确认应答中的序列号的位置。这样可以顺序地将多个段同时发送提高通信性能。这种机制也别称为滑动窗口控制。</p>
+<h2 id="窗口控制中的重发控制"><a href="#窗口控制中的重发控制" class="headerlink" title="窗口控制中的重发控制"></a>窗口控制中的重发控制</h2><p>在使用窗口控制中， 出现丢包一般分为两种情况：</p>
+<ul>
+<li>① 确认应答未能返回的情况。在这种情况下，数据已经到达对端，是不需要再进行重发的，如下图：</li>
+</ul>
+<p><img src="/images/%E9%83%A8%E5%88%86%E7%A1%AE%E8%AE%A4%E5%BA%94%E7%AD%94%E4%B8%A2%E5%A4%B1.jpg" alt="部分确认应答丢失"></p>
+<ul>
+<li>② 某个报文段丢失的情况。接收主机如果收到一个自己应该接收的序列号以外的数据时，会针对当前为止收到数据返回确认应答。如下图所示，当某一报文段丢失后，发送端会一直收到序号为1001的确认应答，因此，在窗口比较大，又出现报文段丢失的情况下，同一个序列号的确认应答将会被重复不断地返回。而发送端主机如果连续3次收到同一个确认应答，就会将其对应的数据进行重发。这种机制比之前提到的超时管理更加高效，因此也被称为高速重发控制。</li>
+</ul>
+<p><img src="/images/%E9%AB%98%E9%80%9F%E9%87%8D%E5%8F%91%E6%8E%A7%E5%88%B6.jpg" alt="高速重发控制"></p>
+<h2 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h2><p>在介绍具体的概念之前，首先我要提到的是TCP中对于拥塞控制的最高思想，主要有三条，那就是既要尽量快的利用信道的最大能力，不要浪费；又要谨慎的控制信道的负载，不要拥堵；同时如果发生了拥堵，必须能够自我调节，不要崩溃。根据这个最高思想，TCP设计了一系列拥塞避免的算法。</p>
+<h3 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h3><p>在一个网络环境下，信道是共享的，也就是说所有发送的数据都会在这个信道上穿梭。这个道理和高速公路是一样的，你只是高速公路上车流中的一辆车。所以说，当你准备开始发送数据的时候，你不能仅仅做到不管三七二十一，就先按自己的节奏发出自己的数据。如果这个时候信道已经很拥挤，你发出的数据一定也会堵在路上，从而造成进一步的重传，这些重传更加加重了网络的负担，本来拥堵不堪的道路只会越来越差。</p>
+<p>所以TCP的设计者们设计了一个保守的策略，这种策略带有浓浓的工科生特点，就是先谨慎的试试，再大胆的前进，实践检验效果。具体的说就是TCP的设计者们采用了一个新的窗口，称之为拥塞窗口，记为cwnd，这个cwnd初始设置为一个one<br>segment的大小，在这里我们简单的理解为TCP报文一次允许发送的最大的大小以方便后面叙述。当发出这个一个报文之后，如果发送端能够收到对应的ACK。那么下一次就会发送2个segment的报文，接着如果还是收到这2个segment的ACK，那么说明这个信道还是可以承受当前大小的包的，那么接着进行试探，发送4个segment的包，收到4ACK，就发送8个segment，以此指数级增长的类推。</p>
+<p>简单的说，慢启动就是一句话，大胆尝试，小心求证。而且在慢启动算法中，报文的增长速度是很快的，所以说这个算法的过程并不符合这个算法的名称，之所以称之为慢启动，是他小心的去试探网络情况的哲学上的”慢慢来”。</p>
+<h3 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h3><p>上面的慢启动很明显可以在很短的时间内让信道的利用率达到一个比较理想的值，由于前面一直强调过，信道的资源总是有限的，所以到某一个阶段，这些快速增长的报文必定会充满信道使得信道变得开始拥挤。TCP的设计者们为了不要使得慢启动算法变成一个只有理论意义，而在很短的时间内又会造成网络崩溃从而导致本末倒置。所以说在慢启动的基础上，设计者们做了一些现实的改进与妥协。除了cwnd这个概念，设计者们还定义了一个叫做ssthresh的概念,slow<br>start thresh,<br>中文一般翻译为慢启动阈值，比如65535个字节。如果cwnd的大小达到了这个阈值，那么就不采用指数增长这样的比较暴力的方法，而是采用每次收到一个ACK，cwnd就扩大1个单位的方法，这样比较保守，目的之一就是慢慢而可靠的试出来信道所能承受的最大的负载，符合前面所说的哲学的第一条。</p>
+<p>但是信道资源总是有限的，而cwnd在前面描述的过程中无论是怎样的方式，他一直递增的，所以触碰到天花板是必然，按照前面的“三条不要”的最高思想，在遇到信道已经塞满的情况下，需要做的就是快速的减少对信道的负担并且能够快速的恢复。</p>
+<p>TCP怎么知道信道拥堵了呢？反过来问，信道拥堵会给发送端带来什么呢？第一个明显的效应就是发送出去的消息收不到ACK，也就是前面说的超时了，如果连续几个消息都没有收到ACK而不停的发生重传，那么就可以判定为信道已经拥堵了。这个时候，拥塞避免算法会进入恢复阶段，其方法很简单：</p>
+<ul>
+<li>ssthresh设置为当前发生拥塞cwnd的一般，如果cwnd在30个字节的时候（当然不可能只有这么小）发生了拥堵，那么新的ssthresh就设置为15。</li>
+<li>TCP重新进入慢启动阶段，也就是将cwnd设置为1，指数增长知道达到新的ssthresh的15，然后再重新按照拥塞避免第一个阶段，线性增长。<br>这个过程可以用图表示：</li>
+</ul>
+<p><img src="/images/%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D.jpeg" alt="拥塞避免"></p>
+<h3 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h3><p>网络是一个很复杂的环境，如果有这么一种情况，网络发生了拥堵但是又那么的拥堵，这种情况的表现是什么呢？按照前面介绍过的滑动窗口，TCP不是one by<br>one的发送数据包的，如果发送的数据包是1,2,3，1和3已经到，但是2没有到，由于拥堵在网络中丢失了，那么接收端会不断告诉发送端下一个需要的报文是2号报文，即使你后面的报文都到了，在2号报文没有收到的情况下，会一直发送对1号报文的ACK，表示需要的是2号报文。如果连续收到三个连续的ACK,就认为网络发生了拥堵。用语言描述有点绕，用图来表示就比较清晰。</p>
+<p><img src="/images/%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A0%B5.jpeg" alt="网络拥堵"></p>
+<p>这种情况说明了两种情况：网络确实发生了拥堵，但是又没有完全拥堵。因为如果完全拥堵了，那么发送端也不会受到三个ACK数据报文，所以这种情况没有必要从头再来，因为最高思想的第二点让我们最大的利用信道的能力。按照这个，设计者们又改进了上面的算法，提出了一个快速重传的方案，其思想如下：</p>
+<ul>
+<li>ssthresh设置为cwnd的一半</li>
+<li>cwnd设置为ssthresh的值</li>
+<li>不需要重新进入慢启动阶段而是进入拥塞避免阶段<br>用图来表示这个过程如下：</li>
+</ul>
+<p><img src="/images/%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0.jpeg" alt="快速重传"></p>
+<h3 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h3><p>快速重传算法已经尽力快的恢复对于网络的传送，但是设计们本着”面包里面抠面粉”的原则，在上面的快速重传算法中尝试想想有没有进步空间，在全面分析之后，提出了快速恢复的算法，其具体做法如下：</p>
+<ul>
+<li>在收到3个重复的ACK之后，ssthresh设置为cwnd的一半，然后把cwnd设置为ssthresh加3个单位的大小，接着重传丢失的报文段，如果用前面的例子来举例就是重传2号报文。</li>
+<li>如果这个时候再次收到重传的ACK，那么拥塞窗口增加1。</li>
+<li>如果收到的是新的数据包的ACK，把cwnd设置为第一步的ssthresh的值。为什么这么做，因为如果收到的新的ACK，说明网络已经恢复了，可以进入拥塞避免的线性增长阶段了。<br>第一个例子里为什么加3呢，因为这个时候连续的收到3个ACK包，那么可以认为网络还有3个单位大小的余额，同时也可以这么想，说明有3个“老”的数据包已经从网络上离开了。</li>
+</ul>
+<h2 id="粘包和拆包"><a href="#粘包和拆包" class="headerlink" title="粘包和拆包"></a>粘包和拆包</h2><p>首先因为tcp是面向字节流的协议，所以他不保证包的独立性，只能在上层应用层进行拆包处理。</p>
+<p>发送粘包的原因：</p>
+<ol>
+<li>要发送的数据小于TCP发送缓冲区的大小，TCP将多次写入缓冲区的数据一次发送出去；</li>
+<li>接收数据端的应用层没有及时读取接收缓冲区中的数据；</li>
+<li>数据发送过快，数据包堆积导致缓冲区积压多个数据后才一次性发送出去(如果客户端每发送一条数据就睡眠一段时间就不会发生粘包)；</li>
+</ol>
+<p>拆包：</p>
+<ol>
+<li>消息定长，例如每个报文的大小为固定长度200字节，如果不够，空位补空格；</li>
+<li>在包尾增加回车换行符进行分割，例如FTP协议；</li>
+<li>将消息分为消息头和消息体，消息头中包含表示消息总长度（或者消息体长度）的字段，通常设计思路为消息头的第一个字段使用int32来表示消息的总长度；</li>
+<li>更复杂的应用层协议。</li>
+</ol>
+<h1 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h1><p>UDP协议，即用户数据报协议（User Datagram<br>Protocol），是一个简单的面向数据报的传输层协议。UDP协议只在IP数据报服务商增加了很少一点的功能，就是复用和分用，以及差错检测的功能。</p>
+<p>UDP 常用于一下几个方面：1.包总量较少的通信（DNS、SNMP等）；2.视频、音频等多媒体通信（即时通信）；3.限定于 LAN<br>等特定网络中的应用通信；4.广播通信（广播、多播）。</p>
+<h2 id="UDP特点"><a href="#UDP特点" class="headerlink" title="UDP特点"></a>UDP特点</h2><ol>
+<li>无连接的</li>
+</ol>
+<p>发送数据之前不需要建立连接，减少了开销和发送数据之前的时延。</p>
+<ol start="2">
+<li>尽最大努力交付</li>
+</ol>
+<p>不保证可靠的交付，主机不需要维持复杂的链接状态表。</p>
+<ol start="3">
+<li>面向报文的</li>
+</ol>
+<p>发送方的UDP对应用程序交下来的报文，在添加首部后就向下交付给IP层。既不拆分，也不合并，而是保留这些报文的边界，因此，应用程序需要选择合适的报文大小。</p>
+<ol start="4">
+<li><p>没有拥塞控制。</p>
+</li>
+<li><p>支持一对一、多对一和多对多的交互通信。</p>
+</li>
+<li><p>首部开销小，只有8个字节。</p>
+</li>
+</ol>
+<h2 id="UDP首部结构"><a href="#UDP首部结构" class="headerlink" title="UDP首部结构"></a>UDP首部结构</h2><p><img src="/images/UDP%E9%A6%96%E9%83%A8%E7%BB%93%E6%9E%84.jpg" alt="UDP首部结构"></p>
+<p>UDP首部由4各字段组成，各占两个字节：</p>
+<ol>
+<li>（1）源端口</li>
+</ol>
+<p>在需要对方回信时使用，不需要时全为0。</p>
+<ol start="2">
+<li>目的端口</li>
+</ol>
+<p>发送UDP数据报的目的地。</p>
+<ol start="3">
+<li>长度</li>
+</ol>
+<p>UDP数据报的长度，最短为8个字节，只包含首部。</p>
+<ol start="4">
+<li>检验和</li>
+</ol>
+<p>用于检验UDP数据报在传输过程中有没有出差错，有则丢弃。</p>
+<h1 id="两者的差别与联系"><a href="#两者的差别与联系" class="headerlink" title="两者的差别与联系"></a>两者的差别与联系</h1><ul>
+<li>TCP 是面向连接的、可靠的流协议。流就是指不间断的数据结构，当应用程序采用 TCP 发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP 为提供可靠性传输，实行“顺序控制”或“重发控制”机制。此外还具备“流控制（流量控制）”、“拥塞控制”、提高网络利用率等众多功能。</li>
+<li>UDP 是不具有可靠性的数据报协议。细微的处理它会交给上层的应用去完成。在 UDP 的情况下，虽然可以确保发送消息的大小，却不能保证消息一定会到达。因此，应用有时会根据自己的需要进行重发处理。</li>
+<li>TCP 和 UDP 的优缺点无法简单地、绝对地去做比较：TCP 用于在传输层有必要实现可靠传输的情况；而在一方面，UDP 主要用于那些对高速传输和实时性有较高要求的通信或广播通信。TCP 和 UDP 应该根据应用的目的按需使用。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/14/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">计算机网络</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-14 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-14T22:30:00+00:00">2020-01-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h1><p>在计算机网络的基本概念中，分层次的体系结构是最基本的。计算机网络体系结构的抽象概念较多，在学习时要多思考。这些概念对后面的学习很有帮助。</p>
+<h2 id="网络协议是什么？"><a href="#网络协议是什么？" class="headerlink" title="网络协议是什么？"></a>网络协议是什么？</h2><p>在计算机网络要做到有条不紊地交换数据，就必须遵守一些事先约定好的规则，比如交换数据的格式、是否需要发送一个应答信息。这些规则被称为网络协议。</p>
+<h2 id="为什么要对网络协议分层？"><a href="#为什么要对网络协议分层？" class="headerlink" title="为什么要对网络协议分层？"></a>为什么要对网络协议分层？</h2><ul>
+<li>简化问题难度和复杂度。由于各层之间独立，我们可以分割大问题为小问题。</li>
+<li>灵活性好。当其中一层的技术变化时，只要层间接口关系保持不变，其他层不受影响。</li>
+<li>易于实现和维护。</li>
+<li>促进标准化工作。分开后，每层功能可以相对简单地被描述。</li>
+</ul>
+<p>网络协议分层的缺点： 功能可能出现在多个层里，产生了额外开销。</p>
+<p>为了使不同体系结构的计算机网络都能互联，国际标准化组织 ISO 于1977年提出了一个试图使各种计算机在世界范围内互联成网的标准框架，即著名的开放系统互联基本参考模型 OSI&#x2F;RM，简称为OSI。</p>
+<p>OSI 的七层协议体系结构的概念清楚，理论也较完整，但它既复杂又不实用，TCP&#x2F;IP 体系结构则不同，但它现在却得到了非常广泛的应用。TCP&#x2F;IP 是一个四层体系结构，它包含应用层，运输层，网际层和网络接口层（用网际层这个名字是强调这一层是为了解决不同网络的互连问题），不过从实质上讲，TCP&#x2F;IP 只有最上面的三层，因为最下面的网络接口层并没有什么具体内容，因此在学习计算机网络的原理时往往采用折中的办法，即综合 OSI 和 TCP&#x2F;IP 的优点，采用一种只有五层协议的体系结构，这样既简洁又能将概念阐述清楚，有时为了方便，也可把最底下两层称为网络接口层。</p>
+<p>四层协议，五层协议和七层协议的关系如下：</p>
+<ul>
+<li>TCP&#x2F;IP是一个四层的体系结构，主要包括：应用层、运输层、网际层和网络接口层。</li>
+<li>五层协议的体系结构主要包括：应用层、运输层、网络层，数据链路层和物理层。</li>
+<li>OSI七层协议模型主要包括是：应用层（Application）、表示层（Presentation）、会话层（Session）、运输层（Transport）、网络层（Network）、数据链路层（Data Link）、物理层（Physical）。</li>
+</ul>
+<p><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="图片" title="计算机网络体系结构"></p>
+<p>注：五层协议的体系结构只是为了介绍网络原理而设计的，实际应用还是 TCP&#x2F;IP 四层体系结构。</p>
+<h2 id="TCP-IP-协议族"><a href="#TCP-IP-协议族" class="headerlink" title="TCP&#x2F;IP 协议族"></a>TCP&#x2F;IP 协议族</h2><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层( application-layer ）的任务是通过应用进程间的交互来完成特定网络应用。应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。</p>
+<p>对于不同的网络应用需要不同的应用层协议。在互联网中应用层协议很多，如域名系统 DNS，支持万维网应用的 HTTP 协议，支持电子邮件的 SMTP 协议等等。</p>
+<h3 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h3><p>运输层(transport layer)的主要任务就是负责向两台主机进程之间的通信提供通用的<strong>数据传输服务</strong>。应用进程利用该服务传送应用层报文。</p>
+<p>运输层主要使用一下两种协议</p>
+<ol>
+<li>传输控制协议-TCP：提供面向连接的，可靠的数据传输服务。</li>
+<li>用户数据协议-UDP：提供无连接的，尽最大努力的数据传输服务（不保证数据传输的可靠性）。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>UDP</th>
+<th>TCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否连接</td>
+<td>无连接</td>
+<td>面向连接</td>
+</tr>
+<tr>
+<td>是否可靠</td>
+<td>不可靠传输，不使用流量控制和拥塞控制</td>
+<td>可靠传输，使用流量控制和拥塞控制</td>
+</tr>
+<tr>
+<td>连接对象个数</td>
+<td>支持一对一，一对多，多对一和多对多交互通信</td>
+<td>只能是一对一通信</td>
+</tr>
+<tr>
+<td>传输方式</td>
+<td>面向报文</td>
+<td>面向字节流</td>
+</tr>
+<tr>
+<td>首部开销</td>
+<td>首部开销小，仅8字节</td>
+<td>首部最小20字节，最大60字节</td>
+</tr>
+<tr>
+<td>场景</td>
+<td>适用于实时应用（IP电话、视频会议、直播等）</td>
+<td>适用于要求可靠传输的应用，例如文件传输</td>
+</tr>
+</tbody></table>
+<p><strong>每一个应用层（TCP&#x2F;IP参考模型的最高层）协议一般都会使用到两个传输层协议之一：</strong></p>
+<p>运行在<code>TCP协议</code>上的协议：</p>
+<ul>
+<li><code>HTTP（Hypertext Transfer Protocol，超文本传输协议）</code>，主要用于普通浏览。</li>
+<li><code>HTTPS（HTTP over SSL，安全超文本传输协议）</code>,<code>HTTP</code>协议的安全版本。</li>
+<li><code>FTP（File Transfer Protocol，文件传输协议）</code>，用于文件传输。</li>
+<li><code>POP3（Post Office Protocol, version 3，邮局协议）</code>，收邮件用。</li>
+<li><code>SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）</code>，用来发送电子邮件。</li>
+<li><code>TELNET（Teletype over the Network，网络电传）</code>，通过一个<code>终端（terminal）</code>登陆到网络。</li>
+<li><code>SSH（Secure Shell，用于替代安全性差的TELNET）</code>，用于加密安全登陆用。</li>
+</ul>
+<p>运行在<code>UDP协议</code>上的协议：</p>
+<ul>
+<li><code>BOOTP（Boot Protocol，启动协议）</code>，应用于无盘设备。</li>
+<li><code>NTP（Network Time Protocol，网络时间协议）</code>，用于网络同步。</li>
+<li><code>DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）</code>，动态配置IP地址。</li>
+</ul>
+<p>运行在<code>TCP</code>和<code>UDP</code>协议上：</p>
+<ul>
+<li><code>DNS（Domain Name Service，域名服务）</code>，用于完成地址查找，邮件转发等工作。</li>
+</ul>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>网络层的任务就是选择合适的网间路由和交换结点，确保计算机通信的数据及时传送。在发送数据时，网络层把运输层产生的报文段或用户数据报封装成分组和包进行传送。在 TCP&#x2F;IP 体系结构中，由于网络层使用 IP 协议，因此分组也叫 IP 数据报 ，简称数据报。</p>
+<p>互联网是由大量的异构（heterogeneous）网络通过路由器（router）相互连接起来的。互联网使用的网络层协议是无连接的网际协议（Intert Prococol）和许多路由选择协议，因此互联网的网络层也叫做网际层或 IP 层。</p>
+<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><p>数据链路层(data link layer)通常简称为链路层。两台主机之间的数据传输，总是在一段一段的链路上传送的，这就需要使用专门的链路层的协议。</p>
+<p>在两个相邻节点之间传送数据时，数据链路层将网络层交下来的 IP 数据报组装成帧，在两个相邻节点间的链路上传送帧。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
+<p>在接收数据时，控制信息使接收端能够知道一个帧从哪个比特开始和到哪个比特结束。</p>
+<p>一般的web应用的通信传输流是这样的：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS81LzkvMTZhOWM5Y2Q1MjNlMDU5OQ?x-oss-process=image/format,png" alt="图片"></p>
+<p>发送端在层与层之间传输数据时，每经过一层时会被打上一个该层所属的首部信息。反之，接收端在层与层之间传输数据时，每经过一层时会把对应的首部信息去除。</p>
+<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><p>在物理层上所传送的数据单位是比特。 物理层(physical layer)的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。使其上面的数据链路层不必考虑网络的具体传输介质是什么。“透明传送比特流”表示经实际电路传送后的比特流没有发生变化，对传送的比特流来说，这个电路好像是看不见的。</p>
+<h3 id="TCP-IP-协议族-1"><a href="#TCP-IP-协议族-1" class="headerlink" title="TCP&#x2F;IP 协议族"></a>TCP&#x2F;IP 协议族</h3><p>在互联网使用的各种协议中最重要和最著名的就是 TCP&#x2F;IP 两个协议。现在人们经常提到的 TCP&#x2F;IP 并不一定是单指 TCP 和 IP 这两个具体的协议，而往往是表示互联网所使用的整个 TCP&#x2F;IP 协议族。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS80LzcvMTY5ZjY5NjZjMjRhZjM0NQ?x-oss-process=image/format,png" alt="图片"></p>
+<blockquote>
+<p>互联网协议套件（英语：Internet Protocol Suite，缩写<code>IPS</code>）是一个网络通讯模型，以及一整个网络传输协议家族，为网际网络的基础通讯架构。它常被通称为TCP&#x2F;IP协议族（英语：<code>TCP/IP Protocol Suite</code>，或<code>TCP/IP Protocols</code>），简称<code>TCP/IP</code>。因为该协定家族的两个核心协定：<code>TCP（传输控制协议）和IP（网际协议）</code>，为该家族中最早通过的标准。</p>
+</blockquote>
+<h1 id="TCP的三次握手四次挥手"><a href="#TCP的三次握手四次挥手" class="headerlink" title="TCP的三次握手四次挥手"></a>TCP的三次握手四次挥手</h1><p>TCP是一种面向连接的、可靠的、基于字节流的传输层通信协议，在发送数据前，通信双方必须在彼此间建立一条连接。所谓的“连接”，其实是客户端和服务端保存的一份关于对方的信息，如ip地址、端口号等。</p>
+<p>TCP可以看成是一种字节流，它会处理IP层或以下的层的丢包、重复以及错误问题。在连接的建立过程中，双方需要交换一些连接的参数。这些参数可以放在TCP头部。</p>
+<p>一个TCP连接由一个4元组构成，分别是两个IP地址和两个端口号。一个TCP连接通常分为三个阶段：连接、数据传输、退出（关闭）。<strong>通过三次握手建立一个链接，通过四次挥手来关闭一个连接</strong>。</p>
+<p><strong>当一个连接被建立或被终止时，交换的报文段只包含TCP头部，而没有数据</strong>。</p>
+<h2 id="TCP报文的头部结构"><a href="#TCP报文的头部结构" class="headerlink" title="TCP报文的头部结构"></a>TCP报文的头部结构</h2><p>在了解TCP连接之前先来了解一下TCP报文的头部结构。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxOWU2YzEzNA?x-oss-process=image/format,png" alt="图片"></p>
+<p>上图中有几个字段需要重点介绍下：</p>
+<p>（1）序号：seq序号，占32位，用来标识从TCP源端向目的端发送的字节流，发起方发送数据时对此进行标记。</p>
+<p>（2）确认序号：ack序号，占32位，只有ACK标志位为1时，确认序号字段才有效，ack&#x3D;seq+1。</p>
+<p>（3）标志位：共6个，即URG、ACK、PSH、RST、SYN、FIN等，具体含义如下：</p>
+<ul>
+<li>ACK：确认序号有效。</li>
+<li>FIN：释放一个连接。</li>
+<li>PSH：接收方应该尽快将这个报文交给应用层。</li>
+<li>RST：重置连接。</li>
+<li>SYN：发起一个新连接。</li>
+<li>URG：紧急指针（urgent pointer）有效。</li>
+</ul>
+<p>需要注意的是：</p>
+<ul>
+<li>不要将确认序号ack与标志位中的ACK搞混了。</li>
+<li>确认方ack&#x3D;发起方seq+1，两端配对。</li>
+</ul>
+<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><blockquote>
+<p>三次握手的本质是确认通信双方收发数据的能力</p>
+</blockquote>
+<p>首先，我让信使运输一份信件给对方，<strong>对方收到了，那么他就知道了我的发件能力和他的收件能力是可以的</strong>。</p>
+<p>于是他给我回信，<strong>我若收到了，我便知我的发件能力和他的收件能力是可以的，并且他的发件能力和我的收件能力是可以</strong>。</p>
+<p>然而此时他还不知道他的发件能力和我的收件能力到底可不可以，于是我最后回馈一次，<strong>他若收到了，他便清楚了他的发件能力和我的收件能力是可以的</strong>。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IxZWE1MDdlOA?x-oss-process=image/format,png" alt="图片"></p>
+<ul>
+<li><code>第一次握手</code>：客户端要向服务端发起连接请求，首先客户端随机生成一个起始序列号ISN(比如是100)，那客户端向服务端发送的报文段包含SYN标志位(也就是SYN&#x3D;1)，序列号seq&#x3D;100。</li>
+<li><code>第二次握手</code>：服务端收到客户端发过来的报文后，发现SYN&#x3D;1，知道这是一个连接请求，于是将客户端的起始序列号100存起来，并且随机生成一个服务端的起始序列号(比如是300)。然后给客户端回复一段报文，回复报文包含SYN和ACK标志(也就是SYN&#x3D;1,ACK&#x3D;1)、序列号seq&#x3D;300、确认号ack&#x3D;101(客户端发过来的序列号+1)。</li>
+<li><code>第三次握手</code>：客户端收到服务端的回复后发现ACK&#x3D;1并且ack&#x3D;101,于是知道服务端已经收到了序列号为100的那段报文；同时发现SYN&#x3D;1，知道了服务端同意了这次连接，于是就将服务端的序列号300给存下来。然后客户端再回复一段报文给服务端，报文包含ACK标志位(ACK&#x3D;1)、ack&#x3D;301(服务端序列号+1)、seq&#x3D;101(第一次握手时发送报文是占据一个序列号的，所以这次seq就从101开始，需要注意的是不携带数据的ACK报文是不占据序列号的，所以后面第一次正式发送数据时seq还是101)。当服务端收到报文后发现ACK&#x3D;1并且ack&#x3D;301，就知道客户端收到序列号为300的报文了，就这样客户端和服务端通过TCP建立了连接。</li>
+</ul>
+<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><blockquote>
+<p>四次挥手的目的是关闭一个连接</p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC8xLzcvMTZmN2UwM2IyMWEwN2YwYw?x-oss-process=image/format,png" alt="图片"></p>
+<p>比如客户端初始化的序列号ISA&#x3D;100，服务端初始化的序列号ISA&#x3D;300。TCP连接成功后客户端总共发送了1000个字节的数据，服务端在客户端发FIN报文前总共回复了2000个字节的数据。</p>
+<ul>
+<li><code>第一次挥手</code>：当客户端的数据都传输完成后，客户端向服务端发出连接释放报文(当然数据没发完时也可以发送连接释放报文并停止发送数据)，释放连接报文包含FIN标志位(FIN&#x3D;1)、序列号seq&#x3D;1101(100+1+1000，其中的1是建立连接时占的一个序列号)。需要注意的是客户端发出FIN报文段后只是不能发数据了，但是还可以正常收数据；另外FIN报文段即使不携带数据也要占据一个序列号。</li>
+<li><code>第二次挥手</code>：服务端收到客户端发的FIN报文后给客户端回复确认报文，确认报文包含ACK标志位(ACK&#x3D;1)、确认号ack&#x3D;1102(客户端FIN报文序列号1101+1)、序列号seq&#x3D;2300(300+2000)。此时服务端处于关闭等待状态，而不是立马给客户端发FIN报文，这个状态还要持续一段时间，因为服务端可能还有数据没发完。</li>
+<li><code>第三次挥手</code>：服务端将最后数据(比如50个字节)发送完毕后就向客户端发出连接释放报文，报文包含FIN和ACK标志位(FIN&#x3D;1,ACK&#x3D;1)、确认号和第二次挥手一样ack&#x3D;1102、序列号seq&#x3D;2350(2300+50)。</li>
+<li><code>第四次挥手</code>：客户端收到服务端发的FIN报文后，向服务端发出确认报文，确认报文包含ACK标志位(ACK&#x3D;1)、确认号ack&#x3D;2351、序列号seq&#x3D;1102。注意客户端发出确认报文后不是立马释放TCP连接，而是要经过2MSL(最长报文段寿命的2倍时长)后才释放TCP连接。而服务端一旦收到客户端发出的确认报文就会立马释放TCP连接，所以服务端结束TCP连接的时间要比客户端早一些。</li>
+</ul>
+<h3 id="为什么TCP连接的时候是3次？2次不可以吗？"><a href="#为什么TCP连接的时候是3次？2次不可以吗？" class="headerlink" title="为什么TCP连接的时候是3次？2次不可以吗？"></a>为什么TCP连接的时候是3次？2次不可以吗？</h3><p>因为需要考虑连接时丢包的问题，如果只握手2次，第二次握手时如果服务端发给客户端的确认报文段丢失，此时服务端已经准备好了收发数(可以理解服务端已经连接成功)据，而客户端一直没收到服务端的确认报文，所以客户端就不知道服务端是否已经准备好了(可以理解为客户端未连接成功)，这种情况下客户端不会给服务端发数据，也会忽略服务端发过来的数据。</p>
+<p>如果是三次握手，即便发生丢包也不会有问题，比如如果第三次握手客户端发的确认ack报文丢失，服务端在一段时间内没有收到确认ack报文的话就会重新进行第二次握手，也就是服务端会重发SYN报文段，客户端收到重发的报文段后会再次给服务端发送确认ack报文。</p>
+<h3 id="为什么TCP连接的时候是3次，关闭的时候却是4次？"><a href="#为什么TCP连接的时候是3次，关闭的时候却是4次？" class="headerlink" title="为什么TCP连接的时候是3次，关闭的时候却是4次？"></a>为什么TCP连接的时候是3次，关闭的时候却是4次？</h3><p>因为只有在客户端和服务端都没有数据要发送的时候才能断开TCP。而客户端发出FIN报文时只能保证客户端没有数据发了，服务端还有没有数据发客户端是不知道的。而服务端收到客户端的FIN报文后只能先回复客户端一个确认报文来告诉客户端我服务端已经收到你的FIN报文了，但我服务端还有一些数据没发完，等这些数据发完了服务端才能给客户端发FIN报文(所以不能一次性将确认报文和FIN报文发给客户端，就是这里多出来了一次)。</p>
+<h3 id="为什么客户端发出第四次挥手的确认报文后要等2MSL的时间才能释放TCP连接？"><a href="#为什么客户端发出第四次挥手的确认报文后要等2MSL的时间才能释放TCP连接？" class="headerlink" title="为什么客户端发出第四次挥手的确认报文后要等2MSL的时间才能释放TCP连接？"></a>为什么客户端发出第四次挥手的确认报文后要等2MSL的时间才能释放TCP连接？</h3><p>这里同样是要考虑丢包的问题，如果第四次挥手的报文丢失，服务端没收到确认ack报文就会重发第三次挥手的报文，这样报文一去一回最长时间就是2MSL，所以需要等这么长时间来确认服务端确实已经收到了。</p>
+<h3 id="如果已经建立了连接，但是客户端突然出现故障了怎么办？"><a href="#如果已经建立了连接，但是客户端突然出现故障了怎么办？" class="headerlink" title="如果已经建立了连接，但是客户端突然出现故障了怎么办？"></a>如果已经建立了连接，但是客户端突然出现故障了怎么办？</h3><p>TCP设有一个保活计时器，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75秒钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。</p>
+<h3 id="什么是HTTP，HTTP-与-HTTPS-的区别"><a href="#什么是HTTP，HTTP-与-HTTPS-的区别" class="headerlink" title="什么是HTTP，HTTP 与 HTTPS 的区别"></a>什么是HTTP，HTTP 与 HTTPS 的区别</h3><p>HTTP 是一个在计算机世界里专门在两点之间传输文字、图片、音频、视频等超文本数据的约定和规范</p>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th>HTTP</th>
+<th>HTTPS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>协议</td>
+<td>运行在 TCP 之上，明文传输，<strong>客户端与服务器端都无法验证对方的身份</strong></td>
+<td>身披 SSL( Secure Socket Layer )外壳的 HTTP，运行于 SSL 上，SSL 运行于 TCP 之上， <strong>是添加了加密和认证机制的 HTTP</strong>。</td>
+</tr>
+<tr>
+<td>端口</td>
+<td>80</td>
+<td>443</td>
+</tr>
+<tr>
+<td>资源消耗</td>
+<td>较少</td>
+<td>由于加解密处理，会消耗更多的 CPU 和内存资源</td>
+</tr>
+<tr>
+<td>开销</td>
+<td>无需证书</td>
+<td>需要证书，而证书一般需要向认证机构购买</td>
+</tr>
+<tr>
+<td>加密机制</td>
+<td>无</td>
+<td>共享密钥加密和公开密钥加密并用的混合加密机制</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>弱</td>
+<td>由于加密机制，安全性强</td>
+</tr>
+</tbody></table>
+<h3 id="常用HTTP状态码"><a href="#常用HTTP状态码" class="headerlink" title="常用HTTP状态码"></a>常用HTTP状态码</h3><p>HTTP状态码表示客户端HTTP请求的返回结果、标识服务器处理是否正常、表明请求出现的错误等。</p>
+<p>状态码的类别：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>原因短语</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1XX</td>
+<td>Informational（信息性状态码） 接受的请求正在处理</td>
+</tr>
+<tr>
+<td>2XX</td>
+<td>Success（成功状态码） 请求正常处理完毕</td>
+</tr>
+<tr>
+<td>3XX</td>
+<td>Redirection（重定向状态码） 需要进行附加操作以完成请求</td>
+</tr>
+<tr>
+<td>4XX</td>
+<td>Client Error（客户端错误状态码） 服务器无法处理请求</td>
+</tr>
+<tr>
+<td>5XX</td>
+<td>Server Error（服务器错误状态码） 服务器处理请求出错</td>
+</tr>
+</tbody></table>
+<p>常用HTTP状态码：</p>
+<table>
+<thead>
+<tr>
+<th>2XX</th>
+<th>成功（这系列表明请求被正常处理了）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>200</td>
+<td>OK，表示从客户端发来的请求在服务器端被正确处理</td>
+</tr>
+<tr>
+<td>204</td>
+<td>No content，表示请求成功，但响应报文不含实体的主体部分</td>
+</tr>
+<tr>
+<td>206</td>
+<td>Partial Content，进行范围请求成功</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>3XX</th>
+<th>重定向（表明浏览器要执行特殊处理）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>301</td>
+<td>moved permanently，永久性重定向，表示资源已被分配了新的 URL</td>
+</tr>
+<tr>
+<td>302</td>
+<td>found，临时性重定向，表示资源临时被分配了新的 URL</td>
+</tr>
+<tr>
+<td>303</td>
+<td>see other，表示资源存在着另一个 URL，应使用 GET 方法获取资源（对于301&#x2F;302&#x2F;303响应，几乎所有浏览器都会删除报文主体并自动用GET重新请求）</td>
+</tr>
+<tr>
+<td>304</td>
+<td>not modified，表示服务器允许访问资源，但请求未满足条件的情况（与重定向无关）</td>
+</tr>
+<tr>
+<td>307</td>
+<td>temporary redirect，临时重定向，和302含义类似，但是期望客户端保持请求方法不变向新的地址发出请求</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>4XX</th>
+<th>客户端错误</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>400</td>
+<td>bad request，请求报文存在语法错误</td>
+</tr>
+<tr>
+<td>401</td>
+<td>unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息</td>
+</tr>
+<tr>
+<td>403</td>
+<td>forbidden，表示对请求资源的访问被服务器拒绝，可在实体主体部分返回原因描述</td>
+</tr>
+<tr>
+<td>404</td>
+<td>not found，表示在服务器上没有找到请求的资源</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>5XX</th>
+<th>服务器错误</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>500</td>
+<td>internal sever error，表示服务器端在执行请求时发生了错误</td>
+</tr>
+<tr>
+<td>501</td>
+<td>Not Implemented，表示服务器不支持当前请求所需要的某个功能</td>
+</tr>
+<tr>
+<td>503</td>
+<td>service unavailable，表明服务器暂时处于超负载或正在停机维护，无法处理请求</td>
+</tr>
+</tbody></table>
+<h3 id="GET和POST区别"><a href="#GET和POST区别" class="headerlink" title="GET和POST区别"></a>GET和POST区别</h3><p>说道GET和POST，就不得不提HTTP协议，因为浏览器和服务器的交互是通过HTTP协议执行的，而GET和POST也是HTTP协议中的两种方法。</p>
+<p>HTTP全称为Hyper Text Transfer Protocol，中文翻译为超文本传输协议，目的是保证浏览器与服务器之间的通信。HTTP的工作方式是客户端与服务器之间的请求-应答协议。</p>
+<p>HTTP协议中定义了浏览器和服务器进行交互的不同方法，基本方法有4种，分别是GET，POST，PUT，DELETE。这四种方法可以理解为，对服务器资源的查，改，增，删。</p>
+<ul>
+<li>GET：从服务器上获取数据，也就是所谓的查，仅仅是获取服务器资源，不进行修改。</li>
+<li>POST：向服务器提交数据，这就涉及到了数据的更新，也就是更改服务器的数据。</li>
+<li>PUT：英文含义是放置，也就是向服务器新添加数据，就是所谓的增。</li>
+<li>DELETE：从字面意思也能看出，这种方式就是删除服务器数据的过程。</li>
+</ul>
+<p><strong>GET和POST区别</strong></p>
+<ol>
+<li><p>Get是不安全的，因为在传输过程，数据被放在请求的URL中；Post的所有操作对用户来说都是不可见的。 但是这种做法也不时绝对的，大部分人的做法也是按照上面的说法来的，但是也可以在get请求加上 request body，给 post请求带上 URL 参数。</p>
+</li>
+<li><p>Get请求提交的url中的数据最多只能是2048字节，这个限制是浏览器或者服务器给添加的，http协议并没有对url长度进行限制，目的是为了保证服务器和浏览器能够正常运行，防止有人恶意发送请求。Post请求则没有大小限制。</p>
+</li>
+<li><p>Get限制Form表单的数据集的值必须为ASCII字符；而Post支持整个ISO10646字符集。</p>
+</li>
+<li><p>Get执行效率却比Post方法好。Get是form提交的默认方法。</p>
+</li>
+<li><p>GET产生一个TCP数据包；POST产生两个TCP数据包。</p>
+<p>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；</p>
+<p>而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</p>
+</li>
+</ol>
+<h3 id="什么是对称加密与非对称加密"><a href="#什么是对称加密与非对称加密" class="headerlink" title="什么是对称加密与非对称加密"></a>什么是对称加密与非对称加密</h3><p>对称密钥加密是指加密和解密使用同一个密钥的方式，<strong>这种方式存在的最大问题就是密钥发送问题，即如何安全地将密钥发给对方；</strong></p>
+<p>而非对称加密是指使用一对非对称密钥，即公钥和私钥，公钥可以随意发布，但私钥只有自己知道。发送密文的一方使用对方的公钥进行加密处理，对方接收到加密信息后，使用自己的私钥进行解密。<br>由于非对称加密的方式不需要发送用来解密的私钥，所以可以保证安全性；但是和对称加密比起来，非常的慢</p>
+<h3 id="什么是HTTP2"><a href="#什么是HTTP2" class="headerlink" title="什么是HTTP2"></a>什么是HTTP2</h3><p>HTTP2 可以提高了网页的性能。</p>
+<p>在 HTTP1 中浏览器限制了同一个域名下的请求数量（Chrome 下一般是六个），当在请求很多资源的时候，由于队头阻塞当浏览器达到最大请求数量时，剩余的资源需等待当前的六个请求完成后才能发起请求。</p>
+<p>HTTP2 中引入了多路复用的技术，这个技术可以只通过一个 TCP 连接就可以传输所有的请求数据。多路复用可以绕过浏览器限制同一个域名下的请求数量的问题，进而提高了网页的性能。</p>
+<h3 id="Session、Cookie和Token的主要区别"><a href="#Session、Cookie和Token的主要区别" class="headerlink" title="Session、Cookie和Token的主要区别"></a>Session、Cookie和Token的主要区别</h3><p>HTTP协议本身是无状态的。什么是无状态呢，即服务器无法判断用户身份。</p>
+<p><strong>什么是cookie</strong></p>
+<p>cookie是由Web服务器保存在用户浏览器上的小文件（key-value格式），包含用户相关的信息。客户端向服务器发起请求，如果服务器需要记录该用户状态，就使用response向客户端浏览器颁发一个Cookie。客户端浏览器会把Cookie保存起来。当浏览器再请求该网站时，浏览器把请求的网址连同该Cookie一同提交给服务器。服务器检查该Cookie，以此来辨认用户身份。</p>
+<p><strong>什么是session</strong></p>
+<p>session是依赖Cookie实现的。session是服务器端对象</p>
+<p>session 是浏览器和服务器会话过程中，服务器分配的一块储存空间。服务器默认为浏览器在cookie中设置 sessionid，浏览器在向服务器请求过程中传输 cookie 包含 sessionid ，服务器根据 sessionid 获取出会话中存储的信息，然后确定会话的身份信息。</p>
+<p><strong>cookie与session区别</strong></p>
+<ul>
+<li>存储位置与安全性：cookie数据存放在客户端上，安全性较差，session数据放在服务器上，安全性相对更高；</li>
+<li>存储空间：单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie，session无此限制</li>
+<li>占用服务器资源：session一定时间内保存在服务器上，当访问增多，占用服务器性能，考虑到服务器性能方面，应当使用cookie。</li>
+</ul>
+<p><strong>什么是Token</strong></p>
+<p>Token的引入：Token是在客户端频繁向服务端请求数据，服务端频繁的去数据库查询用户名和密码并进行对比，判断用户名和密码正确与否，并作出相应提示，在这样的背景下，Token便应运而生。</p>
+<p>Token的定义：Token是服务端生成的一串字符串，以作客户端进行请求的一个令牌，当第一次登录后，服务器生成一个Token便将此Token返回给客户端，以后客户端只需带上这个Token前来请求数据即可，无需再次带上用户名和密码。</p>
+<p>使用Token的目的：Token的目的是为了减轻服务器的压力，减少频繁的查询数据库，使服务器更加健壮。</p>
+<p>Token 是在服务端产生的。如果前端使用用户名&#x2F;密码向服务端请求认证，服务端认证成功，那么在服务端会返回 Token 给前端。前端可以在每次请求的时候带上 Token 证明自己的合法地位</p>
+<p><strong>session与token区别</strong></p>
+<ul>
+<li>session机制存在服务器压力增大，CSRF跨站伪造请求攻击，扩展性不强等问题；</li>
+<li>session存储在服务器端，token存储在客户端</li>
+<li>token提供认证和授权功能，作为身份认证，token安全性比session好；</li>
+<li>session这种会话存储方式方式只适用于客户端代码和服务端代码运行在同一台服务器上，token适用于项目级的前后端分离（前后端代码运行在不同的服务器下）</li>
+</ul>
+<h3 id="Servlet是线程安全的吗"><a href="#Servlet是线程安全的吗" class="headerlink" title="Servlet是线程安全的吗"></a>Servlet是线程安全的吗</h3><p><strong>Servlet不是线程安全的，多线程并发的读写会导致数据不同步的问题。</strong></p>
+<p>解决的办法是尽量不要定义name属性，而是要把name变量分别定义在doGet()和doPost()方法内。虽然使用synchronized(name){}语句块可以解决问题，但是会造成线程的等待，不是很科学的办法。</p>
+<p>注意：多线程的并发的读写Servlet类属性会导致数据不同步。但是如果只是并发地读取属性而不写入，则不存在数据不同步的问题。因此Servlet里的只读属性最好定义为final类型的。</p>
+<h3 id="Servlet接口中有哪些方法及Servlet生命周期探秘"><a href="#Servlet接口中有哪些方法及Servlet生命周期探秘" class="headerlink" title="Servlet接口中有哪些方法及Servlet生命周期探秘"></a>Servlet接口中有哪些方法及Servlet生命周期探秘</h3><p>在Java Web程序中，<strong>Servlet</strong>主要负责接收用户请求<strong>HttpServletRequest</strong>，在<em>*doGet()**，**doPost()<strong>中做相应的处理，并将回应</strong>HttpServletResponse</em>*反馈给用户。Servlet可以设置初始化参数，供Servlet内部使用。</p>
+<p>Servlet接口定义了5个方法，其中<strong>前三个方法与Servlet生命周期相关</strong>：</p>
+<ul>
+<li><strong>void init(ServletConfig config) throws ServletException</strong></li>
+<li><strong>void service(ServletRequest req, ServletResponse resp) throws ServletException, java.io.IOException</strong></li>
+<li><strong>void destory()</strong></li>
+<li>java.lang.String getServletInfo()</li>
+<li>ServletConfig getServletConfig()</li>
+</ul>
+<p><strong>生命周期：</strong></p>
+<p><strong>Web容器加载Servlet并将其实例化后，Servlet生命周期开始</strong>，容器运行其<strong>init()方法</strong>进行Servlet的初始化；</p>
+<p>请求到达时调用Servlet的<strong>service()方法</strong>，service()方法会根据需要调用与请求对应的<strong>doGet或doPost</strong>等方法；</p>
+<p>当服务器关闭或项目被卸载时服务器会将Servlet实例销毁，此时会调用Servlet的<strong>destroy()方法</strong>。</p>
+<p><strong>init方法和destory方法只会执行一次，service方法客户端每次请求Servlet都会执行</strong>。Servlet中有时会用到一些需要初始化与销毁的资源，因此可以把初始化资源的代码放入init方法中，销毁资源的代码放入destroy方法中，这样就不需要每次处理客户端的请求都要初始化与销毁资源。</p>
+<h3 id="如果客户端禁止-cookie-能实现-session-还能用吗？"><a href="#如果客户端禁止-cookie-能实现-session-还能用吗？" class="headerlink" title="如果客户端禁止 cookie 能实现 session 还能用吗？"></a>如果客户端禁止 cookie 能实现 session 还能用吗？</h3><p>Cookie 与 Session，一般认为是两个独立的东西，Session采用的是在服务器端保持状态的方案，而Cookie采用的是在客户端保持状态的方案。</p>
+<p>但为什么禁用Cookie就不能得到Session呢？因为Session是用Session ID来确定当前对话所对应的服务器Session，而Session ID是通过Cookie来传递的，禁用Cookie相当于失去了Session ID，也就得不到Session了。</p>
+<p>假定用户关闭Cookie的情况下使用Session，其实现途径有以下几种：</p>
+<ol>
+<li>手动通过URL传值、隐藏表单传递Session ID。</li>
+<li>用文件、数据库等形式保存Session ID，在跨页过程中手动调用。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">Https中数字证书的原理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>网络请求方式通常分为两种，分别是HTTP请求和HTTPS请求，其中HTTP的传输属于明文传输，在传输的过程中容易被人截取并且偷窥其中的内容，而HTTPS是一种在HTTP的基础上加了SSL&#x2F;TLS层（安全套接层）的安全的超文本传输协议，其传输的内容是通过加密得到的，所以说是一种安全的传输。</p>
+<p>说到加密算法，先来了解一下两种常用的加密方式，分别是对称加密和非对称加密：</p>
+<p>1.对称加密：加密使用的秘钥和解密使用的秘钥是相同的，也就是说加密和解密都使用同一个秘钥，加密算法是公开的，秘钥是加密者和解密者绝对保密的。</p>
+<p>2.非对称加密：加密使用的秘钥和解密使用的秘钥是不相同的，HTTPS在数字证书验证的时候，采用的RSA密码体制就是一种非对称加密。</p>
+<p>RSA是一种公钥秘钥密码体制，现在使用非常广泛，这个密码体制分为三部分，公钥、私钥、加密算法，其中公钥和加密算法是公布的，私钥是自己保密的。这种机制最大的特点是，通过公钥加密的密文只有对应的私钥才能解密，同样通过私钥加密的密文也只有对应的公钥才能解密。下面我们将会讲到HTTPS是如何通过RSA这种密码体制去验证身份的。</p>
+<p>首先了解一下数字证书，它有点像身份证，是由权威的CA机构颁发的，证书的主要内容有：公钥（Public Key）、ISSUER（证书的发布机构）、Subject（证书持有者）、证书有效期、签名算法、指纹及指纹算法。</p>
+<p>下面csdn博客的CA证书内容：</p>
+<p><img src="/images/csdnCA%E8%AF%81%E4%B9%A6%E5%86%85%E5%AE%B9.png" alt="图片" title="csdnCA证书内容"></p>
+<p>可以看到公钥是一串很长的2048 Bits的字符串，同时也可以看到&lt;使用者&gt;的内容包含了csdn.net网址，这个网址是CSDN唯一拥有的，后面验证链接url是否正确的时候用到，还有颁发者、有效期、签名哈希算法等等。当然还有指纹及指纹算法等其他内容，我们滚动到下面看看另外一个截图</p>
+<p><img src="/images/%E8%AF%81%E4%B9%A6%E8%AF%A6%E6%83%85.png" alt="图片" title="证书详情"></p>
+<p>上面是CSDN网站CA证书，颁发者是GeoTrust，它就是权威的CA机构之一。到这里特别说明一下，CA机构除了给别人颁发证书以外，它也有自己的证书，为了区分我们称它为根证书，根证书也有自己的公钥和私钥，我们称之为根公钥和根私钥。然后根公钥和加密算法是向外公布的，而根私钥是机构自己绝对保密的。这个根证书在验证证书的过程中起着核心的作用。</p>
+<p>指纹是什么？指纹是一个证书的签名，是通过指纹算法sha1计算出来的一个hash值，是用来验证证书内容有没有被篡改的。证书在发布之前，CA机构会把所颁发证书的内容用自己的根私钥通过指纹算法计算得到一个hash值，这个hash值只有对应的根公钥才能解密，所以在验证证书的时候，我们通过同样的指纹算法将证书内容通过计算得到另一个hash值，如果这个hash值跟证书上的签名解析出来的hash值相同，就代表证书没有被篡改过。</p>
+<p>下面基于一个简单的图例，去分析整个HTTPS的数字证书验证过程：</p>
+<p>图示如下：</p>
+<p><img src="/images/HTTPS%E7%9A%84%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E9%AA%8C%E8%AF%81%E8%BF%87%E7%A8%8B.png" alt="图片" title="HTTPS的数字证书验证过程"></p>
+<p>假设这是一个浏览器的HTTPS请求</p>
+<p>一：首先浏览器通过URL网址去请求某个后台服务器，后台接收到请求后，就会给浏览器发送一个自己的CA数字证书。</p>
+<p>二：浏览器接收到数字证书以后，就要开始进行验证工作了。首先从证书的内容中获取证书的颁发机构，然后从浏览器系统中去寻找此颁发机构是否为浏览器的信任机构。这里解析一下，世界上就几个权威的CA机构，这几个机构的信息都是预先嵌入到我们的浏览器系统中的。如果收到的一个数字证书但其颁发机构没有在我们浏览器系统中的，那么就会有警告提示无法确认证书的真假。如果是受信任的机构，那么就到下一步。</p>
+<p>此时我们就可以从浏览器中找到CA机构的根公钥，用这个公钥去解析证书的签名得到一个hash值H1，上面提到过，这个签名是证书发布之前CA机构用自己的根私钥加密而成的，所以这里只能由根证书的根公钥去解密。然后用证书的指纹算法对证书的内容再进行hash计算得到另一个hash值H2，如果此时H1和H2是相等的，就代表证书没有被修改过。在证书没有被修改过的基础上，再检查证书上的使用者的URL（比如csdn.net）和我们请求的URL是否相等，如果相等，那么就可以证明当前浏览器连接的网址也是正确的，而不是一些钓鱼网之类的。</p>
+<p>这里我们假设，如果浏览器的连接被某个钓鱼网截取了，钓鱼网也可以发一个自己的证书给浏览器，然后也可以通过证书没有被篡改的验证，但是在证书没有被篡改的情况下，通过对比证书上的URL和我们请求的URL，就可以发现这个证书的URL不是我们所要连接的网址，所以说钓鱼网也骗不了我们。</p>
+<p>看到这里如果还不是很明白证书验证过程的话，我特别解析一下，我们知道CA机构有自己的根公钥和根私钥。在证书颁发之前，机构会用根私钥将这个证书内容加密得到一个签名，这个签名只能用对应的根公钥去解密。在客户端（浏览器）收到服务端发过来的证书以后，我们首先从浏览器中拿到机构的根公钥，用这个根公钥去解析证书的签名得到一个哈希值H1，这个H1代表证书的原始内容，假设这个证书上的签名是不法分子伪造的，但是伪造的签名不可能是根私钥加密生成的（因为根私钥是CA机构私有），所以根公钥也不可能去解密任何第三方生成的签名（加密内容只能由对应的公钥私钥解析）。然后我们再用同样的哈希算法对收证书内容进行计算得到哈希值H2，通过对比H1和H2是否相等就知道证书有没有被褚篡改过了。讲到这里，我们应该明白证书是否被篡改的验证机制了吧。</p>
+<p>三：到这里，已经验证了证书是没有被篡改的并且确认连接的URL也是正确的，然后我们获取到了证书上的公钥。下一步有一个很重要的任务就是，如何将一个对称加密算法的秘钥安全地发给服务器。</p>
+<p>首先随机生成一个字符串S作为我们的秘钥，然后通过证书公钥加密成密文，将密文发送给服务器。因为此密文是用公钥加密的，这是一个非对称加密，我们知道，这个密文只有私钥的持有者才能进行解密，所以说任何第三方截取到密文也是没用的，因为没有对应的私钥所以解析不出来。</p>
+<p>一个关键步骤，发送密文的时候也会对消息内容进行签名操作。签名上面讲解过，就是对密文内容进行hash计算得到的一个hash值，将这个签名加密以后和消息内容一起发送出去。接收方收到消息以后，通过私钥解析出密文和签名的hash值，同时也会对接收的消息内容进行同样的计算得到另一个hash值，通过比对两个hash值是否相同来判断密文是否有修改过。</p>
+<p>四：通过了上面的步骤以后，此时客户端和服务端都持有了对称加密算法的秘钥，然后兄弟两就可以愉快地安全通信了。</p>
+<p>总结：数字证书的验证有两个重要的步骤，第一是验证数字证书没有被篡改以及连接的URL是否正确，第二是通过RSA机制的原理安全地将对称加密算法的秘钥发送给对方。这两步都完成以后，整个HTTPS的数字证书的验证就算是成功了。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/jvm/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/13/jvm/Java%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Java线程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">Java线程</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="线程的生命周期及基本状态"><a href="#线程的生命周期及基本状态" class="headerlink" title="线程的生命周期及基本状态"></a>线程的生命周期及基本状态</h1><p><img src="/images/%E7%BA%BF%E7%A8%8B%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81.png" alt="图片"></p>
+<ol>
+<li><p>新建(new)：新创建了一个线程对象。</p>
+</li>
+<li><p>可运行(runnable)：线程对象创建后，当调用线程对象的 start()方法，该线程处于就绪状态，等待被线程调度选中，获取cpu的使用权。</p>
+</li>
+<li><p>运行(running)：可运行状态(runnable)的线程获得了cpu时间片（timeslice），执行程序代码。注：就绪状态是进入到运行状态的唯一入口，也就是说，线程要想进入运行状态执行，首先必须处于就绪状态中；</p>
+</li>
+<li><p>阻塞(block)：处于运行状态中的线程由于某种原因，暂时放弃对 CPU的使用权，停止执行，此时进入阻塞状态，直到其进入到就绪状态，才有机会再次被 CPU 调用以进入到运行状态。</p>
+<p>阻塞的情况分三种：<br>(一). 等待阻塞：运行状态中的线程执行 wait()方法，JVM会把该线程放入等待队列(waitting queue)中，使本线程进入到等待阻塞状态；<br>(二). 同步阻塞：线程在获取 synchronized 同步锁失败(因为锁被其它线程所占用)，则JVM会把该线程放入锁池(lock pool)中，线程会进入同步阻塞状态；<br>(三). 其他阻塞: 通过调用线程的 sleep()或 join()或发出了 I&#x2F;O 请求时，线程会进入到阻塞状态。当 sleep()状态超时、join()等待线程终止或者超时、或者 I&#x2F;O 处理完毕时，线程重新转入就绪状态。</p>
+</li>
+<li><p>死亡(dead)：线程run()、main()方法执行结束，或者因异常退出了run()方法，则该线程结束生命周期。死亡的线程不可再次复生。</p>
+</li>
+</ol>
+<h1 id="创建线程的几种方式"><a href="#创建线程的几种方式" class="headerlink" title="创建线程的几种方式"></a>创建线程的几种方式</h1><ul>
+<li>继承 Thread 类；</li>
+<li>实现 Runnable 接口；</li>
+<li>实现 Callable 接口；</li>
+<li>使用 Executors 工具类创建线程池</li>
+</ul>
+<h2 id="继承-Thread-类"><a href="#继承-Thread-类" class="headerlink" title="继承 Thread 类"></a><strong>继承 Thread 类</strong></h2><ol>
+<li>定义一个Thread类的子类，重写run方法，将相关逻辑实现，run()方法就是线程要执行的业务逻辑方法</li>
+<li>创建自定义的线程子类对象</li>
+<li>调用子类实例的star()方法来启动线程</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class MyThread extends Thread &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; run()方法正在执行...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class TheadTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        MyThread myThread = new MyThread(); 	</span><br><span class="line">        myThread.start();</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; main()方法执行结束&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main main()方法执行结束</span><br><span class="line">Thread-0 run()方法正在执行...</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现-Runnable-接口"><a href="#实现-Runnable-接口" class="headerlink" title="实现 Runnable 接口"></a><strong>实现 Runnable 接口</strong></h2><ol>
+<li>定义Runnable接口实现类MyRunnable，并重写run()方法</li>
+<li>创建MyRunnable实例myRunnable，以myRunnable作为target创建Thead对象，<strong>该Thread对象才是真正的线程对象</strong></li>
+<li>调用线程对象的start()方法</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class MyRunnable implements Runnable &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; run()方法执行中...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class RunnableTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        MyRunnable myRunnable = new MyRunnable();</span><br><span class="line">        Thread thread = new Thread(myRunnable);</span><br><span class="line">        thread.start();</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; main()方法执行完成&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main main()方法执行完成</span><br><span class="line">Thread-0 run()方法执行中...</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现-Callable-接口"><a href="#实现-Callable-接口" class="headerlink" title="实现 Callable 接口"></a><strong>实现 Callable 接口</strong></h2><ol>
+<li>创建实现Callable接口的类myCallable</li>
+<li>以myCallable为参数创建FutureTask对象</li>
+<li>将FutureTask作为参数创建Thread对象</li>
+<li>调用线程对象的start()方法</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class MyCallable implements Callable&lt;Integer&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public Integer call() &#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; call()方法执行中...&quot;);</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class CallableTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;(new MyCallable());</span><br><span class="line">        Thread thread = new Thread(futureTask);</span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">            System.out.println(&quot;返回结果 &quot; + futureTask.get());</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; main()方法执行完成&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Thread-0 call()方法执行中...</span><br><span class="line">返回结果 1</span><br><span class="line">main main()方法执行完成</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-Executors-工具类创建线程池"><a href="#使用-Executors-工具类创建线程池" class="headerlink" title="使用 Executors 工具类创建线程池"></a><strong>使用 Executors 工具类创建线程池</strong></h2><p>Executors提供了一系列工厂方法用于创先线程池，返回的线程池都实现了ExecutorService接口。</p>
+<p>主要有newFixedThreadPool，newCachedThreadPool，newSingleThreadExecutor，newScheduledThreadPool，后续详细介绍这四种线程池</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class MyRunnable implements Runnable &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot; run()方法执行中...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class SingleThreadExecutorTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line">        MyRunnable runnableTest = new MyRunnable();</span><br><span class="line">        for (int i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">            executorService.execute(runnableTest);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;线程任务开始执行&quot;);</span><br><span class="line">        executorService.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">线程任务开始执行</span><br><span class="line">pool-1-thread-1 is running...</span><br><span class="line">pool-1-thread-1 is running...</span><br><span class="line">pool-1-thread-1 is running...</span><br><span class="line">pool-1-thread-1 is running...</span><br><span class="line">pool-1-thread-1 is running...</span><br></pre></td></tr></table></figure>
+
+<h2 id="runnable-和-callable-的区别"><a href="#runnable-和-callable-的区别" class="headerlink" title="runnable 和 callable 的区别"></a>runnable 和 callable 的区别</h2><p>相同点</p>
+<ul>
+<li>都是接口</li>
+<li>都可以编写多线程程序</li>
+<li>都采用Thread.start()启动线程</li>
+</ul>
+<p>主要区别</p>
+<ul>
+<li>Runnable 接口 run 方法无返回值；Callable 接口 call 方法有返回值，是个泛型，和Future、FutureTask配合可以用来获取异步执行的结果</li>
+<li>Runnable 接口 run 方法只能抛出运行时异常，且无法捕获处理；Callable 接口 call 方法允许抛出异常，可以获取异常信息</li>
+</ul>
+<p><strong>注</strong>：Callalbe接口支持返回执行结果，需要调用FutureTask.get()得到，此方法会阻塞主进程的继续往下执行，如果不调用不会阻塞。</p>
+<h2 id="线程的-run-和-start-的区别"><a href="#线程的-run-和-start-的区别" class="headerlink" title="线程的 run()和 start()的区别"></a>线程的 run()和 start()的区别</h2><p>每个线程都是通过某个特定Thread对象所对应的方法run()来完成其操作的，run()方法称为线程体。通过调用Thread类的start()方法来启动一个线程。</p>
+<p>start() 方法用于启动线程，run() 方法用于执行线程的运行时代码。run() 可以重复调用，而 start() 只能调用一次。</p>
+<p>start()方法来启动一个线程，真正实现了多线程运行。调用start()方法无需等待run方法体代码执行完毕，可以直接继续执行其他的代码； 此时线程是处于就绪状态，并没有运行。 然后通过此Thread类调用方法run()来完成其运行状态， run()方法运行结束， 此线程终止。然后CPU再调度其它线程。</p>
+<p>run()方法是在本线程里的，只是线程里的一个函数，而不是多线程的。 如果直接调用run()，其实就相当于是调用了一个普通函数而已，直接待用run()方法必须等待run()方法执行完毕才能执行下面的代码，所以执行路径还是只有一条，根本就没有线程的特征，所以在多线程执行时要使用start()方法而不是run()方法。</p>
+<p><strong>为什么我们调用 start() 方法时会执行 run() 方法，为什么我们不能直接调用 run() 方法？</strong></p>
+<p>new 一个 Thread，线程进入了新建状态。调用 start() 方法，会启动一个线程并使线程进入了就绪状态，当分配到时间片后就可以开始运行了。 start() 会执行线程的相应准备工作，然后自动执行 run() 方法的内容，这是真正的多线程工作。</p>
+<p>而直接执行 run() 方法，会把 run 方法当成一个 main 线程下的普通方法去执行，并不会在某个线程中执行它，所以这并不是多线程工作。</p>
+<p>总结： 调用 start 方法方可启动线程并使线程进入就绪状态，而 run 方法只是 thread 的一个普通方法调用，还是在主线程里执行。</p>
+<h2 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h2><p>FutureTask 表示一个异步运算的任务。FutureTask 里面可以传入一个 Callable 的具体实现类，可以对这个异步运算的任务的结果进行等待获取、判断是否已经完成、取消任务等操作。只有当运算完成的时候结果才能取回，如果运算尚未完成 get 方法将会阻塞。一个 FutureTask 对象可以对调用了 Callable 和 Runnable 的对象进行包装，由于 FutureTask 也是Runnable 接口的实现类，所以 FutureTask 也可以放入线程池中。</p>
+<h1 id="为什么用线程池"><a href="#为什么用线程池" class="headerlink" title="为什么用线程池"></a>为什么用线程池</h1><ol>
+<li>创建&#x2F;销毁线程伴随着系统开销，过于频繁的创建&#x2F;销毁线程，会很大程度上影响处理效率，应用能够更加充分合理地协调利用CPU、内存、网络、I&#x2F;O等系统资源；</li>
+<li>线程并发数量过多，抢占系统资源从而导致阻塞，利用线程池管理并复用线程，控制最大并发数；</li>
+<li>使用线程池可以对线程进行一些简单的管理，实现任务线程队列缓存策略和拒绝机制，实现某些与时间相关的功能，例如定时执行、周期执行等，另外还可以隔离线程环境；</li>
+</ol>
+<h1 id="ThreadPoolExecutor的重要参数"><a href="#ThreadPoolExecutor的重要参数" class="headerlink" title="ThreadPoolExecutor的重要参数"></a>ThreadPoolExecutor的重要参数</h1><h2 id="corePoolSize：核心线程数"><a href="#corePoolSize：核心线程数" class="headerlink" title="corePoolSize：核心线程数"></a>corePoolSize：核心线程数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">* 核心线程会一直存活，即使没有任务需要执行</span><br><span class="line">* 当线程数小于核心线程数时，即使有线程空闲，线程池也会优先创建新线程处理</span><br><span class="line">* 设置allowCoreThreadTimeout=true（默认false）时，核心线程会超时关闭</span><br></pre></td></tr></table></figure>
+
+<p>一般来说：</p>
+<ul>
+<li>CPU密集型：corePoolSize &#x3D; CPU核数 + 1</li>
+<li>IO密集型：corePoolSize &#x3D; CPU核数 * 2</li>
+</ul>
+<h2 id="maximumPoolSize：最大线程数"><a href="#maximumPoolSize：最大线程数" class="headerlink" title="maximumPoolSize：最大线程数"></a>maximumPoolSize：最大线程数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* 当线程数&gt;=corePoolSize，且任务队列已满时。线程池会创建新线程来处理任务</span><br><span class="line">* 当线程数=maxPoolSize，且任务队列已满时，线程池会拒绝处理任务而抛出异常</span><br></pre></td></tr></table></figure>
+
+<h2 id="keepAliveTime：线程空闲时间"><a href="#keepAliveTime：线程空闲时间" class="headerlink" title="keepAliveTime：线程空闲时间"></a>keepAliveTime：线程空闲时间</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* 当线程空闲时间达到keepAliveTime时，线程会退出，直到线程数量=corePoolSize</span><br><span class="line">* 如果allowCoreThreadTimeout=true，则会直到线程数量=0</span><br></pre></td></tr></table></figure>
+
+<h2 id="unit：线程空闲时间的单位"><a href="#unit：线程空闲时间的单位" class="headerlink" title="unit：线程空闲时间的单位"></a>unit：线程空闲时间的单位</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* NANOSECONDS ： 1微毫秒 = 1微秒 / 1000</span><br><span class="line">* MICROSECONDS ： 1微秒 = 1毫秒 / 1000</span><br><span class="line">* MILLISECONDS ： 1毫秒 = 1秒 /1000</span><br><span class="line">* SECONDS ： 秒</span><br><span class="line">* MINUTES ： 分</span><br><span class="line">* HOURS ： 小时</span><br><span class="line">* DAYS ： 天</span><br></pre></td></tr></table></figure>
+
+<h2 id="workQueue：用于缓存任务的阻塞队列"><a href="#workQueue：用于缓存任务的阻塞队列" class="headerlink" title="workQueue：用于缓存任务的阻塞队列"></a>workQueue：用于缓存任务的阻塞队列</h2><p>常用的workQueue类型：</p>
+<ul>
+<li>SynchronousQueue：这个队列接收到任务的时候，会直接提交给线程处理，而不保留它，如果所有线程都在工作怎么办？那就新建一个线程来处理这个任务！所以为了保证不出现&lt;线程数达到了maximumPoolSize而不能新建线程&gt;的错误，使用这个类型队列的时候，maximumPoolSize一般指定成Integer.MAX_VALUE，即无限大</li>
+<li>LinkedBlockingQueue：这个队列接收到任务的时候，如果当前线程数小于核心线程数，则新建线程(核心线程)处理任务；如果当前线程数等于核心线程数，则进入队列等待。由于这个队列没有最大值限制，即所有超过核心线程数的任务都将被添加到队列中，这也就导致了maximumPoolSize的设定失效，因为总线程数永远不会超过corePoolSize</li>
+<li>ArrayBlockingQueue：可以限定队列的长度，接收到任务的时候，如果没有达到corePoolSize的值，则新建线程(核心线程)执行任务，如果达到了，则入队等候，如果队列已满，则新建线程(非核心线程)执行任务，又如果总线程数到了maximumPoolSize，并且队列也满了，则发生错误</li>
+<li>DelayQueue：队列内元素必须实现Delayed接口，这就意味着你传进去的任务必须先实现Delayed接口。这个队列接收到任务时，首先先入队，只有达到了指定的延时时间，才会执行任务</li>
+</ul>
+<h2 id="handler：表示当workQueue已满，且池中的线程数达到maximumPoolSize时，线程池拒绝添加新任务时采取的策略。"><a href="#handler：表示当workQueue已满，且池中的线程数达到maximumPoolSize时，线程池拒绝添加新任务时采取的策略。" class="headerlink" title="handler：表示当workQueue已满，且池中的线程数达到maximumPoolSize时，线程池拒绝添加新任务时采取的策略。"></a>handler：表示当workQueue已满，且池中的线程数达到maximumPoolSize时，线程池拒绝添加新任务时采取的策略。</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">* AbortPolicy 丢弃任务，抛运行时异常 （默认）</span><br><span class="line">* CallerRunsPolicy 执行任务</span><br><span class="line">* DiscardPolicy 忽视，什么都不会发生</span><br><span class="line">* DiscardOldestPolicy 从队列中踢出最先进入队列（最后一个执行）的任务</span><br><span class="line">* 实现RejectedExecutionHandler接口，可自定义处理器</span><br></pre></td></tr></table></figure>
+
+<h2 id="threadFactory：指定创建线程的工厂"><a href="#threadFactory：指定创建线程的工厂" class="headerlink" title="threadFactory：指定创建线程的工厂"></a>threadFactory：指定创建线程的工厂</h2><p>在阿里巴巴java开发手册以及一些sonar扫描规则中，需要手动创建线程池，和线程工厂，来对线程池进行命名。例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">private static final ThreadFactory NAMED_THREAD_FACTORY = new ThreadFactoryBuilder()</span><br><span class="line">            .setNameFormat(&quot;thread-name-%d&quot;).build();</span><br><span class="line">    private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(1, 1,</span><br><span class="line">            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue&lt;&gt;(), NAMED_THREAD_FACTORY);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="图片"></p>
+<h1 id="默认常用线程池"><a href="#默认常用线程池" class="headerlink" title="默认常用线程池"></a>默认常用线程池</h1><p>虽然是默认常用，但是如果加了sonar规则的话这几个还不能直接用。。还是要用线程池的构造函数自己去构造。</p>
+<h2 id="newFixedThreadPool"><a href="#newFixedThreadPool" class="headerlink" title="newFixedThreadPool"></a>newFixedThreadPool</h2><p>创建固定线程数的线程池因为最大线程数和核心线程数相等，并且是无界队列，可控制线程最大并发数（同时执行的线程数），超出的线程会在队列中等待；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newFixedThreadPool(int nThreads) &#123;</span><br><span class="line">        return new ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                      0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                      new LinkedBlockingQueue&lt;Runnable&gt;());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="newSingleThreadExecutor"><a href="#newSingleThreadExecutor" class="headerlink" title="newSingleThreadExecutor"></a>newSingleThreadExecutor</h2><p>单任务队列的线程池,最大线程数和核心线程数都是1，无界队列，所有的任务都按照顺序进行执行；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newSingleThreadExecutor() &#123;</span><br><span class="line">        return new FinalizableDelegatedExecutorService</span><br><span class="line">            (new ThreadPoolExecutor(1, 1,</span><br><span class="line">                                    0L, TimeUnit.MILLISECONDS,</span><br><span class="line">                                    new LinkedBlockingQueue&lt;Runnable&gt;()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ScheduledThreadPool"><a href="#ScheduledThreadPool" class="headerlink" title="ScheduledThreadPool"></a>ScheduledThreadPool</h2><p>支持定时周期性执行任务的线程池；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) &#123;</span><br><span class="line">       return new ScheduledThreadPoolExecutor(corePoolSize);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="CachedThreadPool"><a href="#CachedThreadPool" class="headerlink" title="CachedThreadPool"></a>CachedThreadPool</h2><p>线程数无限制 有空闲线程则复用空闲线程，若无空闲线程则新建线程 一定程序减少频繁创建&#x2F;销毁线程，减少系统开销.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static ExecutorService newCachedThreadPool() &#123;</span><br><span class="line">        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,</span><br><span class="line">                                      60L, TimeUnit.SECONDS,</span><br><span class="line">                                      new SynchronousQueue&lt;Runnable&gt;());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="任务的提交"><a href="#任务的提交" class="headerlink" title="任务的提交"></a>任务的提交</h2><p>submit方法源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public Future&lt;?&gt; submit(Runnable task) &#123;</span><br><span class="line">    if (task == null) throw new NullPointerException();</span><br><span class="line">    RunnableFuture&lt;Void&gt; ftask = newTaskFor(task, null);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    return ftask;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">public &lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task) &#123;</span><br><span class="line">    if (task == null) throw new NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    return ftask;</span><br><span class="line">&#125;</span><br><span class="line">public &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result) &#123;</span><br><span class="line">        if (task == null) throw new NullPointerException();</span><br><span class="line">        RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);</span><br><span class="line">        execute(ftask);</span><br><span class="line">        return ftask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  这个方法一共有三个重载方法，分别是重写Callable和Runnable方法的重载。submit的实现方法位于抽象类AbstractExecutorService中，而此时execute方法还未实现（而是在AbstractExecutorService的继承类ThreadPoolExecutor中实现），可以看出无论哪个submit方法都最终调用了execute方法。</p>
+<hr>
+<p>execute方法源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public void execute(Runnable command) &#123;</span><br><span class="line">    if (command == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line"> </span><br><span class="line">    int c = ctl.get();</span><br><span class="line">    if (workerCountOf(c) &lt; corePoolSize) &#123;</span><br><span class="line">        if (addWorker(command, true))</span><br><span class="line">            return;</span><br><span class="line">        c = ctl.get();</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    if (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">        int recheck = ctl.get();</span><br><span class="line">        if (! isRunning(recheck) &amp;&amp; remove(command))</span><br><span class="line">            reject(command);</span><br><span class="line">        else if (workerCountOf(recheck) == 0)</span><br><span class="line">            addWorker(null, false);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (!addWorker(command, false))</span><br><span class="line">        reject(command);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  简要分析一下execute源码，执行一个Runnable对象时，首先通过workerCountOf(c)获取线程池中线程的数量，如果池中的数量小于corePoolSize就调用addWorker添加一个线程来执行这个任务。否则通过workQueue.offer(command)方法入列。如果入列成功还需要在一次判断池中的线程数，因为我们创建线程池时可能要求核心线程数量为0，所以我们必须使用addWorker(null, false)来创建一个临时线程去阻塞队列中获取任务来执行。</p>
+<p>第二次addWorker是在工作线程为0时调用的，我们现在假设此时是创建核心线程，即<code>false</code>改为<code>true</code>；那么<code>addWorker</code>方法中<code>wc &gt;= (core ? corePoolSize : maximumPoolSize)</code>这个地方会去判断当前工作线程是否大于核心线程，在高并发的情况下，会存在其他线程将工作线程的数量创建的大于核心线程数，导致返回<code>false</code>，并且不会创建新线程，虽然有工作线程的存在，但是会导致原本可以及时处理的任务，要去排队执行。</p>
+<p>  isRunning(c) 的作用是判断线程池是否处于运行状态，如果入列后发现线程池已经关闭，则出列。不需要在入列前判断线程池的状态，因为判断一个线程池工作处于RUNNING状态到执行入列操作这段时间，线程池可能被其它线程关闭了，所以提前判断毫无意义。</p>
+<hr>
+<p>其中addWorker方法就是创建一个线程来执行Runnable对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">private boolean addWorker(Runnable firstTask, boolean core) &#123;</span><br><span class="line">        retry:</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            int c = ctl.get();</span><br><span class="line">            int rs = runStateOf(c);</span><br><span class="line"></span><br><span class="line">            // Check if queue empty only if necessary.</span><br><span class="line">            //判断线程池的是否可以接收新任务</span><br><span class="line">            if (rs &gt;= SHUTDOWN &amp;&amp;</span><br><span class="line">                ! (rs == SHUTDOWN &amp;&amp;</span><br><span class="line">                   firstTask == null &amp;&amp;</span><br><span class="line">                   ! workQueue.isEmpty()))</span><br><span class="line">                return false;</span><br><span class="line"></span><br><span class="line">            for (;;) &#123;</span><br><span class="line">            	//获取工作线程的数量</span><br><span class="line">                int wc = workerCountOf(c);</span><br><span class="line">                //判断工作线程的数量是否大于等于线程池的上限或者核心或者最大线程数</span><br><span class="line">                if (wc &gt;= CAPACITY ||</span><br><span class="line">                    wc &gt;= (core ? corePoolSize : maximumPoolSize))</span><br><span class="line">                    return false;</span><br><span class="line">                //使用cas增加工作线程数</span><br><span class="line">                if (compareAndIncrementWorkerCount(c))</span><br><span class="line">                    break retry;</span><br><span class="line">                c = ctl.get();  // Re-read ctl</span><br><span class="line">                //如果添加失败，并且线程池状态发生了改变，重来一遍</span><br><span class="line">                if (runStateOf(c) != rs)</span><br><span class="line">                    continue retry;</span><br><span class="line">                // else CAS failed due to workerCount change; retry inner loop</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">		//上面的逻辑是考虑是否能够添加线程，如果可以使用cas来增加工作线程数量</span><br><span class="line">		//下面正式启动线程</span><br><span class="line">        boolean workerStarted = false;</span><br><span class="line">        boolean workerAdded = false;</span><br><span class="line">        Worker w = null;</span><br><span class="line">        try &#123;</span><br><span class="line">        	//新建worker</span><br><span class="line">            w = new Worker(firstTask);</span><br><span class="line">            // 获取当前线程</span><br><span class="line">            final Thread t = w.thread;</span><br><span class="line">            if (t != null) &#123;</span><br><span class="line">            	//获取重入锁</span><br><span class="line">                final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">                //锁住</span><br><span class="line">                mainLock.lock();</span><br><span class="line">                try &#123;</span><br><span class="line">                    // Recheck while holding lock.</span><br><span class="line">                    // Back out on ThreadFactory failure or if</span><br><span class="line">                    // shut down before lock acquired.</span><br><span class="line">                    int rs = runStateOf(ctl.get());</span><br><span class="line">					// rs &lt; SHUTDOWN  -- 状态即为：RUNNING</span><br><span class="line">					//rs == SHUTDOWN &amp;&amp; firstTask == null </span><br><span class="line">                    if (rs &lt; SHUTDOWN ||</span><br><span class="line">                        (rs == SHUTDOWN &amp;&amp; firstTask == null)) &#123;</span><br><span class="line">                        //如果线程已经启动，抛出异常</span><br><span class="line">                        if (t.isAlive()) // precheck that t is startable</span><br><span class="line">                            throw new IllegalThreadStateException();</span><br><span class="line">                        //workers是一个HashSet，必须在锁住的情况下，操作</span><br><span class="line">                        workers.add(w);</span><br><span class="line">                        int s = workers.size();</span><br><span class="line">                        //设置largestPoolSize ，标记workerAdded </span><br><span class="line">                        if (s &gt; largestPoolSize)</span><br><span class="line">                            largestPoolSize = s;</span><br><span class="line">                        workerAdded = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    mainLock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">                //如果添加成功，启动线程</span><br><span class="line">                if (workerAdded) &#123;</span><br><span class="line">                    t.start();</span><br><span class="line">                    workerStarted = true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">        	//启动线程失败,回滚</span><br><span class="line">            if (! workerStarted)</span><br><span class="line">                addWorkerFailed(w);</span><br><span class="line">        &#125;</span><br><span class="line">        return workerStarted;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>  第一个参数firstTask不为null，则创建的线程就会先执行firstTask对象，然后去阻塞队列中取任务，否直接到阻塞队列中获取任务来执行。第二个参数，core参数为真，则用corePoolSize作为池中线程数量的最大值；为假，则以maximumPoolSize作为池中线程数量的最大值。</p>
+<h2 id="任务的执行"><a href="#任务的执行" class="headerlink" title="任务的执行"></a>任务的执行</h2><p>runWorker源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">final void runWorker(Worker w) &#123;</span><br><span class="line">    Thread wt = Thread.currentThread();</span><br><span class="line">    Runnable task = w.firstTask;</span><br><span class="line">    w.firstTask = null;</span><br><span class="line">    w.unlock(); // allow interrupts</span><br><span class="line">    boolean completedAbruptly = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        while (task != null || (task = getTask()) != null) &#123;</span><br><span class="line">            w.lock();</span><br><span class="line">            // If pool is stopping, ensure thread is interrupted;</span><br><span class="line">            // if not, ensure thread is not interrupted.  This</span><br><span class="line">            // requires a recheck in second case to deal with</span><br><span class="line">            // shutdownNow race while clearing interrupt</span><br><span class="line">            if ((runStateAtLeast(ctl.get(), STOP) ||</span><br><span class="line">                 (Thread.interrupted() &amp;&amp;</span><br><span class="line">                  runStateAtLeast(ctl.get(), STOP))) &amp;&amp;</span><br><span class="line">                !wt.isInterrupted())</span><br><span class="line">                wt.interrupt();</span><br><span class="line">            try &#123;</span><br><span class="line">                beforeExecute(wt, task);</span><br><span class="line">                Throwable thrown = null;</span><br><span class="line">                try &#123;</span><br><span class="line">                    task.run();</span><br><span class="line">                &#125; catch (RuntimeException x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Error x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Throwable x) &#123;</span><br><span class="line">                    thrown = x; throw new Error(x);</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    afterExecute(task, thrown);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                task = null;</span><br><span class="line">                w.completedTasks++;</span><br><span class="line">                w.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        completedAbruptly = false;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        processWorkerExit(w, completedAbruptly);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Thread的run方法实际上调用了Worker类的runWorker方法，而Worker类继承了AQS类，并实现了lock、unlock、trylock方法。但是这些方法不是真正意义上的锁，所以在代码中加锁操作和解锁操作没有成对出现。runWorker方法中获取到任务就“加锁”，完成任务后就“解锁”。也就是说在“加锁”到“解锁”的这段时间内，线程处于忙碌状态，而其它时间段，处于空闲状态。线程池就可以通过trylock方法来确定这个线程是否空闲。</p>
+<hr>
+<p>getTask方法的主要作用是从阻塞队列中获取任务。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">   beforeExecute(wt, task)和afterExecute(task, thrown)是个钩子函数，如果我们需要在任务执行之前和任务执行以后进行一些操作，那么我们可以自定义一个继承ThreadPoolExecutor类，并覆盖这两个方法。</span><br><span class="line">private Runnable getTask() &#123;</span><br><span class="line">    boolean timedOut = false; // Did the last poll() time out?</span><br><span class="line"> </span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        int c = ctl.get();</span><br><span class="line">        int rs = runStateOf(c);</span><br><span class="line"> </span><br><span class="line">        // Check if queue empty only if necessary.</span><br><span class="line">        if (rs &gt;= SHUTDOWN &amp;&amp; (rs &gt;= STOP || workQueue.isEmpty())) &#123;</span><br><span class="line">            decrementWorkerCount();</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        int wc = workerCountOf(c);</span><br><span class="line"> </span><br><span class="line">        // Are workers subject to culling?</span><br><span class="line">        boolean timed = allowCoreThreadTimeOut || wc &gt; corePoolSize;</span><br><span class="line"> </span><br><span class="line">        if ((wc &gt; maximumPoolSize || (timed &amp;&amp; timedOut))</span><br><span class="line">            &amp;&amp; (wc &gt; 1 || workQueue.isEmpty())) &#123;</span><br><span class="line">            if (compareAndDecrementWorkerCount(c))</span><br><span class="line">                return null;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        try &#123;</span><br><span class="line">            Runnable r = timed ?</span><br><span class="line">                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :</span><br><span class="line">                workQueue.take();</span><br><span class="line">            if (r != null)</span><br><span class="line">                return r;</span><br><span class="line">            timedOut = true;</span><br><span class="line">        &#125; catch (InterruptedException retry) &#123;</span><br><span class="line">            timedOut = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线程池的关闭"><a href="#线程池的关闭" class="headerlink" title="线程池的关闭"></a>线程池的关闭</h2><p>shutdown源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public void shutdown() &#123;</span><br><span class="line">    final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">    mainLock.lock();</span><br><span class="line">    try &#123;</span><br><span class="line">        checkShutdownAccess();</span><br><span class="line">        advanceRunState(SHUTDOWN);</span><br><span class="line">        interruptIdleWorkers();</span><br><span class="line">        onShutdown(); // hook for ScheduledThreadPoolExecutor</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        mainLock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    tryTerminate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>advanceRunState(SHUTDOWN)的作用是通过CAS操作将线程池的状态更改为SHUTDOWN状态。<br>interruptIdleWorkers是对空闲的线程进行中断，它实际上调用了重载带参数的函数interruptIdleWorkers(false)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">private void interruptIdleWorkers(boolean onlyOne) &#123;</span><br><span class="line">    final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">    mainLock.lock();</span><br><span class="line">    try &#123;</span><br><span class="line">        for (Worker w : workers) &#123;</span><br><span class="line">            Thread t = w.thread;</span><br><span class="line">            if (!t.isInterrupted() &amp;&amp; w.tryLock()) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    t.interrupt();</span><br><span class="line">                &#125; catch (SecurityException ignore) &#123;</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    w.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (onlyOne)</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        mainLock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过workers容器，遍历池中的线程，对每个线程进行tryLock()操作，如果成功说明线程空闲，则设置其中断标志位。而线程是否响应中断则由任务的编写者决定。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP%E5%92%8CHTTPS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP%E5%92%8CHTTPS/" class="post-title-link" itemprop="url">Http和Https</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="什么是HTTP"><a href="#什么是HTTP" class="headerlink" title="什么是HTTP"></a>什么是HTTP</h1><p>HTTP协议（HyperText Transfer<br>Protocol，超文本传输协议）是用于从WWW服务器传输超文本到本地浏览器的传输协议。它可以使浏览器更加高效，使网络传输减少。它不仅保证计算机正确快速地传输超文本文档，还确定传输文档中的哪一部分，以及哪部分内容首先显示(如文本先于图形)等。<br>HTTP是客户端浏览器或其他程序与Web服务器之间的应用层通信协议。在Internet上的Web服务器上存放的都是超文本信息，客户机需要通过HTTP协议传输所要访问的超文本信息。HTTP包含命令和传输信息，不仅可用于Web访问，也可以用于其他因特网&#x2F;内联网应用系统之间的通信，从而实现各类应用资源超媒体访问的集成。<br>我们在浏览器的地址栏里输入的网站地址叫做URL (Uniform Resource<br>Locator，统一资源定位符)。就像每家每户都有一个门牌地址一样，每个网页也都有一个Internet地址。当你在浏览器的地址框中输入一个URL或是单击一个超级链接时，URL就确定了要浏览的地址。浏览器通过超文本传输协议(HTTP)，将Web服务器上站点的网页代码提取出来，并翻译成漂亮的网页。</p>
+<h2 id="HTTP工作过程"><a href="#HTTP工作过程" class="headerlink" title="HTTP工作过程"></a>HTTP工作过程</h2><p><img src="/images/HTTP%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E6%A8%A1%E5%9E%8B.jpg" alt="HTTP请求响应模型"></p>
+<p>HTTP通信机制是在一次完整的 HTTP 通信过程中，客户端与服务器之间将完成下列7个步骤：</p>
+<ol>
+<li><p><strong>建立 TCP 连接</strong><br>在HTTP工作开始之前，客户端首先要通过网络与服务器建立连接，该连接是通过 TCP 来完成的，该协议与 IP 协议共同构建 Internet，即著名的<br>TCP&#x2F;IP 协议族，因此 Internet 又被称作是 TCP&#x2F;IP 网络。HTTP 是比 TCP<br>更高层次的应用层协议，根据规则，只有低层协议建立之后，才能进行高层协议的连接，因此，首先要建立 TCP 连接，一般 TCP 连接的端口号是80；</p>
+</li>
+<li><p><strong>客户端向服务器发送请求命令</strong><br>一旦建立了TCP连接，客户端就会向服务器发送请求命令；<br>例如：<code>GET/sample/hello.jsp HTTP/1.1</code></p>
+</li>
+<li><p><strong>客户端发送请求头信息</strong><br>客户端发送其请求命令之后，还要以头信息的形式向服务器发送一些别的信息，之后客户端发送了一空白行来通知服务器，它已经结束了该头信息的发送；</p>
+</li>
+<li><p><strong>服务器应答</strong><br>客户端向服务器发出请求后，服务器会客户端返回响应；<br>例如： <code>HTTP/1.1 200 OK</code><br>响应的第一部分是协议的版本号和响应状态码</p>
+</li>
+<li><p><strong>服务器返回响应头信息</strong><br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同响应向用户发送关于它自己的数据及被请求的文档；</p>
+</li>
+<li><p><strong>服务器向客户端发送数据</strong><br>服务器向客户端发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以 Content-Type<br>响应头信息所描述的格式发送用户所请求的实际数据；</p>
+</li>
+<li><p><strong>服务器关闭 TCP 连接</strong><br>一般情况下，一旦服务器向客户端返回了请求数据，它就要关闭 TCP 连接，然后如果客户端或者服务器在其头信息加入了这行代码 <code>Connection:keep- alive</code> ，TCP<br>连接在发送后将仍然保持打开状态，于是，客户端可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
+</li>
+</ol>
+<h2 id="HTTP协议基础"><a href="#HTTP协议基础" class="headerlink" title="HTTP协议基础"></a>HTTP协议基础</h2><h3 id="通过请求和响应的交换达成通信"><a href="#通过请求和响应的交换达成通信" class="headerlink" title="通过请求和响应的交换达成通信"></a>通过请求和响应的交换达成通信</h3><p>应用 HTTP 协议时，必定是一端担任客户端角色，另一端担任服务器端角色。仅从一条通信线路来说，服务器端和客服端的角色是确定的。HTTP<br>协议规定，请求从客户端发出，最后服务器端响应该请求并返回。 <strong>换句话说，肯定是先从客户端开始建立通信的，服务器端在没有接收到请求之前不会发送响应。</strong></p>
+<h3 id="HTTP-是不保存状态的协议"><a href="#HTTP-是不保存状态的协议" class="headerlink" title="HTTP 是不保存状态的协议"></a>HTTP 是不保存状态的协议</h3><p>HTTP 是一种无状态协议。协议自身不对请求和响应之间的通信状态进行保存。也就是说在 HTTP<br>这个级别，协议对于发送过的请求或响应都不做持久化处理。这是为了更快地处理大量事务，确保协议的可伸缩性，而特意把 HTTP 协议设计成如此简单的。<br>可是随着 Web 的不断发展，我们的很多业务都需要对通信状态进行保存。于是我们引入了 Cookie 技术。有了 Cookie 再用 HTTP<br>协议通信，就可以管理状态了。</p>
+<h3 id="使用-Cookie-的状态管理"><a href="#使用-Cookie-的状态管理" class="headerlink" title="使用 Cookie 的状态管理"></a>使用 Cookie 的状态管理</h3><p>Cookie 技术通过在请求和响应报文中写入 Cookie 信息来控制客户端的状态。Cookie 会根据从服务器端发送的响应报文内的一个叫做 Set-<br>Cookie 的首部字段信息，通知客户端保存Cookie。当下次客户端再往该服务器发送请求时，客户端会自动在请求报文中加入 Cookie<br>值后发送出去。服务器端发现客户端发送过来的 Cookie 后，会去检查究竟是从哪一个客户端发来的连接请求，然后对比服务器上的记录，最后得到之前的状态信息。</p>
+<h3 id="持久连接"><a href="#持久连接" class="headerlink" title="持久连接"></a>持久连接</h3><p>HTTP 协议的初始版本中，每进行一个 HTTP 通信都要断开一次 TCP 连接。比如使用浏览器浏览一个包含多张图片的 HTML 页面时，在发送请求访问<br>HTML 页面资源的同时，也会请求该 HTML 页面里包含的其他资源。因此，每次的请求都会造成无畏的 TCP 连接建立和断开，增加通信量的开销。<br>为了解决上述 TCP 连接的问题，HTTP&#x2F;1.1 和部分 HTTP&#x2F;1.0 想出了持久连接的方法。 <strong>其特点是，只要任意一端没有明确提出断开连接，则保持<br>TCP 连接状态。旨在建立一次 TCP 连接后进行多次请求和响应的交互。</strong> 在 HTTP&#x2F;1.1 中，所有的连接默认都是持久连接。</p>
+<h3 id="管线化"><a href="#管线化" class="headerlink" title="管线化"></a>管线化</h3><p>持久连接使得多数请求以管线化方式发送成为可能。以前发送请求后需等待并接收到响应，才能发送下一个请求。管线化技术出现后，不用等待亦可发送下一个请求。这样就能做到同时并行发送多个请求，而不需要一个接一个地等待响应了。<br>比如，当请求一个包含多张图片的 HTML<br>页面时，与挨个连接相比，用持久连接可以让请求更快结束。而管线化技术要比持久连接速度更快。请求数越多，时间差就越明显。</p>
+<h2 id="HTTP报文结构"><a href="#HTTP报文结构" class="headerlink" title="HTTP报文结构"></a>HTTP报文结构</h2><h3 id="HTTP-报文"><a href="#HTTP-报文" class="headerlink" title="HTTP 报文"></a>HTTP 报文</h3><p>用于 HTTP 协议交互的信息被称为 HTTP 报文。请求端（客户端）的 HTTP 报文叫做请求报文；响应端（服务器端）的叫做响应报文。HTTP<br>报文本身是由多行（用 CR+LF 作换行符）数据构成的字符串文本。</p>
+<h3 id="HTTP-报文结构"><a href="#HTTP-报文结构" class="headerlink" title="HTTP 报文结构"></a>HTTP 报文结构</h3><p>HTTP 报文大致可分为报文首部和报文主体两部分。两者由最初出现的空行（CR+LF）来划分。通常，并不一定有报文主体。如下：</p>
+<p><img src="/images/HTTP%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84.jpg" alt="HTTP报文结构"></p>
+<h4 id="请求报文结构"><a href="#请求报文结构" class="headerlink" title="请求报文结构"></a>请求报文结构</h4><p><img src="/images/%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84.jpg" alt="请求报文结构"></p>
+<p>请求报文的首部内容由以下数据组成：</p>
+<ul>
+<li><strong>请求行</strong> —— 包含用于请求的方法、请求 URI 和 HTTP 版本。</li>
+<li><strong>首部字段</strong> —— 包含表示请求的各种条件和属性的各类首部。（通用首部、请求首部、实体首部以及RFC里未定义的首部如 Cookie 等）</li>
+</ul>
+<p>请求报文的示例，如：</p>
+<p><img src="/images/%E8%AF%B7%E6%B1%82%E6%8A%A5%E6%96%87%E7%A4%BA%E4%BE%8B.jpg" alt="请求报文示例"></p>
+<h4 id="响应报文结构"><a href="#响应报文结构" class="headerlink" title="响应报文结构"></a>响应报文结构</h4><p><img src="/images/%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84.jpg" alt="响应报文结构"></p>
+<p>响应报文的首部内容由以下数据组成：</p>
+<ul>
+<li><strong>状态行</strong> —— 包含表明响应结果的状态码、原因短语和 HTTP 版本。</li>
+<li><strong>首部字段</strong> —— 包含表示请求的各种条件和属性的各类首部。（通用首部、响应首部、实体首部以及RFC里未定义的首部如 Cookie 等）</li>
+</ul>
+<p>响应报文的示例，如下：</p>
+<p><img src="/images/%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87%E7%A4%BA%E4%BE%8B.jpg" alt="响应报文示例"></p>
+<h1 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h1><h2 id="HTTP的弊端"><a href="#HTTP的弊端" class="headerlink" title="HTTP的弊端"></a>HTTP的弊端</h2><p>HTTP 之所以被 HTTPS 取代，最大的原因就是不安全，至于为什么不安全，看了下面这张图就一目了然了。</p>
+<p><img src="/images/HTTP%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="HTTP传输过程"></p>
+<p>由图可见，HTTP<br>在传输数据的过程中，所有的数据都是明文传输，自然没有安全性可言，特别是一些敏感数据，比如用户密码和信用卡信息等，一旦被第三方获取，后果不堪设想。</p>
+<h2 id="加密算法"><a href="#加密算法" class="headerlink" title="加密算法"></a>加密算法</h2><p>HTTPS<br>解决数据传输安全问题的方案就是使用加密算法，具体来说是混合加密算法，也就是对称加密和非对称加密的混合使用，这里有必要先了解一下这两种加密算法的区别和优缺点。</p>
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密，顾名思义就是加密和解密都是使用同一个密钥，常见的对称加密算法有 DES、3DES 和 AES 等，其优缺点如下：</p>
+<ul>
+<li><p>优点：算法公开、计算量小、加密速度快、加密效率高，适合加密比较大的数据。</p>
+</li>
+<li><p>缺点：</p>
+</li>
+<li><ol>
+<li>交易双方需要使用相同的密钥，也就无法避免密钥的传输，而密钥在传输过程中无法保证不被截获，因此对称加密的安全性得不到保证。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>每对用户每次使用对称加密算法时，都需要使用其他人不知道的惟一密钥，这会使得发收信双方所拥有的钥匙数量急剧增长，密钥管理成为双方的负担。对称加密算法在分布式网络系统上使用较为困难，主要是因为密钥管理困难，使用成本较高。</li>
+</ol>
+</li>
+</ul>
+<p>如果直接将对称加密算法用在 HTTP 中，会是下面的效果：</p>
+<p><img src="/images/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="对称加密传输过程"></p>
+<p>从图中可以看出，被加密的数据在传输过程中是无规则的乱码，即便被第三方截获，在没有密钥的情况下也无法解密数据，也就保证了数据的安全。但是有一个致命的问题，那就是既然双方要使用相同的密钥，那就必然要在传输数据之前先由一方把密钥传给另一方，那么在此过程中密钥就很有可能被截获，这样一来加密的数据也会被轻松解密。那如何确保密钥在传输过程中的安全呢？这就要用到非对称加密了。</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>非对称加密，顾名思义，就是加密和解密需要使用两个不同的密钥：公钥（public key）和私钥（private<br>key）。公钥与私钥是一对，如果用公钥对数据进行加密，只有用对应的私钥才能解密；如果用私钥对数据进行加密，那么只有用对应的公钥才能解密。非对称加密算法实现机密信息交换的基本过程是：甲方生成一对密钥并将其中的一把作为公钥对外公开；得到该公钥的乙方使用公钥对机密信息进行加密后再发送给甲方；甲方再用自己保存的私钥对加密后的信息进行解密。如果对公钥和私钥不太理解，可以想象成一把钥匙和一个锁头，只是全世界只有你一个人有这把钥匙，你可以把锁头给别人，别人可以用这个锁把重要的东西锁起来，然后发给你，因为只有你一个人有这把钥匙，所以只有你才能看到被这把锁锁起来的东西。常用的非对称加密算法是<br>RSA 算法，其优缺点如下：</p>
+<ul>
+<li>优点：算法公开，加密和解密使用不同的钥匙，私钥不需要通过网络进行传输，安全性很高。</li>
+<li>缺点：计算量比较大，加密和解密速度相比对称加密慢很多。</li>
+</ul>
+<p>由于非对称加密的强安全性，可以用它完美解决对称加密的密钥泄露问题，效果图如下：</p>
+<p><img src="/images/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E5%8F%91%E9%80%81KEY%E7%9A%84%E8%BF%87%E7%A8%8B.png" alt="非对称加密发送 KEY
+的过程"></p>
+<p>在上述过程中，客户端在拿到服务器的公钥后，会生成一个随机码 (用 KEY 表示，这个 KEY 就是后续双方用于对称加密的密钥)，然后客户端使用公钥把 KEY<br>加密后再发送给服务器，服务器使用私钥将其解密，这样双方就有了同一个密钥 KEY，然后双方再使用 KEY 进行对称加密交互数据。在非对称加密传输 KEY<br>的过程中，即便第三方获取了公钥和加密后的 KEY，在没有私钥的情况下也无法破解 KEY<br>(私钥存在服务器，泄露风险极小)，也就保证了接下来对称加密的数据安全。而上面这个流程图正是 HTTPS 的雏形，HTTPS<br>正好综合了这两种加密算法的优点，不仅保证了通信安全，还保证了数据传输效率。</p>
+<h2 id="HTTPS原理详解"><a href="#HTTPS原理详解" class="headerlink" title="HTTPS原理详解"></a>HTTPS原理详解</h2><p>HTTPS 并非独立的通信协议，而是对 HTTP 的扩展，保证了通信安全，二者关系如下：</p>
+<p><img src="/images/HTTP%E5%92%8CHTTPS%E7%9A%84%E5%85%B3%E7%B3%BB.png" alt="HTTP和HTTPS的关系"></p>
+<p>也就是说 HTTPS &#x3D; HTTP + SSL &#x2F; TLS。</p>
+<p>接下来就是最重要的 HTTPS 原理解析了，老规矩先上图</p>
+<p><img src="/images/HTTPS%E5%8A%A0%E5%AF%86%E3%80%81%E8%A7%A3%E5%AF%86%E3%80%81%E9%AA%8C%E8%AF%81%E5%8F%8A%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="HTTPS
+加密、解密、验证及数据传输过程"></p>
+<p>HTTPS 的整个通信过程可以分为两大阶段：证书验证和数据传输阶段，数据传输阶段又可以分为非对称加密和对称加密两个阶段。具体流程按图中的序号讲解。</p>
+<ol>
+<li><p>客户端请求 HTTPS 网址，然后连接到 server 的 443 端口 (HTTPS 默认端口，类似于 HTTP 的80端口)。</p>
+</li>
+<li><p>采用 HTTPS 协议的服务器必须要有一套数字 CA (Certification Authority)证书，证书是需要申请的，并由专门的数字证书认证机构(CA)通过非常严格的审核之后颁发的电子证书 (当然了是要钱的，安全级别越高价格越贵)。颁发证书的同时会产生一个私钥和公钥。私钥由服务端自己保存，不可泄漏。公钥则是附带在证书的信息中，可以公开的。证书本身也附带一个证书电子签名，这个签名用来验证证书的完整性和真实性，可以防止证书被篡改。</p>
+</li>
+<li><p>服务器响应客户端请求，将证书传递给客户端，证书包含公钥和大量其他信息，比如证书颁发机构信息，公司信息和证书有效期等。Chrome 浏览器点击地址栏的锁标志再点击证书就可以看到证书详细信息。</p>
+</li>
+</ol>
+<p>![CA 证书](&#x2F;images&#x2F;CA 证书.png)</p>
+<ol start="4">
+<li>客户端解析证书并对其进行验证。如果证书没有问题，客户端就会从服务器证书中取出服务器的公钥A。然后客户端还会生成一个随机码 KEY，并使用公钥A将其加密。如果证书不是可信机构颁布，或者证书中的域名与实际域名不一致，或者证书已经过期，就会向访问者显示一个警告，由其选择是否还要继续通信。就像下面这样：</li>
+</ol>
+<p><img src="/images/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AE%89%E5%85%A8%E8%AD%A6%E5%91%8A.png" alt="浏览器安全警告"></p>
+<ol start="5">
+<li><p>客户端把加密后的随机码 KEY 发送给服务器，作为后面对称加密的密钥。</p>
+</li>
+<li><p>服务器在收到随机码 KEY 之后会使用私钥B将其解密。经过以上这些步骤，客户端和服务器终于建立了安全连接，完美解决了对称加密的密钥泄露问题，接下来就可以用对称加密愉快地进行通信了。</p>
+</li>
+<li><p>服务器使用密钥 (随机码 KEY)对数据进行对称加密并发送给客户端，客户端使用相同的密钥 (随机码 KEY)解密数据。</p>
+</li>
+<li><p>双方使用对称加密愉快地传输所有数据。</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p> <strong>HTTPS 和 HTTP 的区别：</strong></p>
+<ul>
+<li>最最重要的区别就是安全性，HTTP 明文传输，不对数据进行加密安全性较差。HTTPS (HTTP + SSL &#x2F; TLS)的数据传输过程是加密的，安全性较好。</li>
+<li>使用 HTTPS 协议需要申请 CA 证书，一般免费证书较少，因而需要一定费用。证书颁发机构如：Symantec、Comodo、DigiCert 和 GlobalSign 等。</li>
+<li>HTTP 页面响应速度比 HTTPS 快，这个很好理解，由于加了一层安全层，建立连接的过程更复杂，也要交换更多的数据，难免影响速度。</li>
+<li>由于 HTTPS 是建构在 SSL &#x2F; TLS 之上的 HTTP 协议，所以，要比 HTTP 更耗费服务器资源。</li>
+<li>HTTPS 和 HTTP 使用的是完全不同的连接方式，用的端口也不一样，前者是 443，后者是 80。</li>
+</ul>
+<p><strong>HTTPS 的缺点：</strong></p>
+<ul>
+<li>在相同网络环境中，HTTPS 相比 HTTP 无论是响应时间还是耗电量都有大幅度上升。</li>
+<li>HTTPS 的安全是有范围的，在黑客攻击、服务器劫持等情况下几乎起不到作用。</li>
+<li>在现有的证书机制下，中间人攻击依然有可能发生。</li>
+<li>HTTPS 需要更多的服务器资源，也会导致成本的升高。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/RPC%E5%92%8CHTTP%E8%B0%83%E7%94%A8/" class="post-title-link" itemprop="url">RPC和HTTP调用对比</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>现在的公司基本上都是HTTP调用，个别服务会有RPC，突然发现之前自己知道这两个调用方式是不同的，具体有哪些不同还有点模糊，了解了之后发现难怪大厂都用RPC调用，包括gRPC和dubbo。</p>
+<p>先说一下他们最本质的区别，就是RPC主要是基于TCP&#x2F;IP协议的，而HTTP服务主要是基于HTTP协议的，我们都知道HTTP协议是在传输层协议TCP之上的，所以效率来看的话，RPC当然是要更胜一筹啦！当然RPC也可以用HTTP调用，像Feign，不过也因此他被叫做伪RPC。下面来具体说一说RPC服务和HTTP服务。</p>
+<h1 id="RPC服务"><a href="#RPC服务" class="headerlink" title="RPC服务"></a>RPC服务</h1><h2 id="RPC架构"><a href="#RPC架构" class="headerlink" title="RPC架构"></a>RPC架构</h2><p>一个完整的RPC架构里面包含了四个核心的组件，分别是Client ,Server,Client Stub以及Server<br>Stub，这个Stub大家可以理解为存根。分别说说这几个组件：</p>
+<ul>
+<li>客户端（Client），服务的调用方。</li>
+<li>服务端（Server），真正的服务提供者。<br>客户端存根，存放服务端的地址消息，再将客户端的请求参数打包成网络消息，然后通过网络远程发送给服务方。<br>服务端存根，接收客户端发送过来的消息，将消息解包，并调用本地的方法。</li>
+</ul>
+<p><img src="/images/RPC%E6%9E%B6%E6%9E%84.jpeg" alt="RPC架构"></p>
+<p>RPC主要是用在大型企业里面，因为大型企业里面系统繁多，业务线复杂，而且效率优势非常重要的一块，这个时候RPC的优势就比较明显了。实际的开发当中是这么做的，项目一般使用maven来管理。</p>
+<p>比如我们有一个处理订单的系统服务，先声明它的所有的接口（这里就是具体指Java中的interface），然后将整个项目打包为一个jar包，服务端这边引入这个二方库，然后实现相应的功能，客户端这边也只需要引入这个二方库即可调用了。</p>
+<p>为什么这么做？主要是为了减少客户端这边的jar包大小，因为每一次打包发布的时候，jar包太多总是会影响效率。另外也是将客户端和服务端解耦，提高代码的可移植性。</p>
+<h2 id="同步调用和异步调用"><a href="#同步调用和异步调用" class="headerlink" title="同步调用和异步调用"></a>同步调用和异步调用</h2><p>同步调用就是客户端等待调用执行完成并返回结果。异步调用就是客户端不等待调用执行完成返回结果，不过依然可以通过回调函数等接收到返回结果的通知。如果客户端并不关心结果，则可以变成一个单向的调用。</p>
+<p>这个过程有点类似于Java中的callable和runnable接口，我们进行异步执行的时候，如果需要知道执行的结果，就可以使用callable接口，并且可以通过Future类获取到异步执行的结果信息。如果不关心执行的结果，直接使用runnable接口就可以了，因为它不返回结果，当然啦，callable也是可以的，我们不去获取Future就可以了。</p>
+<h2 id="流行的RPC框架"><a href="#流行的RPC框架" class="headerlink" title="流行的RPC框架"></a>流行的RPC框架</h2><ol>
+<li>gRPC是Google最近公布的开源软件，基于最新的HTTP2.0协议，并支持常见的众多编程语言。我们知道HTTP2.0是基于二进制的HTTP协议升级版本，目前各大浏览器都在快马加鞭的加以支持。这个RPC框架是基于HTTP协议实现的，底层使用到了Netty框架的支持。下面放两个文档</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://doc.oschina.net/grpc?t=56831">https://doc.oschina.net/grpc?t=56831</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.grpc.io/docs/">https://www.grpc.io/docs/</a></p>
+<ol>
+<li>Thrift是Facebook的一个开源项目，主要是一个跨语言的服务开发框架。它有一个代码生成器来对它所定义的IDL定义文件自动生成服务代码框架。用户只要在其之前进行二次开发就行，对于底层的RPC通讯等都是透明的。不过这个对于用户来说的话需要学习特定领域语言这个特性，还是有一定成本的。</li>
+<li>Dubbo是阿里集团开源的一个极为出名的RPC框架，在很多互联网公司和企业应用中广泛使用。协议和序列化框架都可以插拔是及其鲜明的特色。同样 的远程接口是基于Java Interface，并且依托于spring框架方便开发。可以方便的打包成单一文件，独立进程运行，和现在的微服务概念一致。</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="http://dubbo.apache.org/zh-cn/docs/user/quick-start.html">http://dubbo.apache.org/zh-cn/docs/user/quick-start.html</a></p>
+<p>关于gRPC和Dubbo暂时可能不会写文章总结，因为文档足够详细，自己也还没看完，等看完了并且有了超出文档的理解再进行总结。</p>
+<h1 id="HTTP服务"><a href="#HTTP服务" class="headerlink" title="HTTP服务"></a>HTTP服务</h1><p>其实在很久以前，我对于企业开发的模式一直定性为HTTP接口开发，也就是我们常说的RESTful风格的服务接口。的确，对于在接口不多、系统与系统交互较少的情况下，解决信息孤岛初期常使用的一种通信手段；优点就是简单、直接、开发方便。</p>
+<p>利用现成的http协议进行传输。我们记得之前实习在公司做后台开发的时候，主要就是进行接口的开发，还要写一大份接口文档，严格地标明输入输出是什么？说清楚每一个接口的请求方法，以及请求参数需要注意的事项等。</p>
+<p>接口可能返回一个JSON字符串或者是XML文档。然后客户端再去处理这个返回的信息，从而可以比较快速地进行开发。</p>
+<p>但是对于大型企业来说，内部子系统较多、接口非常多的情况下，RPC框架的好处就显示出来了，首先就是长链接，不必每次通信都要像http一样去3次握手什么的，减少了网络开销，虽然HTTP1.1之后也可以长连接了；</p>
+<p>其次就是RPC框架一般都有注册中心，有丰富的监控管理；发布、下线接口、动态扩展等，对调用方来说是无感知、统一化的操作。</p>
+<h2 id="顺便总结下HTTP版本差别"><a href="#顺便总结下HTTP版本差别" class="headerlink" title="顺便总结下HTTP版本差别"></a>顺便总结下HTTP版本差别</h2><h3 id="HTTP-0-9"><a href="#HTTP-0-9" class="headerlink" title="HTTP 0.9"></a>HTTP 0.9</h3><p>HTTP 0.9 是一个最古老的版本</p>
+<ul>
+<li>只支持<code>GET</code>请求方式：由于不支持其他请求方式，因此客户端是没办法向服务端传输太多的信息</li>
+<li>没有请求头概念：所以不能在请求中指定版本号，服务端也只具有返回 HTML字符串的能力</li>
+<li>服务端相响应之后，立即关闭TCP连接</li>
+</ul>
+<h3 id="HTTP-1-0"><a href="#HTTP-1-0" class="headerlink" title="HTTP 1.0"></a>HTTP 1.0</h3><p>随着 HTTP 1.0 的发布，这个版本:</p>
+<ul>
+<li>请求方式新增了POST，DELETE，PUT，HEADER等方式</li>
+<li>增添了请求头和响应头的概念，在通信中指定了 HTTP 协议版本号，以及其他的一些元信息 (比如: 状态码、权限、缓存、内容编码)</li>
+<li>扩充了传输内容格式，图片、音视频资源、二进制等都可以进行传输</li>
+</ul>
+<p>在这个版本主要的就是对请求和响应的元信息进行了扩展，客户端和服务端有更多的获取当前请求的所有信息，进而更好更快的处理请求相关内容。</p>
+<h4 id="请求头"><a href="#请求头" class="headerlink" title="请求头"></a>请求头</h4><p>一个简单请求的头信息</p>
+<pre><code>GET / HTTP/1.0  
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5)  
+Accept: */*  
+</code></pre>
+<p>可以看到在请求方法之后有 请求资源的位置 + 请求协议版本，之后是一些客户端的信息配置</p>
+<h4 id="响应头"><a href="#响应头" class="headerlink" title="响应头"></a>响应头</h4><p>一个简单响应的头信息(v1.0)</p>
+<pre><code>HTTP/1.0 200 OK  
+Content-Type: text/plain  
+Content-Length: 137582  
+Expires: Thu, 05 Dec 1997 16:00:00 GMT  
+Last-Modified: Wed, 5 August 1996 15:55:28 GMT  
+// 这是一个空行  
+...数据内容  
+</code></pre>
+<p>服务端的响应头第一个就是 请求协议版本，后面紧跟着是这次请求的状态码、以及状态码的描述，之后的内容是一些关于返回内容的描述。</p>
+<p><strong>Content-Type</strong></p>
+<p>在 HTTP 1.0 的时候，任何的资源都可以被传输，传输的格式呢也是多种多样的，客户端在收到响应体的内容的时候就是根据这个 <code>Content-Type</code><br>去进行解析的。所以服务端返回时候必须带着这个字段。</p>
+<p>一些常见的 <code>Content-Type</code> 可以参考 <a target="_blank" rel="noopener" href="http://tool.oschina.net/commons/">对照表</a>。 这些<br><code>Content-Type</code> 有一个总称叫做<code>MIME type</code>。</p>
+<p>关于<code>MIME type</code>，这里想播插一个小插曲:</p>
+<blockquote>
+<p>在 chrome 浏览器中，当跨域请求回来的数据 MIME type 同跨域标签应有的 MIME type 不匹配时，浏览器会启动 CORB<br>保护数据不被泄漏。被保护的数据有: html、xml、json。(eg: script、img 标签所支持的 MIME<br>type和他们都不一致)，所以服务端在返回资源的时候一定要对应返回正确的 <code>Content-Type</code>，以免浏览器屏蔽返回结果。</p>
+</blockquote>
+<h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ul>
+<li>无状态：服务器不跟踪不记录请求过的状态</li>
+<li>无连接：浏览器每次请求都需要建立tcp连接</li>
+</ul>
+<h5 id="无状态"><a href="#无状态" class="headerlink" title="无状态"></a>无状态</h5><p>对于无状态的特性可以借助cookie&#x2F;session机制来做身份认证和状态记录</p>
+<h5 id="无连接"><a href="#无连接" class="headerlink" title="无连接"></a>无连接</h5><p>无连接导致的性能缺陷有两种：</p>
+<ul>
+<li><p>无法复用连接<br>每次发送请求，都需要进行一次tcp连接（即3次握手4次挥手），使得网络的利用率非常低</p>
+</li>
+<li><p>队头阻塞<br>HTTP 1.0 规定在前一个请求响应到达之后下一个请求才能发送，如果前一个阻塞，后面的请求也给阻塞的</p>
+</li>
+</ul>
+<h3 id="HTTP-1-1"><a href="#HTTP-1-1" class="headerlink" title="HTTP 1.1"></a>HTTP 1.1</h3><p>HTTP 1.1 是在 1.0 发布之后的半年就推出了，完善了 1.0 版本。目前也还有很多的互联网项目基于 HTTP 1.1 在向外提供服务。</p>
+<h4 id="特性-1"><a href="#特性-1" class="headerlink" title="特性"></a>特性</h4><ul>
+<li>长连接：新增Connection字段，可以设置keep-alive值保持连接不断开</li>
+<li>管道化：基于上面长连接的基础，管道化可以不等第一个请求响应继续发送后面的请求，但响应的顺序还是按照请求的顺序返回</li>
+<li>缓存处理：新增字段cache-control</li>
+<li>断点传输</li>
+</ul>
+<h5 id="长连接"><a href="#长连接" class="headerlink" title="长连接"></a>长连接</h5><p>HTTP 1.1默认保持长连接，数据传输完成保持tcp连接不断开,继续用这个通道传输数据</p>
+<h5 id="管道化"><a href="#管道化" class="headerlink" title="管道化"></a>管道化</h5><p>基于长连接的基础，我们先看没有管道化请求响应：</p>
+<p>tcp没有断开，用的同一个通道</p>
+<pre><code>请求1 &gt; 响应1 --&gt; 请求2 &gt; 响应2 --&gt; 请求3 &gt; 响应3  
+  
+</code></pre>
+<p>管道化的请求响应：</p>
+<pre><code>请求1 --&gt; 请求2 --&gt; 请求3 &gt; 响应1 --&gt; 响应2 --&gt; 响应3  
+</code></pre>
+<p>即使服务器先准备好响应2,也是按照请求顺序先返回响应1</p>
+<p>虽然管道化，可以一次发送多个请求，但是响应仍是顺序返回，仍然无法解决队头阻塞的问题</p>
+<h4 id="缓存处理"><a href="#缓存处理" class="headerlink" title="缓存处理"></a>缓存处理</h4><p>当浏览器请求资源时，先看是否有缓存的资源，如果有缓存，直接取，不会再发请求，如果没有缓存，则发送请求。 通过设置字段cache-control来控制缓存。</p>
+<h4 id="断点传输"><a href="#断点传输" class="headerlink" title="断点传输"></a>断点传输</h4><p>在上传&#x2F;下载资源时，如果资源过大，将其分割为多个部分，分别上传&#x2F;下载，如果遇到网络故障，可以从已经上传&#x2F;下载好的地方继续请求，不用从头开始，提高效率</p>
+<h3 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP 2"></a>HTTP 2</h3><p>2015 年，HTTP&#x2F;2 发布。HTTP&#x2F;2 是现行 HTTP 协议（HTTP&#x2F;1.x）的替代，但它不是重写，HTTP 方法&#x2F;状态码&#x2F;语义都与<br>HTTP&#x2F;1.x 一样。HTTP&#x2F;2 基于 SPDY3，专注于 <strong>性能</strong> ，最大的一个目标是在用户和网站间只用一个连接（connection）。</p>
+<p>HTTP&#x2F;2 由两个规范（Specification）组成：</p>
+<ol>
+<li><p>Hypertext Transfer Protocol version 2 - RFC7540</p>
+</li>
+<li><p>HPACK - Header Compression for HTTP&#x2F;2 - RFC7541</p>
+</li>
+</ol>
+<h4 id="二进制分帧"><a href="#二进制分帧" class="headerlink" title="二进制分帧"></a>二进制分帧</h4><p>HTTP&#x2F;2 采用二进制格式传输数据，而非 HTTP 1.x 的文本格式，二进制协议解析起来更高效。 HTTP &#x2F; 1<br>的请求和响应报文，都是由起始行，首部和实体正文（可选）组成，各部分之间以文本换行符分隔。 <strong>HTTP&#x2F;2<br>将请求和响应数据分割为更小的帧，并且它们采用二进制编码</strong> 。</p>
+<p>接下来我们介绍几个重要的概念：</p>
+<ul>
+<li>流：流是连接中的一个虚拟信道，可以承载双向的消息；每个流都有一个唯一的整数标识符（1、2…N）；</li>
+<li>消息：是指逻辑上的 HTTP 消息，比如请求、响应等，由一或多个帧组成。</li>
+<li>帧：HTTP 2.0 通信的最小单位，每个帧包含帧首部，至少也会标识出当前帧所属的流，承载着特定类型的数据，如 HTTP 首部、负荷，等等</li>
+</ul>
+<p><img src="/images/HTTP2%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BC%A0%E8%BE%93.png" alt="HTTP2二进制传输"></p>
+<p>HTTP&#x2F;2<br>中，同域名下所有通信都在单个连接上完成，该连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装。</p>
+<h4 id="多路复用"><a href="#多路复用" class="headerlink" title="多路复用"></a>多路复用</h4><p>在 HTTP&#x2F;2 中引入了多路复用的技术。多路复用很好的解决了浏览器限制同一个域名下的请求数量的问题，同时也接更容易实现全速传输，毕竟新开一个 TCP<br>连接都需要慢慢提升传输速度。</p>
+<p>大家可以通过 <a target="_blank" rel="noopener" href="https://http2.akamai.com/demo">该链接</a> 直观感受下 HTTP&#x2F;2 比 HTTP&#x2F;1 到底快了多少。</p>
+<p><img src="/images/HTTP2%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.gif" alt="HTTP2多路复用"></p>
+<p>在 HTTP&#x2F;2 中，有了二进制分帧之后，HTTP &#x2F;2 不再依赖 TCP 链接去实现多流并行了，在 HTTP&#x2F;2 中：</p>
+<ul>
+<li>同域名下所有通信都在单个连接上完成。</li>
+<li>单个连接可以承载任意数量的双向数据流。</li>
+<li>数据流以消息的形式发送，而消息又由一个或多个帧组成，多个帧之间可以乱序发送，因为根据帧首部的流标识可以重新组装。</li>
+</ul>
+<p>这一特性，使性能有了极大提升：</p>
+<ul>
+<li>同个域名只需要占用一个 TCP 连接，使用一个连接并行发送多个请求和响应,消除了因多个 TCP 连接而带来的延时和内存消耗。</li>
+<li>并行交错地发送多个请求，请求之间互不影响。</li>
+<li>并行交错地发送多个响应，响应之间互不干扰。</li>
+<li>在 HTTP&#x2F;2 中，每个请求都可以带一个 31bit 的优先值，0 表示最高优先级， 数值越大优先级越低。有了这个优先值，客户端和服务器就可以在处理不同的流时采取不同的策略，以最优的方式发送流、消息和帧。</li>
+</ul>
+<p><img src="/images/HTTP2%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png" alt="HTTP2多路复用"></p>
+<p>如上图所示，多路复用的技术可以只通过一个 TCP 连接就可以传输所有的请求数据。</p>
+<h4 id="头部压缩"><a href="#头部压缩" class="headerlink" title="头部压缩"></a>头部压缩</h4><p>在 HTTP&#x2F;1 中，我们使用文本的形式传输 header，在 header 携带 cookie 的情况下，可能每次都需要重复传输几百到几千的字节。</p>
+<p>为了减少这块的资源消耗并提升性能， HTTP&#x2F;2 对这些首部采取了压缩策略：</p>
+<ul>
+<li>HTTP&#x2F;2 在客户端和服务器端使用“首部表”来跟踪和存储之前发送的键－值对，对于相同的数据，不再通过每次请求和响应发送；</li>
+<li>首部表在 HTTP&#x2F;2 的连接存续期内始终存在，由客户端和服务器共同渐进地更新;</li>
+<li>每个新的首部键－值对要么被追加到当前表的末尾，要么替换表中之前的值</li>
+</ul>
+<p>例如下图中的两个请求， 请求一发送了所有的头部字段，第二个请求则只需要发送差异数据，这样可以减少冗余数据，降低开销</p>
+<p><img src="/images/HTTP2%E5%A4%B4%E9%83%A8%E5%8E%8B%E7%BC%A9.png" alt="HTTP2头部压缩"></p>
+<h4 id="服务端推送"><a href="#服务端推送" class="headerlink" title="服务端推送"></a>服务端推送</h4><p>Server Push 即服务端能通过 push 的方式将客户端需要的内容预先推送过去，也叫“cache push”。</p>
+<p>可以想象以下情况，某些资源客户端是一定会请求的，这时就可以采取服务端 push<br>的技术，提前给客户端推送必要的资源，这样就可以相对减少一点延迟时间。当然在浏览器兼容的情况下你也可以使用 prefetch。<br>例如服务端可以主动把 JS 和 CSS 文件推送给客户端，而不需要客户端解析 HTML 时再发送这些请求。</p>
+<p><img src="/images/HTTP2%E6%9C%8D%E5%8A%A1%E6%8E%A8%E9%80%81.png" alt="HTTP2服务推送"></p>
+<p>服务端可以主动推送，客户端也有权利选择是否接收。如果服务端推送的资源已经被浏览器缓存过，浏览器可以通过发送 RST_STREAM<br>帧来拒收。主动推送也遵守同源策略，换句话说，服务器不能随便将第三方资源推送给客户端，而必须是经过双方确认才行。</p>
+<h3 id="HTTP3"><a href="#HTTP3" class="headerlink" title="HTTP3"></a>HTTP3</h3><p>虽然 HTTP&#x2F;2 解决了很多之前旧版本的问题，但是它还是存在一个巨大的问题，主要是底层支撑的 TCP 协议造成的。</p>
+<p>上文提到 HTTP&#x2F;2 使用了多路复用，一般来说同一域名下只需要使用一个 TCP 连接。但当这个连接中出现了丢包的情况，那就会导致 HTTP&#x2F;2<br>的表现情况反倒不如 HTTP&#x2F;1 了。</p>
+<p>因为在出现丢包的情况下，整个 TCP 都要开始等待重传，也就导致了后面的所有数据都被阻塞了。但是对于 HTTP&#x2F;1.1 来说，可以开启多个 TCP<br>连接，出现这种情况反到只会影响其中一个连接，剩余的 TCP 连接还可以正常传输数据。</p>
+<p>那么可能就会有人考虑到去修改 TCP 协议，其实这已经是一件不可能完成的任务了。因为 TCP<br>存在的时间实在太长，已经充斥在各种设备中，并且这个协议是由操作系统实现的，更新起来不大现实。</p>
+<p>基于这个原因， <strong>Google 就更起炉灶搞了一个基于 UDP 协议的 QUIC 协议，并且使用在了 HTTP&#x2F;3 上</strong> ，HTTP&#x2F;3 之前名为<br>HTTP-over-QUIC，从这个名字中我们也可以发现，HTTP&#x2F;3 最大的改造就是使用了 QUIC。</p>
+<p>QUIC 虽然基于 UDP，但是在原本的基础上新增了很多功能，接下来我们重点介绍几个 QUIC 新功能。</p>
+<h4 id="0RTT"><a href="#0RTT" class="headerlink" title="0RTT"></a>0RTT</h4><p>通过使用类似 TCP 快速打开的技术，缓存当前会话的上下文，在下次恢复会话的时候，只需要将之前的缓存传递给服务端验证通过就可以进行传输了。 <strong>0RTT<br>建连可以说是 QUIC 相比 HTTP2 最大的性能优势</strong> 。那什么是 0RTT 建连呢？</p>
+<p>这里面有两层含义:</p>
+<ul>
+<li>传输层 0RTT 就能建立连接。</li>
+<li>加密层 0RTT 就能建立加密连接。</li>
+</ul>
+<p><img src="/images/HTTPS%E5%92%8CQUIC%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B.png" alt="HTTPS和QUIC建立过程"></p>
+<p>上图左边是 HTTPS 的一次完全握手的建连过程，需要 3 个 RTT。就算是会话复用也需要至少 2 个 RTT。</p>
+<p>而 QUIC 呢？由于建立在 UDP 的基础上，同时又实现了 0RTT 的安全握手，所以在大部分情况下，只需要 0 个 RTT<br>就能实现数据发送，在实现前向加密的基础上，并且 0RTT 的成功率相比 TLS 的会话记录单要高很多。</p>
+<h4 id="多路复用-1"><a href="#多路复用-1" class="headerlink" title="多路复用"></a>多路复用</h4><p>虽然 HTTP&#x2F;2 支持了多路复用，但是 TCP 协议终究是没有这个功能的。QUIC<br>原生就实现了这个功能，并且传输的单个数据流可以保证有序交付且不会影响其他的数据流，这样的技术就解决了之前 TCP 存在的问题。</p>
+<p>同 HTTP2.0 一样，同一条 QUIC 连接上可以创建多个 stream，来发送多个 HTTP 请求，但是，QUIC 是基于 UDP<br>的，一个连接上的多个 stream 之间没有依赖。比如下图中 stream2 丢了一个 UDP 包，不会影响后面跟着 Stream3 和<br>Stream4，不存在 TCP 队头阻塞。虽然 stream2 的那个包需要重新传，但是 stream3、stream4 的包无需等待，就可以发给用户。</p>
+<p><img src="/images/QUIC%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png" alt="QUIC多路复用"></p>
+<p>另外 QUIC 在移动端的表现也会比 TCP 好。因为 TCP 是基于 IP 和端口去识别连接的，这种方式在多变的移动端网络环境下是很脆弱的。但是 QUIC<br>是通过 ID 的方式去识别一个连接，不管你网络环境如何变化，只要 ID 不变，就能迅速重连上。</p>
+<h4 id="加密认证的报文"><a href="#加密认证的报文" class="headerlink" title="加密认证的报文"></a>加密认证的报文</h4><p>TCP<br>协议头部没有经过任何加密和认证，所以在传输过程中很容易被中间网络设备篡改，注入和窃听。比如修改序列号、滑动窗口。这些行为有可能是出于性能优化，也有可能是主动攻击。</p>
+<p>但是 QUIC 的 packet 可以说是武装到了牙齿。除了个别报文比如 PUBLIC_RESET 和 CHLO，所有报文头部都是经过认证的，报文 Body<br>都是经过加密的。</p>
+<p>这样只要对 QUIC 报文任何修改，接收端都能够及时发现，有效地降低了安全风险。</p>
+<p><img src="/images/%E6%8A%A5%E6%96%87%E5%A4%B4%E9%83%A8.png" alt="报文头部"></p>
+<p>如上图所示，红色部分是 Stream Frame 的报文头部，有认证。绿色部分是报文内容，全部经过加密。</p>
+<h4 id="向前纠错机制"><a href="#向前纠错机制" class="headerlink" title="向前纠错机制"></a>向前纠错机制</h4><p>QUIC 协议有一个非常独特的特性，称为向前纠错 (Forward Error<br>Correction，FEC)，每个数据包除了它本身的内容之外，还包括了部分其他数据包的数据，因此少量的丢包可以通过其他包的冗余数据直接组装而无需重传。向前纠错牺牲了每个数据包可以发送数据的上限，但是减少了因为丢包导致的数据重传，因为数据重传将会消耗更多的时间(包括确认数据包丢失、请求重传、等待新数据包等步骤的时间消耗)</p>
+<p>假如说这次我要发送三个包，那么协议会算出这三个包的异或值并单独发出一个校验包，也就是总共发出了四个包。当出现其中的非校验包丢包的情况时，可以通过另外三个包计算出丢失的数据包的内容。<br><strong>当然这种技术只能使用在丢失一个包的情况下，如果出现丢失多个包就不能使用纠错机制了，只能使用重传的方式了</strong> 。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/13/jvm/Java%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%9B%86%E5%90%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/13/jvm/Java%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E9%9B%86%E5%90%88/" class="post-title-link" itemprop="url">Java中线程安全的集合</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-13 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-13T22:30:00+00:00">2020-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9B%86%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">集合</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="BlockingQueue"><a href="#BlockingQueue" class="headerlink" title="BlockingQueue"></a>BlockingQueue</h1><p>在实际编程中，会经常使用到 JDK 中 Collection 集合框架中的各种容器类如实现 List,Map,Queue 接口的容器类，但是这些容器类基本上不是线程安全的，除了使用 Collections 可以将其转换为线程安全的容器，Doug Lea 大师为我们都准备了对应的线程安全的容器，如实现 List 接口的 CopyOnWriteArrayList，实现 Map 接口的 ConcurrentHashMap，实现 Queue 接口的 ConcurrentLinkedQueue。</p>
+<p>最常用的”<strong>生产者-消费者</strong>“问题中，队列通常被视作线程间操作的数据容器，这样，可以对各个模块的业务功能进行解耦，生产者将“生产”出来的数据放置在数据容器中，而消费者仅仅只需要在“数据容器”中进行获取数据即可，这样生产者线程和消费者线程就能够进行解耦，只专注于自己的业务功能即可。阻塞队列（BlockingQueue）被广泛使用在“生产者-消费者”问题中，其原因是 BlockingQueue 提供了可阻塞的插入和移除的方法。<strong>当队列容器已满，生产者线程会被阻塞，直到队列未满；当队列容器为空时，消费者线程会被阻塞，直至队列非空时为止。</strong></p>
+<h2 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h2><p>放入数据：<br>　　<strong>offer(anObject)</strong>:表示如果可能的话,将anObject加到BlockingQueue里,即如果BlockingQueue可以容纳,则返回true,否则返回false.（本方法不阻塞当前执行方法的线程）<br>　　<strong>offer(E o, long timeout, TimeUnit unit)</strong>,可以设定等待的时间，如果在指定的时间内，还不能往队列中加入BlockingQueue，则返回失败。<br>　　<strong>put(anObject)</strong>:把anObject加到BlockingQueue里,如果BlockQueue没有空间,则调用此方法的线程被阻断直到BlockingQueue里面有空间再继续.<br>获取数据：<br>　　<strong>poll(time)</strong>:取走BlockingQueue里排在首位的对象,若不能立即取出,则可以等time参数规定的时间,取不到时返回null;<br>　　**poll(long timeout, TimeUnit unit)**：从BlockingQueue取出一个队首的对象，如果在指定时间内，队列一旦有数据可取，则立即返回队列中的数据。否则知道时间超时还没有数据可取，返回失败。<br>　　take()**:取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到BlockingQueue有新的数据被加入;<br>　　**drainTo():一次性从BlockingQueue获取所有可用的数据对象（还可以指定获取数据的个数）， 通过该方法，可以提升获取数据效率；不需要多次分批加锁或释放锁。</p>
+<h2 id="常用的BlockingQueue"><a href="#常用的BlockingQueue" class="headerlink" title="常用的BlockingQueue"></a>常用的BlockingQueue</h2><blockquote>
+<p>1.ArrayBlockingQueue</p>
+</blockquote>
+<p><strong>ArrayBlockingQueue</strong>是由数组实现的有界阻塞队列。该队列命令元素 FIFO（先进先出）。因此，对头元素时队列中存在时间最长的数据元素，而对尾数据则是当前队列最新的数据元素。ArrayBlockingQueue 可作为“有界数据缓冲区”，生产者插入数据到队列容器中，并由消费者提取。ArrayBlockingQueue 一旦创建，容量不能改变。</p>
+<p>当队列容量满时，尝试将元素放入队列将导致操作阻塞;尝试从一个空队列中取一个元素也会同样阻塞。</p>
+<p>ArrayBlockingQueue 默认情况下不能保证线程访问队列的公平性，所谓公平性是指严格按照线程等待的绝对时间顺序，即最先等待的线程能够最先访问到 ArrayBlockingQueue。而非公平性则是指访问 ArrayBlockingQueue 的顺序不是遵守严格的时间顺序，有可能存在，一旦 ArrayBlockingQueue 可以被访问时，长时间阻塞的线程依然无法访问到 ArrayBlockingQueue。<strong>如果保证公平性，通常会降低吞吐量</strong>。如果需要获得公平性的 ArrayBlockingQueue，可采用如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private static ArrayBlockingQueue&lt;Integer&gt; blockingQueue = new ArrayBlockingQueue&lt;Integer&gt;(10,true);</span><br></pre></td></tr></table></figure>
+
+<p>关于 ArrayBlockingQueue 的实现原理，可以看这篇文章。</p>
+<blockquote>
+<p>2.LinkedBlockingQueue</p>
+</blockquote>
+<p>LinkedBlockingQueue 是用链表实现的有界阻塞队列，同样满足 FIFO 的特性，与 ArrayBlockingQueue 相比起来具有更高的吞吐量，为了防止 LinkedBlockingQueue 容量迅速增，损耗大量内存。通常在创建 LinkedBlockingQueue 对象时，会指定其大小，如果未指定，容量等于 Integer.MAX_VALUE</p>
+<blockquote>
+<p>3.PriorityBlockingQueue</p>
+</blockquote>
+<p>PriorityBlockingQueue 是一个支持优先级的无界阻塞队列。默认情况下元素采用自然顺序进行排序，也可以通过自定义类实现 compareTo()方法来指定元素排序规则，或者初始化时通过构造器参数 Comparator 来指定排序规则。</p>
+<blockquote>
+<p>4.SynchronousQueue</p>
+</blockquote>
+<p>SynchronousQueue 每个插入操作必须等待另一个线程进行相应的删除操作，因此，SynchronousQueue 实际上没有存储任何数据元素，因为只有线程在删除数据时，其他线程才能插入数据，同样的，如果当前有线程在插入数据时，线程才能删除数据。SynchronousQueue 也可以通过构造器参数来为其指定公平性。</p>
+<blockquote>
+<p>5.LinkedTransferQueue</p>
+</blockquote>
+<p>LinkedTransferQueue 是一个由链表数据结构构成的无界阻塞队列，由于该队列实现了 TransferQueue 接口，与其他阻塞队列相比主要有以下不同的方法：</p>
+<p><strong>transfer(E e)</strong> 如果当前有线程（消费者）正在调用 take()方法或者可延时的 poll()方法进行消费数据时，生产者线程可以调用 transfer 方法将数据传递给消费者线程。如果当前没有消费者线程的话，生产者线程就会将数据插入到队尾，直到有消费者能够进行消费才能退出；</p>
+<p><strong>tryTransfer(E e)</strong> tryTransfer 方法如果当前有消费者线程（调用 take 方法或者具有超时特性的 poll 方法）正在消费数据的话，该方法可以将数据立即传送给消费者线程，如果当前没有消费者线程消费数据的话，就立即返回<code>false</code>。因此，与 transfer 方法相比，transfer 方法是必须等到有消费者线程消费数据时，生产者线程才能够返回。而 tryTransfer 方法能够立即返回结果退出。</p>
+<p><strong>tryTransfer(E e,long timeout,imeUnit unit)</strong><br>与 transfer 基本功能一样，只是增加了超时特性，如果数据才规定的超时时间内没有消费者进行消费的话，就返回<code>false</code>。</p>
+<blockquote>
+<p>6.LinkedBlockingDeque</p>
+</blockquote>
+<p>LinkedBlockingDeque 是基于链表数据结构的有界阻塞双端队列，如果在创建对象时为指定大小时，其默认大小为 Integer.MAX_VALUE。与 LinkedBlockingQueue 相比，主要的不同点在于，LinkedBlockingDeque 具有双端队列的特性。</p>
+<blockquote>
+<p>7.DelayQueue</p>
+</blockquote>
+<p>DelayQueue 是一个存放实现 Delayed 接口的数据的无界阻塞队列，只有当数据对象的延时时间达到时才能插入到队列进行存储。如果当前所有的数据都还没有达到创建时所指定的延时期，则队列没有队头，并且线程通过 poll 等方法获取数据元素则返回 null。所谓数据延时期满时，则是通过 Delayed 接口的<code>getDelay(TimeUnit.NANOSECONDS)</code>来进行判定，如果该方法返回的是小于等于 0 则说明该数据元素的延时期已满。</p>
+<h1 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h1><p>有很多业务往往是读多写少的，比如系统配置的信息，除了在初始进行系统配置的时候需要写入数据，其他大部分时刻其他模块之后对系统信息只需要进行读取，又比如白名单，黑名单等配置，只需要读取名单配置然后检测当前用户是否在该配置范围以内。类似的还有很多业务场景，它们都是属于<strong>读多写少</strong>的场景。如果在这种情况用到上述的方法，使用 Vector,Collections 转换的这些方式是不合理的，因为尽管多个读线程从同一个数据容器中读取数据，但是读线程对数据容器的数据并不会发生发生修改。很自然而然的我们会联想到 ReenTrantReadWriteLock，通过<strong>读写分离</strong>的思想，使得读读之间不会阻塞，无疑如果一个 list 能够做到被多个读线程读取的话，性能会大大提升不少。但是，如果仅仅是将 list 通过读写锁（ReentrantReadWriteLock）进行再一次封装的话，由于读写锁的特性，当写锁被写线程获取后，读写线程都会被阻塞。如果仅仅使用读写锁对 list 进行封装的话，这里仍然存在读线程在读数据的时候被阻塞的情况，如果想 list 的读效率更高的话，这里就是我们的突破口，如果我们保证读线程无论什么时候都不被阻塞，效率岂不是会更高？</p>
+<p>Doug Lea 大师就为我们提供 CopyOnWriteArrayList 容器可以保证线程安全，保证读读之间在任何时候都不会被阻塞，CopyOnWriteArrayList 也被广泛应用于很多业务场景之中，CopyOnWriteArrayList 值得被我们好好认识一番。</p>
+<h2 id="cow的思想"><a href="#cow的思想" class="headerlink" title="cow的思想"></a>cow的思想</h2><p>回到上面所说的，如果简单的使用读写锁的话，在写锁被获取之后，读写线程被阻塞，只有当写锁被释放后读线程才有机会获取到锁从而读到最新的数据，站在<strong>读线程的角度来看，即读线程任何时候都是获取到最新的数据，满足数据实时性</strong>。既然我们说到要进行优化，必然有 trade-off,我们就可以<strong>牺牲数据实时性满足数据的最终一致性即可</strong>。而 CopyOnWriteArrayList 就是通过 Copy-On-Write(COW)，即写时复制的思想来通过延时更新的策略来实现数据的最终一致性，并且能够保证读线程间不阻塞。</p>
+<p>COW 通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行 Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。对 CopyOnWrite 容器进行并发的读的时候，不需要加锁，因为当前容器不会添加任何元素。所以 CopyOnWrite 容器也是一种读写分离的思想，延时更新的策略是通过在写的时候针对的是不同的数据容器来实现的，放弃数据实时性达到数据的最终一致性。</p>
+<h2 id="CopyOnWriteArrayList-的实现原理"><a href="#CopyOnWriteArrayList-的实现原理" class="headerlink" title="CopyOnWriteArrayList 的实现原理"></a>CopyOnWriteArrayList 的实现原理</h2><p>现在我们来通过看源码的方式来理解 CopyOnWriteArrayList，实际上 CopyOnWriteArrayList 内部维护的就是一个数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/** The array, accessed only via getArray/setArray. */</span><br><span class="line">private transient volatile Object[] array;</span><br></pre></td></tr></table></figure>
+
+<p>并且该数组引用是被 volatile 修饰，注意这里<strong>仅仅是修饰的是数组引用</strong>，其中另有玄机，稍后揭晓。关于 volatile 很重要的一条性质是它能够够保证可见性。对 list 来说，我们自然而然最关心的就是读写的时候，分别为 get 和 add 方法的实现。</p>
+<h3 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h3><p>get 方法的源码为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public E get(int index) &#123;</span><br><span class="line">    return get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line">/**</span><br><span class="line"> * Gets the array.  Non-private so as to also be accessible</span><br><span class="line"> * from CopyOnWriteArraySet class.</span><br><span class="line"> */</span><br><span class="line">final Object[] getArray() &#123;</span><br><span class="line">    return array;</span><br><span class="line">&#125;</span><br><span class="line">private E get(Object[] a, int index) &#123;</span><br><span class="line">    return (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来 get 方法实现非常简单，几乎就是一个“单线程”程序，没有对多线程添加任何的线程安全控制，也没有加锁也没有 CAS 操作等等，原因是，所有的读线程只是会读取数据容器中的数据，并不会进行修改。</p>
+<h3 id="add方法"><a href="#add方法" class="headerlink" title="add方法"></a>add方法</h3><p>再来看下如何进行添加数据的？add 方法的源码为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public boolean add(E e) &#123;</span><br><span class="line">    final ReentrantLock lock = this.lock;</span><br><span class="line">	//1. 使用Lock,保证写线程在同一时刻只有一个</span><br><span class="line">    lock.lock();</span><br><span class="line">    try &#123;</span><br><span class="line">		//2. 获取旧数组引用</span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        int len = elements.length;</span><br><span class="line">		//3. 创建新的数组，并将旧数组的数据复制到新数组中</span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + 1);</span><br><span class="line">		//4. 往新数组中添加新的数据</span><br><span class="line">		newElements[len] = e;</span><br><span class="line">		//5. 将旧数组引用指向新的数组</span><br><span class="line">        setArray(newElements);</span><br><span class="line">        return true;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>add 方法的逻辑也比较容易理解，请看上面的注释。需要注意这么几点：</p>
+<ol>
+<li>采用 ReentrantLock，保证同一时刻只有一个写线程正在进行数组的复制，否则的话内存中会有多份被复制的数据；</li>
+<li>前面说过数组引用是 volatile 修饰的，因此将旧的数组引用指向新的数组，根据 volatile 的 happens-before 规则，写线程对数组引用的修改对读线程是可见的。</li>
+<li>由于在写数据的时候，是在新的数组中插入数据的，从而保证读写实在两个不同的数据容器中进行操作。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们知道 COW 和读写锁都是通过读写分离的思想实现的，但两者还是有些不同，可以进行比较：</p>
+<p><strong>COW vs 读写锁</strong></p>
+<p>相同点：1. 两者都是通过读写分离的思想实现；2.读线程间是互不阻塞的</p>
+<p>不同点：<strong>对读线程而言，为了实现数据实时性，在写锁被获取后，读线程会等待或者当读锁被获取后，写线程会等待，从而解决“脏读”等问题。也就是说如果使用读写锁依然会出现读线程阻塞等待的情况。而 COW 则完全放开了牺牲数据实时性而保证数据最终一致性，即读线程对数据的更新是延时感知的，因此读线程不会存在等待的情况</strong>。</p>
+<p>这里还有这样一个问题： <strong>为什么需要复制呢？ 如果将 array 数组设定为 volitile 的， 对 volatile 变量写 happens-before 读，读线程不是能够感知到 volatile 变量的变化</strong>。</p>
+<p>原因是，这里 volatile 的修饰的<strong>仅仅</strong>只是<strong>数组引用</strong>，<strong>数组中的元素的修改是不能保证可见性的</strong>。因此 COW 采用的是新旧两个数据容器，通过第 5 行代码将数组引用指向新的数组。</p>
+<p>这也是为什么 concurrentHashMap 只具有弱一致性的原因</p>
+<p><strong>COW 的缺点</strong></p>
+<p>CopyOnWrite 容器有很多优点，但是同时也存在两个问题，即内存占用问题和数据一致性问题。所以在开发的时候需要注意一下。</p>
+<ol>
+<li><strong>内存占用问题</strong>：因为 CopyOnWrite 的写时复制机制，所以在进行写操作的时候，内存里会同时驻扎两个对 象的内存，旧的对象和新写入的对象（注意:在复制的时候只是复制容器里的引用，只是在写的时候会创建新对 象添加到新容器里，而旧容器的对象还在使用，所以有两份对象内存）。如果这些对象占用的内存比较大，比 如说 200M 左右，那么再写入 100M 数据进去，内存就会占用 300M，那么这个时候很有可能造成频繁的 minor GC 和 major GC。</li>
+<li><strong>数据一致性问题</strong>：CopyOnWrite 容器只能保证数据的最终一致性，不能保证数据的实时一致性。所以如果你希望写入的的数据，马上能读到，请不要使用 CopyOnWrite 容器。</li>
+</ol>
+<h1 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h1><h2 id="核心方法-1"><a href="#核心方法-1" class="headerlink" title="核心方法"></a>核心方法</h2><h3 id="操作Node的几个CAS方法"><a href="#操作Node的几个CAS方法" class="headerlink" title="操作Node的几个CAS方法"></a>操作Node的几个CAS方法</h3><p>在队列进行出队入队的时候免不了对节点需要进行操作，在多线程就很容易出现线程安全的问题。可以看出在处理器指令集能够支持<strong>CMPXCHG</strong>指令后，在 java 源码中涉及到并发处理都会使用 CAS 操作<a target="_blank" rel="noopener" href="https://juejin.im/post/6844903600334831629">(关于 CAS 操作可以看这篇文章的第 3.1 节</a>)，那么在 ConcurrentLinkedQueue 对 Node 的 CAS 操作有这样几个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//更改Node中的数据域item</span><br><span class="line">boolean casItem(E cmp, E val) &#123;</span><br><span class="line">    return UNSAFE.compareAndSwapObject(this, itemOffset, cmp, val);</span><br><span class="line">&#125;</span><br><span class="line">//更改Node中的指针域next</span><br><span class="line">void lazySetNext(Node&lt;E&gt; val) &#123;</span><br><span class="line">    UNSAFE.putOrderedObject(this, nextOffset, val);</span><br><span class="line">&#125;</span><br><span class="line">//更改Node中的指针域next</span><br><span class="line">boolean casNext(Node&lt;E&gt; cmp, Node&lt;E&gt; val) &#123;</span><br><span class="line">    return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出这些方法实际上是通过调用 UNSAFE 实例的方法，UNSAFE 为<strong>sun.misc.Unsafe</strong>类，该类是 hotspot 底层方法，目前为止了解即可，知道 CAS 的操作归根结底是由该类提供就好。</p>
+<h3 id="offer方法"><a href="#offer方法" class="headerlink" title="offer方法"></a>offer方法</h3><p>这是一段看着头疼的代码，暂时看懂了可能睡一觉就忘了。。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public boolean offer(E e) &#123;</span><br><span class="line">    //e为null则抛出空指针异常</span><br><span class="line">    checkNotNull(e);</span><br><span class="line">    final Node&lt;E&gt; newNode = new Node&lt;E&gt;(e);</span><br><span class="line">    //从尾节点插入</span><br><span class="line">    for (Node&lt;E&gt; t = tail, p = t;;) &#123;</span><br><span class="line"></span><br><span class="line">        Node&lt;E&gt; q = p.next;</span><br><span class="line"></span><br><span class="line">        //如果q=null说明p是尾节点则插入</span><br><span class="line">        if (q == null) &#123;</span><br><span class="line"></span><br><span class="line">            //cas插入（1）</span><br><span class="line">            if (p.casNext(null, newNode)) &#123;</span><br><span class="line">                //cas成功说明新增节点已经被放入链表，然后设置当前尾节点（包含head，1，3，5.。。个节点为尾节点）</span><br><span class="line">                if (p != t) // hop two nodes at a time</span><br><span class="line">                    casTail(t, newNode);  // Failure is OK.</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            // Lost CAS race to another thread; re-read next</span><br><span class="line">        &#125;</span><br><span class="line">        else if (p == q)//(2)</span><br><span class="line">            //多线程操作时候，由于poll时候会把老的head变为自引用，然后head的next变为新head，所以这里需要</span><br><span class="line">            //重新找新的head，因为新的head后面的节点才是激活的节点</span><br><span class="line">            //或者是新的集合，p节点==p节点的next节点，正准备第一次添加节点，所以返回head节点</span><br><span class="line">            p = (t != (t = tail)) ? t : head;</span><br><span class="line">        else</span><br><span class="line">            // 寻找尾节点(3)</span><br><span class="line">            p = (p != t &amp;&amp; t != (t = tail)) ? t : q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>从源代码角度来看整个入队过程主要做二件事情</strong>。第一是定位出尾节点，第二是使用CAS算法能将入队节点设置成尾节点的next节点，如不成功则重试。<br><strong>第一步定位尾节点。</strong>tail节点并不总是尾节点，所以每次入队都必须先通过tail节点来找到尾节点，尾节点可能就是tail节点，也可能是tail节点的next节点。代码中循环体中的第一个if就是判断tail是否有next节点，有则表示next节点可能是尾节点。获取tail节点的next节点需要注意的是p节点等于p的next节点的情况，只有一种可能就是p节点和p的next节点都等于空，表示这个队列刚初始化，正准备添加第一次节点，所以需要返回head节点；或者多线程的情况</p>
+<p><strong>第二步设置入队节点为尾节点。</strong> p.casNext(null, n)方法用于将入队节点设置为当前队列尾节点的next节点，p如果是null表示p是当前队列的尾节点，如果不为null表示有其他线程更新了尾节点，则需要重新获取当前队列的尾节点。</p>
+<h3 id="poll方法"><a href="#poll方法" class="headerlink" title="poll方法"></a>poll方法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public E poll() &#123;</span><br><span class="line">    restartFromHead:</span><br><span class="line">    //死循环</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        //死循环</span><br><span class="line">        for (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            //保存当前节点值</span><br><span class="line">            E item = p.item;</span><br><span class="line">            //当前节点有值则cas变为null（1）</span><br><span class="line">            if (item != null &amp;&amp; p.casItem(item, null)) &#123;</span><br><span class="line">                //cas成功标志当前节点以及从链表中移除</span><br><span class="line">                if (p != h) // 类似tail间隔2设置一次头节点（2）</span><br><span class="line">                    updateHead(h, ((q = p.next) != null) ? q : p);</span><br><span class="line">                return item;</span><br><span class="line">            &#125;</span><br><span class="line">            //当前队列为空则返回null（3）</span><br><span class="line">            else if ((q = p.next) == null) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            //自引用了，则重新找新的队列头节点（4）</span><br><span class="line">            else if (p == q)</span><br><span class="line">                continue restartFromHead;</span><br><span class="line">            else//(5)</span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    final void updateHead(Node&lt;E&gt; h, Node&lt;E&gt; p) &#123;</span><br><span class="line">        if (h != p &amp;&amp; casHead(h, p))</span><br><span class="line">            h.lazySetNext(h);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先获取头节点的元素，然后判断头节点元素是否为空，如果为空，表示另外一个线程已经进行了一次出队操作将该节点的元素取走，如果不为空，则使用CAS的方式将头节点的引用设置成null，如果CAS成功，则直接返回头节点的元素，如果不成功，表示另外一个线程已经进行了一次出队操作更新了head节点，导致元素发生了变化，需要重新获取头节点。</p>
+<h1 id="ConcurrentHashmap"><a href="#ConcurrentHashmap" class="headerlink" title="ConcurrentHashmap"></a>ConcurrentHashmap</h1><h2 id="关键属性"><a href="#关键属性" class="headerlink" title="关键属性"></a>关键属性</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">volatile Node&lt;K,V&gt;[] table</span><br></pre></td></tr></table></figure>
+
+<p>：装载Node的数组，作为ConcurrentHashMap的数据容器，采用懒加载的方式，直到第一次插入数据的时候才会进行初始化操作，数组的大小总是为2的幂次方(因为继承自HashMap)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transient volatile Node&lt;K,V&gt;[] nextTable</span><br></pre></td></tr></table></figure>
+
+<p>：扩容时使用，平时为null，只有在扩容的时候才为非null。逻辑机制和ArrayList底层的数组扩容一致。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transient volatile long baseCount</span><br></pre></td></tr></table></figure>
+
+<p>：元素数量基础计数器，该值也是一个阶段性的值(产出的时候可能容器正在被修改)。通过<code>CAS</code>的方式进行更改。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transient volatile int sizeCtl</span><br></pre></td></tr></table></figure>
+
+<p>：散列表初始化和扩容的大小都是由该变量来控制。</p>
+<ul>
+<li><p>当为负数时，它正在被初始化或者扩容。</p>
+<ul>
+<li>-1表示正在初始化</li>
+<li>-N表示N-1个线程正在扩容</li>
+</ul>
+</li>
+<li><p>当为整数时，</p>
+<ul>
+<li>此时如果当前table数组为null的话表示table正在初始化过程中，sizeCtl表示为需要新建的数组的长度，默认为0</li>
+</ul>
+</li>
+<li><p>若已经初始化了,表示当前数据容器（table数组）可用容量也可以理解成临界值（插入节点数超过了该临界值就需要扩容）,具体指为数组的长度n 乘以 加载因子loadFactor。 当值为0时，即数组长度为默认初始值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static final sun.misc.Unsafe U</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>：在ConcurrentHashMapde的实现中可以看到大量的U.compareAndSwapXXXX的方法去修改ConcurrentHashMap的一些属性。这些方法实际上是利用了CAS算法保证了线程安全性，这是一种乐观策略，假设每一次操作都不会产生冲突(变量实际值!&#x3D;期望值)，当且仅当冲突发生的时候再去尝试。</p>
+<ul>
+<li><p>在大量的同步组件和并发容器的实现中使用CAS是通过<code>sun.misc.Unsafe</code>类实现的。该类提供了一些可以直接操控内存和线程的底层操作，可以理解为java中的“指针”。该成员变量的获取是在静态代码块中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">static &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        U = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">        ······</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        throw new Error(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>CAS操作依赖于现代处理器指令集，通过底层<code>CMPXCHG</code>指令实现。CAS(V,O,N)核心思想为：若当前变量实际值V与期望的旧值O相同，则表明该变量没被其他线程进行修改，因此可以安全的将新值N赋值给变量；若当前变量实际值V与期望的旧值O不相同，则表明该变量已经被其他线程做了处理，此时将新值N赋给变量操作就是不安全的，再进行重试。</p>
+<h2 id="核心方法-2"><a href="#核心方法-2" class="headerlink" title="核心方法"></a>核心方法</h2><h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 1. 构造一个空的map，即table数组还未初始化，初始化放在第一次插入数据时，默认大小为16</span><br><span class="line">ConcurrentHashMap()</span><br><span class="line">// 2. 给定map的大小</span><br><span class="line">ConcurrentHashMap(int initialCapacity)</span><br><span class="line">// 3. 给定一个map</span><br><span class="line">ConcurrentHashMap(Map&lt;? extends K, ? extends V&gt; m)</span><br><span class="line">// 4. 给定map的大小以及加载因子</span><br><span class="line">ConcurrentHashMap(int initialCapacity, float loadFactor)</span><br><span class="line">// 5. 给定map大小，加载因子以及并发度（预计同时操作数据的线程）</span><br><span class="line">ConcurrentHashMap(int initialCapacity,float loadFactor, int concurrencyLevel)</span><br><span class="line">public ConcurrentHashMap(int initialCapacity) &#123;</span><br><span class="line">	//1. 小于0直接抛异常</span><br><span class="line">    if (initialCapacity &lt; 0)</span><br><span class="line">        throw new IllegalArgumentException();</span><br><span class="line">	//2. 判断是否超过了允许的最大值，超过了话则取最大值，否则再对该值进一步处理</span><br><span class="line">    int cap = ((initialCapacity &gt;= (MAXIMUM_CAPACITY &gt;&gt;&gt; 1)) ?</span><br><span class="line">               MAXIMUM_CAPACITY :</span><br><span class="line">               tableSizeFor(initialCapacity + (initialCapacity &gt;&gt;&gt; 1) + 1));</span><br><span class="line">	//3. 赋值给sizeCtl</span><br><span class="line">    this.sizeCtl = cap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的逻辑请看注释，很容易理解，如果小于 0 就直接抛出异常，如果指定值大于了所允许的最大值的话就取最大值，否则，在对指定值做进一步处理。最后将 cap 赋值给 sizeCtl,关于 sizeCtl 的说明请看上面的说明，<strong>当调用构造器方法之后，sizeCtl 的大小应该就代表了 ConcurrentHashMap 的大小，即 table 数组长度</strong>。tableSizeFor 做了哪些事情了？源码为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Returns a power of two table size for the given desired capacity.</span><br><span class="line"> * See Hackers Delight, sec 3.2</span><br><span class="line"> */</span><br><span class="line">private static final int tableSizeFor(int c) &#123;</span><br><span class="line">    int n = c - 1;</span><br><span class="line">    n |= n &gt;&gt;&gt; 1;</span><br><span class="line">    n |= n &gt;&gt;&gt; 2;</span><br><span class="line">    n |= n &gt;&gt;&gt; 4;</span><br><span class="line">    n |= n &gt;&gt;&gt; 8;</span><br><span class="line">    n |= n &gt;&gt;&gt; 16;</span><br><span class="line">    return (n &lt; 0) ? 1 : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个和前一篇文章中写的的方法一样，可以复习一下</p>
+<h3 id="初始化-initTable方法"><a href="#初始化-initTable方法" class="headerlink" title="初始化 initTable方法"></a>初始化 initTable方法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">private final Node&lt;K,V&gt;[] initTable() &#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; int sc;</span><br><span class="line">    while ((tab = table) == null || tab.length == 0) &#123;</span><br><span class="line">        if ((sc = sizeCtl) &lt; 0)</span><br><span class="line">			// 1. 保证只有一个线程正在进行初始化操作</span><br><span class="line">            Thread.yield(); // lost initialization race; just spin</span><br><span class="line">        else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                if ((tab = table) == null || tab.length == 0) &#123;</span><br><span class="line">					// 2. 得出数组的大小</span><br><span class="line">                    int n = (sc &gt; 0) ? sc : DEFAULT_CAPACITY;</span><br><span class="line">                    @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">					// 3. 这里才真正的初始化数组</span><br><span class="line">                    Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])new Node&lt;?,?&gt;[n];</span><br><span class="line">                    table = tab = nt;</span><br><span class="line">					// 4. 计算数组中可用的大小：实际大小n*0.75（加载因子）</span><br><span class="line">                    sc = n - (n &gt;&gt;&gt; 2);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                sizeCtl = sc;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return tab;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码的逻辑请见注释，有可能存在一个情况是多个线程同时走到这个方法中，为了保证能够正确初始化，在第 1 步中会先通过 if 进行判断，若当前已经有一个线程正在初始化即 sizeCtl 值变为-1，这个时候其他线程在 If 判断为 true 从而调用 Thread.yield()让出 CPU 时间片。正在进行初始化的线程会调用 U.compareAndSwapInt 方法将 sizeCtl 改为-1 即正在初始化的状态。另外还需要注意的事情是，在第四步中会进一步计算数组中可用的大小即为数组实际大小 n 乘以加载因子 0.75.可以看看这里乘以 0.75 是怎么算的，0.75 为四分之三，这里<code>n - (n &gt;&gt;&gt; 2)</code>是不是刚好是 n-(1&#x2F;4)n&#x3D;(3&#x2F;4)n，挺有意思的吧:)。如果选择是无参的构造器的话，这里在 new Node 数组的时候会使用默认大小为<code>DEFAULT_CAPACITY</code>（16），然后乘以加载因子 0.75 为 12，也就是说数组的可用大小为 12。</p>
+<h3 id="put方法"><a href="#put方法" class="headerlink" title="put方法"></a>put方法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">final V putVal(K key, V value, boolean onlyIfAbsent) &#123;</span><br><span class="line">    if (key == null || value == null) throw new NullPointerException();</span><br><span class="line">	//1. 计算key的hash值</span><br><span class="line">    int hash = spread(key.hashCode());</span><br><span class="line">    int binCount = 0;</span><br><span class="line">    for (Node&lt;K,V&gt;[] tab = table;;) &#123;</span><br><span class="line">        Node&lt;K,V&gt; f; int n, i, fh;</span><br><span class="line">		//2. 如果当前table还没有初始化先调用initTable方法将tab进行初始化</span><br><span class="line">        if (tab == null || (n = tab.length) == 0)</span><br><span class="line">            tab = initTable();</span><br><span class="line">		//3. tab中索引为i的位置的元素为null，则直接使用CAS将值插入即可</span><br><span class="line">        else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) &#123;</span><br><span class="line">            if (casTabAt(tab, i, null,</span><br><span class="line">                         new Node&lt;K,V&gt;(hash, key, value, null)))</span><br><span class="line">                break;                   // no lock when adding to empty bin</span><br><span class="line">        &#125;</span><br><span class="line">		//4. 当前正在扩容</span><br><span class="line">        else if ((fh = f.hash) == MOVED)</span><br><span class="line">            tab = helpTransfer(tab, f);</span><br><span class="line">        else &#123;</span><br><span class="line">            V oldVal = null;</span><br><span class="line">            synchronized (f) &#123;</span><br><span class="line">                if (tabAt(tab, i) == f) &#123;</span><br><span class="line">					//5. 当前为链表，在链表中插入新的键值对</span><br><span class="line">                    if (fh &gt;= 0) &#123;</span><br><span class="line">                        binCount = 1;</span><br><span class="line">                        for (Node&lt;K,V&gt; e = f;; ++binCount) &#123;</span><br><span class="line">                            K ek;</span><br><span class="line">                            if (e.hash == hash &amp;&amp;</span><br><span class="line">                                ((ek = e.key) == key ||</span><br><span class="line">                                 (ek != null &amp;&amp; key.equals(ek)))) &#123;</span><br><span class="line">                                oldVal = e.val;</span><br><span class="line">                                if (!onlyIfAbsent)</span><br><span class="line">                                    e.val = value;</span><br><span class="line">                                break;</span><br><span class="line">                            &#125;</span><br><span class="line">                            Node&lt;K,V&gt; pred = e;</span><br><span class="line">                            if ((e = e.next) == null) &#123;</span><br><span class="line">                                pred.next = new Node&lt;K,V&gt;(hash, key,</span><br><span class="line">                                                          value, null);</span><br><span class="line">                                break;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">					// 6.当前为红黑树，将新的键值对插入到红黑树中</span><br><span class="line">                    else if (f instanceof TreeBin) &#123;</span><br><span class="line">                        Node&lt;K,V&gt; p;</span><br><span class="line">                        binCount = 2;</span><br><span class="line">                        if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,</span><br><span class="line">                                                       value)) != null) &#123;</span><br><span class="line">                            oldVal = p.val;</span><br><span class="line">                            if (!onlyIfAbsent)</span><br><span class="line">                                p.val = value;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">			// 7.插入完键值对后再根据实际大小看是否需要转换成红黑树</span><br><span class="line">            if (binCount != 0) &#123;</span><br><span class="line">                if (binCount &gt;= TREEIFY_THRESHOLD)</span><br><span class="line">                    treeifyBin(tab, i);</span><br><span class="line">                if (oldVal != null)</span><br><span class="line">                    return oldVal;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	//8.对当前容量大小进行检查，如果超过了临界值（实际大小*加载因子）就需要扩容，而且对map的count值+1</span><br><span class="line">    addCount(1L, binCount);</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了代码里的注释我觉得已经很清楚了，可以看到开头有 如果key或者value是null的话会抛出空指针异常，这也是为什么ConcurrentHashMap中key和value不能为null的原因，之所以这样，首先value不能为null是因为ConcurrentHashMap调用map.get(key)的时候，如果返回了null，那么这个null，都有两重含义:</p>
+<ol>
+<li>这个key从来没有在map中映射过。</li>
+<li>这个key的value在设置的时候，就是null。</li>
+</ol>
+<p>在非线程安全的map集合(HashMap)中可以使用map.contains(key)方法来判断，而ConcurrentHashMap却不可以。因为多线程情况下get和contains方法之间可能容器已经有了改变。<a target="_blank" rel="noopener" href="http://cs.oswego.edu/pipermail/concurrency-interest/2006-May/002485.html">这里有源码作者大佬的回答</a></p>
+<p><img src="/images/concurrentHashMap%E5%8A%A0%E9%94%81%E6%96%B9%E5%BC%8F.png" alt="concurrentHashMap加锁方式.png"></p>
+<h3 id="transfer-方法"><a href="#transfer-方法" class="headerlink" title="transfer 方法"></a>transfer 方法</h3><p>当 ConcurrentHashMap 容量不足的时候，需要对 table 进行扩容。这个方法的基本思想跟 HashMap 是很像的，但是由于它是支持并发扩容的，所以要复杂的多。原因是它支持多线程进行扩容操作，而并没有加锁。我想这样做的目的不仅仅是为了满足 concurrent 的要求，而是希望利用并发处理去减少扩容带来的时间影响。transfer 方法源码为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line">private final void transfer(Node&lt;K,V&gt;[] tab, Node&lt;K,V&gt;[] nextTab) &#123;</span><br><span class="line">    int n = tab.length, stride;</span><br><span class="line">    // 将 length / 8 然后除以 CPU核心数。如果得到的结果小于 16，那么就使用 16。</span><br><span class="line">    // 这里的目的是让每个 CPU 处理的桶一样多，避免出现转移任务不均匀的现象，如果桶较少的话，默认一个 CPU（一个线程）处理 16 个桶</span><br><span class="line">    if ((stride = (NCPU &gt; 1) ? (n &gt;&gt;&gt; 3) / NCPU : n) &lt; MIN_TRANSFER_STRIDE)</span><br><span class="line">        stride = MIN_TRANSFER_STRIDE; // subdivide range 细分范围 stridea：TODO</span><br><span class="line">    // 新的 table 尚未初始化</span><br><span class="line">    if (nextTab == null) &#123;            // initiating</span><br><span class="line">        try &#123;</span><br><span class="line">            // 扩容  2 倍</span><br><span class="line">            Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])new Node&lt;?,?&gt;[n &lt;&lt; 1];</span><br><span class="line">            // 更新</span><br><span class="line">            nextTab = nt;</span><br><span class="line">        &#125; catch (Throwable ex) &#123;      // try to cope with OOME</span><br><span class="line">            // 扩容失败， sizeCtl 使用 int 最大值。</span><br><span class="line">            sizeCtl = Integer.MAX_VALUE;</span><br><span class="line">            return;// 结束</span><br><span class="line">        &#125;</span><br><span class="line">        // 更新成员变量</span><br><span class="line">        nextTable = nextTab;</span><br><span class="line">        // 更新转移下标，就是 老的 tab 的 length</span><br><span class="line">        transferIndex = n;</span><br><span class="line">    &#125;</span><br><span class="line">    // 新 tab 的 length</span><br><span class="line">    int nextn = nextTab.length;</span><br><span class="line">    // 创建一个 fwd 节点，用于占位。当别的线程发现这个槽位中是 fwd 类型的节点，则跳过这个节点。</span><br><span class="line">    ForwardingNode&lt;K,V&gt; fwd = new ForwardingNode&lt;K,V&gt;(nextTab);</span><br><span class="line">    // 首次推进为 true，如果等于 true，说明需要再次推进一个下标（i--），反之，如果是 false，那么就不能推进下标，需要将当前的下标处理完毕才能继续推进</span><br><span class="line">    boolean advance = true;</span><br><span class="line">    // 完成状态，如果是 true，就结束此方法。</span><br><span class="line">    boolean finishing = false; // to ensure sweep before committing nextTab</span><br><span class="line">    // 死循环,i 表示下标，bound 表示当前线程可以处理的当前桶区间最小下标</span><br><span class="line">    for (int i = 0, bound = 0;;) &#123;</span><br><span class="line">        Node&lt;K,V&gt; f; int fh;</span><br><span class="line">        // 如果当前线程可以向后推进；这个循环就是控制 i 递减。同时，每个线程都会进入这里取得自己需要转移的桶的区间</span><br><span class="line">        while (advance) &#123;</span><br><span class="line">            int nextIndex, nextBound;</span><br><span class="line">            // 对 i 减一，判断是否大于等于 bound （正常情况下，如果大于 bound 不成立，说明该线程上次领取的任务已经完成了。那么，需要在下面继续领取任务）</span><br><span class="line">            // 如果对 i 减一大于等于 bound（还需要继续做任务），或者完成了，修改推进状态为 false，不能推进了。任务成功后修改推进状态为 true。</span><br><span class="line">            // 通常，第一次进入循环，i-- 这个判断会无法通过，从而走下面的 nextIndex 赋值操作（获取最新的转移下标）。其余情况都是：如果可以推进，将 i 减一，然后修改成不可推进。如果 i 对应的桶处理成功了，改成可以推进。</span><br><span class="line">            if (--i &gt;= bound || finishing)</span><br><span class="line">                advance = false;// 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进</span><br><span class="line">            // 这里的目的是：1. 当一个线程进入时，会选取最新的转移下标。2. 当一个线程处理完自己的区间时，如果还有剩余区间的没有别的线程处理。再次获取区间。</span><br><span class="line">            else if ((nextIndex = transferIndex) &lt;= 0) &#123;</span><br><span class="line">                // 如果小于等于0，说明没有区间了 ，i 改成 -1，推进状态变成 false，不再推进，表示，扩容结束了，当前线程可以退出了</span><br><span class="line">                // 这个 -1 会在下面的 if 块里判断，从而进入完成状态判断</span><br><span class="line">                i = -1;</span><br><span class="line">                advance = false;// 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进</span><br><span class="line">            &#125;// CAS 修改 transferIndex，即 length - 区间值，留下剩余的区间值供后面的线程使用</span><br><span class="line">            else if (U.compareAndSwapInt</span><br><span class="line">                     (this, TRANSFERINDEX, nextIndex,</span><br><span class="line">                      nextBound = (nextIndex &gt; stride ?</span><br><span class="line">                                   nextIndex - stride : 0))) &#123;</span><br><span class="line">                bound = nextBound;// 这个值就是当前线程可以处理的最小当前区间最小下标</span><br><span class="line">                i = nextIndex - 1; // 初次对i 赋值，这个就是当前线程可以处理的当前区间的最大下标</span><br><span class="line">                advance = false; // 这里设置 false，是为了防止在没有成功处理一个桶的情况下却进行了推进，这样对导致漏掉某个桶。下面的 if (tabAt(tab, i) == f) 判断会出现这样的情况。</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;// 如果 i 小于0 （不在 tab 下标内，按照上面的判断，领取最后一段区间的线程扩容结束）</span><br><span class="line">        //  如果 i &gt;= tab.length(不知道为什么这么判断)</span><br><span class="line">        //  如果 i + tab.length &gt;= nextTable.length  （不知道为什么这么判断）</span><br><span class="line">        if (i &lt; 0 || i &gt;= n || i + n &gt;= nextn) &#123;</span><br><span class="line">            int sc;</span><br><span class="line">            if (finishing) &#123; // 如果完成了扩容</span><br><span class="line">                nextTable = null;// 删除成员变量</span><br><span class="line">                table = nextTab;// 更新 table</span><br><span class="line">                sizeCtl = (n &lt;&lt; 1) - (n &gt;&gt;&gt; 1); // 更新阈值</span><br><span class="line">                return;// 结束方法。</span><br><span class="line">            &#125;// 如果没完成</span><br><span class="line">            if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) &#123;// 尝试将 sc -1. 表示这个线程结束帮助扩容了，将 sc 的低 16 位减一。</span><br><span class="line">                if ((sc - 2) != resizeStamp(n) &lt;&lt; RESIZE_STAMP_SHIFT)// 如果 sc - 2 不等于标识符左移 16 位。如果他们相等了，说明没有线程在帮助他们扩容了。也就是说，扩容结束了。</span><br><span class="line">                    return;// 不相等，说明没结束，当前线程结束方法。</span><br><span class="line">                finishing = advance = true;// 如果相等，扩容结束了，更新 finising 变量</span><br><span class="line">                i = n; // 再次循环检查一下整张表</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else if ((f = tabAt(tab, i)) == null) // 获取老 tab i 下标位置的变量，如果是 null，就使用 fwd 占位。</span><br><span class="line">            advance = casTabAt(tab, i, null, fwd);// 如果成功写入 fwd 占位，再次推进一个下标</span><br><span class="line">        else if ((fh = f.hash) == MOVED)// 如果不是 null 且 hash 值是 MOVED。</span><br><span class="line">            advance = true; // already processed // 说明别的线程已经处理过了，再次推进一个下标</span><br><span class="line">        else &#123;// 到这里，说明这个位置有实际值了，且不是占位符。对这个节点上锁。为什么上锁，防止 putVal 的时候向链表插入数据</span><br><span class="line">            synchronized (f) &#123;</span><br><span class="line">                // 判断 i 下标处的桶节点是否和 f 相同</span><br><span class="line">                if (tabAt(tab, i) == f) &#123;</span><br><span class="line">                    Node&lt;K,V&gt; ln, hn;// low, height 高位桶，低位桶</span><br><span class="line">                    // 如果 f 的 hash 值大于 0 。TreeBin 的 hash 是 -2</span><br><span class="line">                    if (fh &gt;= 0) &#123;</span><br><span class="line">                        // 对老长度进行与运算（第一个操作数的的第n位于第二个操作数的第n位如果都是1，那么结果的第n为也为1，否则为0）</span><br><span class="line">                        // 由于 Map 的长度都是 2 的次方（000001000 这类的数字），那么取于 length 只有 2 种结果，一种是 0，一种是1</span><br><span class="line">                        //  如果是结果是0 ，Doug Lea 将其放在低位，反之放在高位，目的是将链表重新 hash，放到对应的位置上，让新的取于算法能够击中他。</span><br><span class="line">                        int runBit = fh &amp; n;</span><br><span class="line">                        Node&lt;K,V&gt; lastRun = f; // 尾节点，且和头节点的 hash 值取于不相等</span><br><span class="line">                        // 遍历这个桶</span><br><span class="line">                        for (Node&lt;K,V&gt; p = f.next; p != null; p = p.next) &#123;</span><br><span class="line">                            // 取于桶中每个节点的 hash 值</span><br><span class="line">                            int b = p.hash &amp; n;</span><br><span class="line">                            // 如果节点的 hash 值和首节点的 hash 值取于结果不同</span><br><span class="line">                            if (b != runBit) &#123;</span><br><span class="line">                                runBit = b; // 更新 runBit，用于下面判断 lastRun 该赋值给 ln 还是 hn。</span><br><span class="line">                                lastRun = p; // 这个 lastRun 保证后面的节点与自己的取于值相同，避免后面没有必要的循环</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        if (runBit == 0) &#123;// 如果最后更新的 runBit 是 0 ，设置低位节点</span><br><span class="line">                            ln = lastRun;</span><br><span class="line">                            hn = null;</span><br><span class="line">                        &#125;</span><br><span class="line">                        else &#123;</span><br><span class="line">                            hn = lastRun; // 如果最后更新的 runBit 是 1， 设置高位节点</span><br><span class="line">                            ln = null;</span><br><span class="line">                        &#125;// 再次循环，生成两个链表，lastRun 作为停止条件，这样就是避免无谓的循环（lastRun 后面都是相同的取于结果）</span><br><span class="line">                        for (Node&lt;K,V&gt; p = f; p != lastRun; p = p.next) &#123;</span><br><span class="line">                            int ph = p.hash; K pk = p.key; V pv = p.val;</span><br><span class="line">                            // 如果与运算结果是 0，那么就还在低位</span><br><span class="line">                            if ((ph &amp; n) == 0) // 如果是0 ，那么创建低位节点</span><br><span class="line">                                ln = new Node&lt;K,V&gt;(ph, pk, pv, ln);</span><br><span class="line">                            else // 1 则创建高位</span><br><span class="line">                                hn = new Node&lt;K,V&gt;(ph, pk, pv, hn);</span><br><span class="line">                        &#125;</span><br><span class="line">                        // 其实这里类似 hashMap </span><br><span class="line">                        // 设置低位链表放在新链表的 i</span><br><span class="line">                        setTabAt(nextTab, i, ln);</span><br><span class="line">                        // 设置高位链表，在原有长度上加 n</span><br><span class="line">                        setTabAt(nextTab, i + n, hn);</span><br><span class="line">                        // 将旧的链表设置成占位符</span><br><span class="line">                        setTabAt(tab, i, fwd);</span><br><span class="line">                        // 继续向后推进</span><br><span class="line">                        advance = true;</span><br><span class="line">                    &#125;// 如果是红黑树</span><br><span class="line">                    else if (f instanceof TreeBin) &#123;</span><br><span class="line">                        TreeBin&lt;K,V&gt; t = (TreeBin&lt;K,V&gt;)f;</span><br><span class="line">                        TreeNode&lt;K,V&gt; lo = null, loTail = null;</span><br><span class="line">                        TreeNode&lt;K,V&gt; hi = null, hiTail = null;</span><br><span class="line">                        int lc = 0, hc = 0;</span><br><span class="line">                        // 遍历</span><br><span class="line">                        for (Node&lt;K,V&gt; e = t.first; e != null; e = e.next) &#123;</span><br><span class="line">                            int h = e.hash;</span><br><span class="line">                            TreeNode&lt;K,V&gt; p = new TreeNode&lt;K,V&gt;</span><br><span class="line">                                (h, e.key, e.val, null, null);</span><br><span class="line">                            // 和链表相同的判断，与运算 == 0 的放在低位</span><br><span class="line">                            if ((h &amp; n) == 0) &#123;</span><br><span class="line">                                if ((p.prev = loTail) == null)</span><br><span class="line">                                    lo = p;</span><br><span class="line">                                else</span><br><span class="line">                                    loTail.next = p;</span><br><span class="line">                                loTail = p;</span><br><span class="line">                                ++lc;</span><br><span class="line">                            &#125; // 不是 0 的放在高位</span><br><span class="line">                            else &#123;</span><br><span class="line">                                if ((p.prev = hiTail) == null)</span><br><span class="line">                                    hi = p;</span><br><span class="line">                                else</span><br><span class="line">                                    hiTail.next = p;</span><br><span class="line">                                hiTail = p;</span><br><span class="line">                                ++hc;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        // 如果树的节点数小于等于 6，那么转成链表，反之，创建一个新的树</span><br><span class="line">                        ln = (lc &lt;= UNTREEIFY_THRESHOLD) ? untreeify(lo) :</span><br><span class="line">                            (hc != 0) ? new TreeBin&lt;K,V&gt;(lo) : t;</span><br><span class="line">                        hn = (hc &lt;= UNTREEIFY_THRESHOLD) ? untreeify(hi) :</span><br><span class="line">                            (lc != 0) ? new TreeBin&lt;K,V&gt;(hi) : t;</span><br><span class="line">                        // 低位树</span><br><span class="line">                        setTabAt(nextTab, i, ln);</span><br><span class="line">                        // 高位数</span><br><span class="line">                        setTabAt(nextTab, i + n, hn);</span><br><span class="line">                        // 旧的设置成占位符</span><br><span class="line">                        setTabAt(tab, i, fwd);</span><br><span class="line">                        // 继续向后推进</span><br><span class="line">                        advance = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法的执行逻辑如下：</p>
+<ol>
+<li><p>通过计算 CPU 核心数和 Map 数组的长度得到每个线程（CPU）要帮助处理多少个桶，并且这里每个线程处理都是平均的。默认每个线程处理 16 个桶。因此，如果长度是 16 的时候，扩容的时候只会有一个线程扩容。</p>
+</li>
+<li><p>初始化临时变量 nextTable。将其在原有基础上扩容两倍。</p>
+</li>
+<li><p>死循环开始转移。多线程并发转移就是在这个死循环中，根据一个 finishing 变量来判断，该变量为 true 表示扩容结束，否则继续扩容。</p>
+<p>3.1 进入一个 while 循环，分配数组中一个桶的区间给线程，默认是 16. 从大到小进行分配。当拿到分配值后，进行 i– 递减。这个 i 就是数组下标。（<code>其中有一个 bound 参数，这个参数指的是该线程此次可以处理的区间的最小下标，超过这个下标，就需要重新领取区间或者结束扩容，还有一个 advance 参数，该参数指的是是否继续递减转移下一个桶，如果为 true，表示可以继续向后推进，反之，说明还没有处理好当前桶，不能推进</code>)<br>3.2 出 while 循环，进 if 判断，判断扩容是否结束，如果扩容结束，清空临死变量，更新 table 变量，更新库容阈值。如果没完成，但已经无法领取区间（没了），该线程退出该方法，并将 sizeCtl 减一，表示扩容的线程少一个了。如果减完这个数以后，sizeCtl 回归了初始状态，表示没有线程再扩容了，该方法所有的线程扩容结束了。（<code>这里主要是判断扩容任务是否结束，如果结束了就让线程退出该方法，并更新相关变量</code>）。然后检查所有的桶，防止遗漏。<br>3.3 如果没有完成任务，且 i 对应的槽位是空，尝试 CAS 插入占位符，让 putVal 方法的线程感知。<br>3.4 如果 i 对应的槽位不是空，且有了占位符，那么该线程跳过这个槽位，处理下一个槽位。<br>3.5 如果以上都是不是，说明这个槽位有一个实际的值。开始同步处理这个桶。<br>3.6 到这里，都还没有对桶内数据进行转移，只是计算了下标和处理区间，然后一些完成状态判断。同时，如果对应下标内没有数据或已经被占位了，就跳过了。</p>
+</li>
+<li><p>处理每个桶的行为都是同步的。防止 putVal 的时候向链表插入数据。<br>4.1 如果这个桶是链表，那么就将这个链表根据 length 取于拆成两份，取于结果是 0 的放在新表的低位，取于结果是 1 放在新表的高位。<br>4.2 如果这个桶是红黑数，那么也拆成 2 份，方式和链表的方式一样，然后，判断拆分过的树的节点数量，如果数量小于等于 6，改造成链表。反之，继续使用红黑树结构。<br>4.3 到这里，就完成了一个桶从旧表转移到新表的过程。</p>
+</li>
+</ol>
+<p>这段代码是既牛逼又头疼，这注释和逻辑也可能不完全对，后面需要再看再修改</p>
+<h3 id="size-方法"><a href="#size-方法" class="headerlink" title="size 方法"></a>size 方法</h3><p><strong><code>ConcurrentHashMap</code>提供了<code>baseCount、counterCells</code>两个辅助变量和一个<code>CounterCell</code>辅助内部类。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@sun.misc.Contended static final class CounterCell &#123;</span><br><span class="line">        volatile long value;</span><br><span class="line">        CounterCell(long x) &#123; value = x; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//ConcurrentHashMap中元素个数,但返回的不一定是当前Map的真实元素个数。基于CAS无锁更新</span><br><span class="line">private transient volatile long baseCount;</span><br><span class="line"></span><br><span class="line">private transient volatile CounterCell[] counterCells;</span><br></pre></td></tr></table></figure>
+
+<p><strong>size()方法定义如下：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public int size() &#123;</span><br><span class="line">        long n = sumCount();</span><br><span class="line">        return ((n &lt; 0L) ? 0 :</span><br><span class="line">                (n &gt; (long)Integer.MAX_VALUE) ? Integer.MAX_VALUE :</span><br><span class="line">                (int)n);</span><br><span class="line">&#125;</span><br><span class="line">final long sumCount() &#123;</span><br><span class="line">        CounterCell[] as = counterCells; CounterCell a;</span><br><span class="line">        long sum = baseCount;</span><br><span class="line">        if (as != null) &#123;</span><br><span class="line">            for (int i = 0; i &lt; as.length; ++i) &#123;</span><br><span class="line">                //遍历，所有counter求和</span><br><span class="line">                if ((a = as[i]) != null)</span><br><span class="line">                    sum += a.value;     </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上述size()逻辑可以知道：**<code>size = baseCount + counterCells[0...n-1].value</code>**，我们通过增加一个元素的逻辑代码来看这两个变量的含义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">private final void addCount(long x, int check) &#123;</span><br><span class="line">        CounterCell[] as; long b, s;</span><br><span class="line">        // s = b + x，完成baseCount++操作；</span><br><span class="line">        if ((as = counterCells) != null ||</span><br><span class="line">            !U.compareAndSwapLong(this, BASECOUNT, b = baseCount, s = b + x)) &#123;</span><br><span class="line">            CounterCell a; long v; int m;</span><br><span class="line">            boolean uncontended = true;</span><br><span class="line">            if (as == null || (m = as.length - 1) &lt; 0 ||</span><br><span class="line">                (a = as[ThreadLocalRandom.getProbe() &amp; m]) == null ||</span><br><span class="line">                !(uncontended =</span><br><span class="line">                  U.compareAndSwapLong(a, CELLVALUE, v = a.value, v + x))) &#123;</span><br><span class="line">                //  多线程CAS发生失败时执行</span><br><span class="line">                fullAddCount(x, uncontended);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            if (check &lt;= 1)</span><br><span class="line">                return;</span><br><span class="line">            s = sumCount();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 检查是否进行扩容</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在并发量很高时，<strong>如果存在两个线程同时执行CAS修改baseCount值，则失败的线程会继续执行方法体中的逻辑，使用CounterCell记录元素个数的变化；</strong><br>如果通过CAS设置cellsBusy字段失败的话，则继续尝试通过CAS修改baseCount字段，如果修改baseCount字段成功的话，就退出循环，否则继续循环插入CounterCell对象；<br>所以在1.8中的size实现比1.7简单多，因为元素个数保存baseCount中，部分元素的变化个数保存在CounterCell数组中，实现如下：<br><strong>通过累加baseCount和CounterCell数组中的数量，即可得到元素的总个数；</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/12/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/code-review1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/12/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/code-review1/" class="post-title-link" itemprop="url">如何有效地做 Code Review？</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-12 22:30:00" itemprop="dateCreated datePublished" datetime="2020-01-12T22:30:00+00:00">2020-01-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/" itemprop="url" rel="index"><span itemprop="name">研发规范</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>上次说了code review 在开发中的重要性。这次说一说怎么才能让 code review 有效发挥它的作用。</p>
+<p>使用方便的工具。要在团队中成功推行 code review，有好的工具是很重要的。谁都不愿意在工作中加入繁琐的过程，所以如果要让人接受一个新的步骤，最好让它有尽可能好的体验。在我用过的开源 code review 工具中，Phabricator 是最完善的。Review Board 应该也是不错的选择，只是我很久没实际用了，不知道最新状态。GitHub 在支持 side-by-side diff 后，它的 pull request 也提供了很好的 code review 体验，唯一不足的是无法从机制上强制所有 commit 都经过 pull request 的过程。</p>
+<p>把简单的检查自动化。有很多检查是可以自动化的，比如一些风格规范（缩进、空行、行尾空格、命名等），这类问题应该尽可能写脚本检查。一方面可以让负责 review 的工程师把更多注意力放在更高层面的问题上；另一方面，从接受 review 的人心理上说，由程序提出这些细节问题比让另一个人来挑刺要更容易接受些。当然，这并不是说人工 review 的时候应该忽略细节问题。</p>
+<p>控制每次 review 的代码量。每次 review 包含 200 行左右代码是比较理想的，最多不要超过 400 行。因为如果代码太多，review 的人容易因为注意力分散而忽略一些问题，另外也可能让时间拖得过长。因此，开发的时候需要把大的改动分解成多个小的步骤，每完成一个步骤就提交一次 review。</p>
+<p>使用异步的工作流。这和上一点是相关的，当你需要把一个改动分为相互依赖的多步时，不应该因为等待 review 而 block 住自己的工作。在当前分支等待 review 时，可以从这个点开一个新的分支继续开发，之后再把 review 完的分支 merge 进来。</p>
+<p>作者应该提供清晰的 commit note。Code review 的重要作用之一是同事间的交流，每个 commit 的 commit note 很重要也很影响 review 的效率，应该包含这个改动的目的，以及实现方式的概述。如果使用的 review 系统支持对 review 本身的描述（如 GitHub 的 pull request），那么应该写清楚作者希望 reviewer 重点关注的问题。</p>
+<p>在合并到主干之前进行 review。有的人主张小团队应该做事后的 review，因为这样效率更高、更「轻量」。事实上，这样并不会减少工作量，并且如果工作流安排合理，事前 review 并不会导致效率降低。从心理上说，代码并合并到主干之后往往就意味着「完事了」，在时间比较紧张的时候很难坚持 review 所有代码。所以应该把 code review 作为代码合并到主干前必过的一道关口。</p>
+<p>所有人的代码都要经过 review。Code review 并不是资深工程师对初级工程师做的事情，而应该全员平等参与，每个人都会有所收获。关于这方面在上一篇「为什么每个团队都需要 Code Review」里也有提及。</p>
+<p>关注设计方面的问题和客观的规范，避免在主观意见上争执。Code review 的讨论应该专注于设计层面的问题以及在团队中有明确共识的规范（代码风格，测试覆盖等），而要避免在一些主观意见的分歧上浪费时间。这也意味着应该在一些本身不重要，但很影响一致性的细节上尽早达成有共识的规范，如缩进方式，括号的位置等等，避免在 review 中去争论这些问题。</p>
+<p>从正面看待在 review 中发现的问题。当发现一个错误时，并不应该看作是一个人犯了错被另一个人发现了，而是两个人配合改进了代码、避免了错误。</p>
+<p>Review 所有的代码，包括很简单的改动。每一个 commit，无论多小都应该经过 review。一方面，很难界定什么算简单的改动，如果一行的 commit 不用 review，那两行是不是差不多同样简单，三行呢？另一方面，我已经不记得自己曾有多少次觉得「这个改动太简单，不用跑测试就可以提交了」，然后很快因为测试通不过而很尴尬地被别人 rollback。所以无论多小的改动都应该有测试、都应该通过 review。</p>
+<p>循序渐进。如果现在完全没有做 code review，那么到整个团队都能严格有效地进行 code review 是一个循序渐进的过程。如果你所处的角色无法很快改变团队的工作方式，那么可以从把自己的代码发给别人 review 开始，实际可见的价值是最有说服力的。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/01/11/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/code-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/01/11/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/code-review/" class="post-title-link" itemprop="url">是否要进行Code Review？</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-01-11 09:53:23" itemprop="dateCreated datePublished" datetime="2020-01-11T09:53:23+00:00">2020-01-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83/" itemprop="url" rel="index"><span itemprop="name">研发规范</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>不少开发团队和创业公司都在纠结是否要执行 code review，既希望改进代码质量，又担心带来的负担会拖慢项目进度。实时上，在软件开发中质量和效率往往并不是二选其一的关系。能产出高质量代码的团队通常效率也非常高。</p>
+<p>在我作为工程师的职业经历中，自动化测试和 code review 可说是能同时提高代码质量和开发效率的两个最有效的手段。所谓 code review，和学术界的 peer review 类似。Peer review 是由同事或同行对一位作者的作品进行查阅并提出建议和问题，只有当所有提出的问题都得到满意的答案后，作品才能发表。对于 code review 来说，作品就是代码，发表就是把代码 commit 到官方代码库。</p>
+<p>在 Code Complete 这本书中讲述了两个很有说服力的案例。在一项对同一个团队开发的很多个程序进行对比的研究中，没有经过 review 的程序平均每 100 行有 4.5 个错误，而经过 review 的程序平均每 100 行只有 0.82 个错误，也就是说 80% 的错误在 review 中被修正了。AT &amp; T 的一个 200 多人的部门在开始执行 code review 后，开发效率提高了 14%，而错误减少了 90% 左右。</p>
+<p>除了减少缺陷，避免在诊断错误上浪费时间，review 的过程还可以通过相互的督促保证代码有好的可读性、文档、风格，并同时检查测试覆盖率等开发过程中的规范，从而提高团队的协作效率。对于所有复杂的事情来说，总是越早发现问题，解决问题的成本越低。</p>
+<p>对于经验不足或者刚开始一份新工作的人来说，通过 code review 可以得到更资深的人帮助，更快熟悉现有的规范和架构，在新的环境和团队中快速提升。</p>
+<p>对于资深的工程师来说，让其他同事 review 代码，有利于在团队中传播经验、知识和好的实践。身边的同事水平提高会让自己的工作也更高效。并且谁都有需要休假的时候，无论是公司还是个人都不希望有太多工作因此而停滞，如果有平时就熟悉自己工作的同事，这个问题就很好解决。</p>
+<p>像很多其他事情一样，code review 最难的就是迈出第一步。一旦开始，花在 review 过程的每一分钟都会很快被成倍地赚回来。如果你不在一个可以一下改变团队流程的位置上，那么至少可以和认同这件事的少数同事先开始实践，当价值开始体现的时候，相信其他人会乐于效仿。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
