@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="5月，超过9万名开发人员参与了Stackoverflow年度调查，调查内容主要涉及开发者如何学习和升级，他们正在使用哪些工具，以及他们想要哪些工具。PostgreSQL超越MySQL成为最受欢迎的数据库。在所有的有效问卷中（76,634位受访者），有45.55%的开发者正在使用PostgreSQL，首次超越MySQL，这使得PostgreSQL登上数据库流行度的榜首。MySQL退居第二，有41.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL vs MySQL">
+<meta property="og:url" content="http://example.com/2023/07/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/PostgreSQLvsMySQL/index.html">
+<meta property="og:site_name" content="Myoboku">
+<meta property="og:description" content="5月，超过9万名开发人员参与了Stackoverflow年度调查，调查内容主要涉及开发者如何学习和升级，他们正在使用哪些工具，以及他们想要哪些工具。PostgreSQL超越MySQL成为最受欢迎的数据库。在所有的有效问卷中（76,634位受访者），有45.55%的开发者正在使用PostgreSQL，首次超越MySQL，这使得PostgreSQL登上数据库流行度的榜首。MySQL退居第二，有41.0">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%92%E8%A1%8C.png">
+<meta property="article:published_time" content="2023-07-17T22:30:00.000Z">
+<meta property="article:modified_time" content="2023-08-13T12:14:00.305Z">
+<meta property="article:author" content="merric">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%92%E8%A1%8C.png">
+
+
+<link rel="canonical" href="http://example.com/2023/07/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/PostgreSQLvsMySQL/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2023/07/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/PostgreSQLvsMySQL/","path":"2023/07/17/数据库与中间件/PostgreSQLvsMySQL/","title":"PostgreSQL vs MySQL"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PostgreSQL vs MySQL | Myoboku</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Myoboku</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%80%A7%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">特性对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E6%9B%B4%E6%95%B0%E6%8D%AE%E6%8D%95%E6%8D%89"><span class="nav-number">2.</span> <span class="nav-text">变更数据捕捉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%A7%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">可扩展性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E6%9C%AC"><span class="nav-number">5.</span> <span class="nav-text">成本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PostgreSQL%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">PostgreSQL的问题</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">merric</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/PostgreSQLvsMySQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PostgreSQL vs MySQL | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PostgreSQL vs MySQL
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-07-17 22:30:00" itemprop="dateCreated datePublished" datetime="2023-07-17T22:30:00+00:00">2023-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">数据库与中间件</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>5月，超过9万名开发人员参与了Stackoverflow年度调查，调查内容主要涉及开发者如何学习和升级，他们正在使用哪些工具，以及他们想要哪些工具。PostgreSQL超越MySQL成为最受欢迎的数据库。在所有的有效问卷中（76,634位受访者），有45.55%的开发者正在使用PostgreSQL，首次超越MySQL，这使得PostgreSQL登上数据库流行度的榜首。MySQL退居第二，有41.09%的开发者正在使用MySQL。其次是SQLite（占比30.9%）。Oracle位列第九，占比9.8%。<br><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8E%92%E8%A1%8C.png" alt="数据库排行"><br>为什么PostgreSQL可以超过MySQL，今天就来比较下这两个数据库。</p>
+<p>PostgreSQL vs.MySQL 是在选择开源关系型数据库管理系统时的重要决策。PostgreSQL和 MySQL 都是经过时间验证的解决方案，可以与企业级解决方案（如 Oracle 和 SQL Server） 竞争。MySQL 因其易用性和速度而闻名，而 PostqreSQL 则拥有更多高级功能，这也是 PostgreQL 经常被描述为开源版 racle 的原<br>下表对比了 PostgreSQL和MySQL的特性</p>
+<h4 id="特性对比"><a href="#特性对比" class="headerlink" title="特性对比"></a>特性对比</h4><p>PostgreSQL和 MySQL 都作为关系型数据库管理系统提供了广泛的功能，但两者之间存在一些关键差异:</p>
+<p><strong>数据类型：</strong> PostqresQL 支持更广泛的高级数据类型，包括数组、hstore（键值存储）和JSONB（二进制JSON）。另一方面MySQL 的数据类型集合较为有限，更适用于简单的 Web 应用程序。MySQL 的JSON 二进制存储格式可以与 PostgreSQL的JSONB 进行比较。实际上，MySQL的JSON 存储非常适合简单的JSON 结构和直接的 Web 应用程序。</p>
+<p><strong>地理空间支持：</strong>PostgreSQL 强力支持地理空间数据，包括用于处理地理数据的丰富的数据类型、函数和操作符。MySQL 在地理空间支持方面虽有一些功能，但在这个领域可能还需要更多的改进。</p>
+<p><strong>索引</strong>：在 MVSOI中，默认的索引类型是 B-tree，非常适合大多数使用情况。PostareSOL比 MVSOL 拥有更为精细的索引系统包括对 B-treeGiST（广义搜索树）和 GIN （广义反向索引）索引的支持。这些提供了更多优化查询性能和数据检索的选项。</p>
+<p><strong>复制：</strong>PostreSQL和 MySQL 都支持主从数据库复制，但复制的方法和选项有所不同PostreSQL 支持使用第三方扩展实现多主复制。MySQL 最近引入了一种名为 Group Replication 的新的复制模型，但它仍然是一个相对较新的功能，有一些限制。</p>
+<p>**事务：PostqresQL和 MysQL lnnoDB 都使用 MVCC（多版本并发控制）来处理并发数据访问然而，PostgreSQL 提供了更先进的事务管理功能，如事务隔离级别、原子事务和保存点。相比之下，MySQL 的事务管理选项较为有限。对于需要高并发或复杂事务逻辑的应用程序，PostgreSQL可能更加合适。</p>
+<p><strong>存储过程：</strong>PostqreSQL和 MySQL 都支持存储过程，但存储过程的语言和功能有所不同。PostgreSQL 支持使用多种语言编写存储过程，包括 PL&#x2F;pgSQL、PL&#x2F;Tcl、PL&#x2F;Perl 等。而MySQL 主要支持使用SQL编写存储过程。</p>
+<p><strong>扩展：</strong>PostgresQL 拥有一个强大的扩展框架，允许开发人员添加自定义功能并扩展数据库的核心特性。虽然 MySQL 对扩展有定支持，但与 PostgreSQL 相比，其扩展性有所不同。</p>
+<p>放一个官网的表格</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">PostgreSQL</th>
+<th>MySQL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Known as</td>
+<td align="left">The world’s most <strong>advanced</strong> open source database.</td>
+<td>The world’s most <strong>popular</strong> open source database.</td>
+</tr>
+<tr>
+<td align="left">Development</td>
+<td align="left">PostgreSQL is an open source <strong>project</strong>.</td>
+<td>MySQL is an open-source <strong>product</strong>.</td>
+</tr>
+<tr>
+<td align="left">Pronunciation</td>
+<td align="left">post gress queue ell</td>
+<td>my ess queue ell</td>
+</tr>
+<tr>
+<td align="left">Licensing</td>
+<td align="left">MIT-style license</td>
+<td>GNU General Public License</td>
+</tr>
+<tr>
+<td align="left">Implementation programming language</td>
+<td align="left">C</td>
+<td>C&#x2F;C++</td>
+</tr>
+<tr>
+<td align="left">GUI tool</td>
+<td align="left">PgAdmin</td>
+<td>MySQL Workbench</td>
+</tr>
+<tr>
+<td align="left">ACID</td>
+<td align="left">Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td align="left">Storage engine</td>
+<td align="left"><strong>Single</strong> storage engine</td>
+<td><strong>Multiple</strong> <a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/understand-mysql-table-types-innodb-myisam.aspx">storage engines</a> e.g., InnoDB and MyISAM</td>
+</tr>
+<tr>
+<td align="left">Full-text search</td>
+<td align="left">Yes</td>
+<td>Yes (Limited)</td>
+</tr>
+<tr>
+<td align="left">Drop a <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-temporary-table/">temporary table</a></td>
+<td align="left">No <code>TEMP</code> or <code>TEMPORARY</code> keyword in <code>DROP TABLE</code> statement</td>
+<td>Support the <code>TEMP</code> or <code>TEMPORARY</code> keyword in the <code>DROP TABLE</code> statement that allows you to remove the temporary table only.</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-drop-table/"><code>DROP TABLE</code></a></td>
+<td align="left">Support <code>CASCADE</code> option to drop table’s dependent objects e.g., tables and views.</td>
+<td>Does not support <code>CASCADE</code> option.</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-truncate-table/"> <code>TRUNCATE TABLE</code></a></td>
+<td align="left">PostgreSQL <code>TRUNCATE TABLE</code> supports more features like <code>CASCADE</code>, <code>RESTART IDENTITY</code>, <code>CONTINUE IDENTITY</code>, transaction-safe, etc.</td>
+<td><a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-truncate-table/">MySQL <code>TRUNCATE TABLE</code></a> does not support <code>CASCADE</code> and transaction safe i.e,. once data is deleted, it cannot be rolled back.</td>
+</tr>
+<tr>
+<td align="left">Auto increment Column</td>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-serial/"><code>SERIAL</code></a></td>
+<td><a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-sequence/"><code>AUTO_INCREMENT</code></a></td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-identity-column/">Identity Column</a></td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Analytic functions</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-data-types/">Data types</a></td>
+<td align="left">Support many advanced types such as <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-array/">array</a>, <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-hstore/">hstore</a>, and <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-user-defined-data-types/">user-defined type</a>.</td>
+<td>SQL-standard types</td>
+</tr>
+<tr>
+<td align="left">Unsigned <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-integer/">integer</a></td>
+<td align="left">No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-boolean/">Boolean type</a></td>
+<td align="left">Yes</td>
+<td>Use <code>TINYINT(1)</code> internally for <a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-boolean/">Boolean</a></td>
+</tr>
+<tr>
+<td align="left">IP address data type</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Set default value for a column</td>
+<td align="left">Support both constant and function call</td>
+<td>Must be a constant or <code>CURRENT_TIMESTAMP</code> for <code>TIMESTAMP</code> or <code>DATETIME</code> columns</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-cte/">CTE</a></td>
+<td align="left">Yes</td>
+<td>Yes (Supported <a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-cte/">CTE</a> since MySQL 8.0)</td>
+</tr>
+<tr>
+<td align="left"><code>EXPLAIN</code> output</td>
+<td align="left">More detailed</td>
+<td>Less detailed</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-materialized-views/">Materialized views</a></td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-check-constraint/">CHECK constraint</a></td>
+<td align="left">Yes</td>
+<td>Yes (Supported since MySQL 8.0.16, Before that MySQL just ignored the <a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-check-constraint/">CHECK constraint</a>)</td>
+</tr>
+<tr>
+<td align="left">Table inheritance</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Programming languages for <a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-stored-procedures/">stored procedures</a></td>
+<td align="left">Ruby, Perl, Python, TCL, PL&#x2F;pgSQL, SQL, JavaScript, etc.</td>
+<td>SQL:2003 syntax for <a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-stored-procedure-tutorial.aspx">stored procedures</a></td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-full-outer-join/"> <code>FULL OUTER JOIN</code></a></td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-intersect/"><code>INTERSECT</code></a></td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-tutorial/postgresql-except/"> <code>EXCEPT</code></a></td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Partial indexes</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Bitmap indexes</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Expression indexes</td>
+<td align="left">Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td align="left">Covering indexes</td>
+<td align="left">Yes (since version 9.2)</td>
+<td>Yes. MySQL supports covering indexes that allow data to be retrieved by scanning the index alone without touching the table data. This is advantageous in case of large tables with millions of rows.</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-triggers/">Triggers</a></td>
+<td align="left">Support triggers that can fire on most types of command, except for ones affecting the database globally e.g., roles and tablespaces.</td>
+<td>Limited to some commands</td>
+</tr>
+<tr>
+<td align="left">Partitioning</td>
+<td align="left">RANGE, LIST</td>
+<td>RANGE, LIST, HASH, KEY, and composite partitioning using a combination of RANGE or LIST with HASH or KEY subpartitions</td>
+</tr>
+<tr>
+<td align="left">Task Schedule</td>
+<td align="left">pgAgent</td>
+<td><a target="_blank" rel="noopener" href="http://www.mysqltutorial.org/mysql-triggers/working-mysql-scheduled-event/">Scheduled event</a></td>
+</tr>
+<tr>
+<td align="left">Connection Scalability</td>
+<td align="left">Each new connection is an OS process</td>
+<td>Each new connection is an OS thread</td>
+</tr>
+</tbody></table>
+<h4 id="变更数据捕捉"><a href="#变更数据捕捉" class="headerlink" title="变更数据捕捉"></a>变更数据捕捉</h4><p>变更数据捕获(Change Data Capture, CDC) 方面，MySQL 二进制志和 PostgreSQL 预写日志(Write-Ahead Logs,WAL)都可以捕获对数据库所做的更改。然而，CDC的具体特性和用法可能会有所不同。DBConvert Streams 是一款软件，可以读取 MySQL和 PostgreSQL事务日志，并将记录转换为另一种方言，从而适用于实时异构数据库复制。</p>
+<h4 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h4><p>MySQL 以其高性能和处理大量数据的能力而闻名。它经过优化，适用于读密集型工作负载，并具有快速的索引系统，有助于提高查询性能。然而，当与写操作结合时，可能会出现并发问题，如锁争用，导致性能下降。lnnoDB 存储引擎用于解决表级别锁问题。它是 MySQL 生态系统中最受欢迎和广泛使用的存储引整之一。lnnoDB 支持行级别锁定，提高了混合工作负载的并发性。此外，近期开发的高性能存储引擎 MyRocks 进一步提高了MySQL处理写入密集型工作负载的能力。</p>
+<p>PostqreSQL 的设计更加多样化，可以处理读密集型和写密集型的工作负载，但相对于针对读密集型工作负载进行优化的 MySQL性能略低。然而，PostgreSQL 在最近的版本中改进了性能，特别是在处理复杂查询和数据处理方面。此外，与 MySQL 相比，PostgreSQL 具有更先进的索引系统，可以提高复杂查询的性能。PostgreSQL 还支持高级数据类型，如数组和JSONB，可以实现更高效的数据存储和检索。</p>
+<h4 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h4><p>MySQL和 PostgreSQL 都可以进行扩展，但在可扩展性方面它们具有不同的优势和劣势。MySQL 常常被人们喜欢是因为其水平可扩展性，也就是说可以通过向数据库集群添加更多节点来进行横向扩展。它非常适合需要处理大量并发连接的 Web 应用程序。</p>
+<p>另一方面，PostgreSQL 以其垂直可扩展性而闻名，也就是说可以通过向单个节点添加更多资源(如内存和CPU)来处理大量数据和处理能力。它还通过分片等技术支持水平扩展，允许将大型数据集分割到多个节点上。PostgreSQL 更适合需要复杂查询和事务以及数据仓库和商业智能工作负载的应用程序。<br>在考虑可扩展性时，要考虑您的应用程序的具体要求。如果您需要处理大量并发连接并需要水平可扩展性，那么 MySQL 可能是个更好的选择。然而，如果您需要复杂的事务和查询，那么 PostgreSQL 可能更合适。</p>
+<h4 id="成本"><a href="#成本" class="headerlink" title="成本"></a>成本</h4><p>在2023年，PostgreSQL仍然是完全开源和由社区驱动的，而MySQL在许可方面有更复杂的历史。MySQL最初是由MySQL AB开发的商业产品，提供免费和付费版本。2010年，Oracle收购了MySQL AB，这引发了开发人员对其开源状态的未来的一些担忧。然而，一些原始MySQL的开源分支，包括MariaDB和Percona，已经帮助缓解了这些担忧。</p>
+<h4 id="PostgreSQL的问题"><a href="#PostgreSQL的问题" class="headerlink" title="PostgreSQL的问题"></a>PostgreSQL的问题</h4><p>尽管PostqreSQL具有先进的特性和功能，但它尚未达到MySQL的普及程度和广泛使用。这导致了第三方工具数量较少以及PostgreSQL生态系统中经验丰富的开发人员或数据库管理员数量较少。</p>
+<p>由于其先进的特性，相对于MySQL，设置和管理PostgreSQL可能更复杂，更适合有经验的数据库管理员和开发人员。</p>
+<p>由于其更复杂的架构和特性，PostgreSQL在某些使用情况下可能比MySQL更慢。</p>
+<p>PostgreSQL可能需要比MySQL更多的资源，特别是在内存和CPU使用方面。</p>
+<p>尽管PostgreSQL是开源的，但由于其先进的特性和增加的资源需求，实施和维护的成本仍然可能很高。</p>
+<p>对于每个新的客户端连接，PostgreSQL都会分叉一个新的进程，这可能会分配大量的内存，通常每个连接约为10 MB。然而，这种架构的设计旨在提供更好的性能、可靠性和可扩展性之间的安全性和隔离性权衡。</p>
+<p>PostgreSQL的设计注重可扩展性、标准符合性、可扩展性和数据完整性。有时，这些特性与MySQL相比可能会降低性能，特另是在简单的读密集型工作负载中。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"># PostgreSQL</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/ES%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86/" rel="prev" title="ES索引生命周期管理(ILM)">
+                  <i class="fa fa-angle-left"></i> ES索引生命周期管理(ILM)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2020 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">merric</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
