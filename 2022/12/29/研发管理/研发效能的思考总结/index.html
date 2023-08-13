@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言在谈效能之前，我想先谈谈作为一个技术人或者技术TL，研发的核心价值是什么？ 之前看了一篇文章，比较有意思，分享一下观念：  T外包公司：最核心的竞争力不是技术，而是快速响应、资源调配整合、项目成本控制等方面。 企业信息化公司：研发的核心价值有三个层次：第一层是运用技术更好的去支撑业务；第二层是用技术推动业务，用自身业务经验（服务很多客户）帮助客户；第三层是去用经验积累去影响行业。 解决特定场景">
+<meta property="og:type" content="article">
+<meta property="og:title" content="研发效能的思考总结">
+<meta property="og:url" content="http://example.com/2022/12/29/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD%E7%9A%84%E6%80%9D%E8%80%83%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Myoboku">
+<meta property="og:description" content="前言在谈效能之前，我想先谈谈作为一个技术人或者技术TL，研发的核心价值是什么？ 之前看了一篇文章，比较有意思，分享一下观念：  T外包公司：最核心的竞争力不是技术，而是快速响应、资源调配整合、项目成本控制等方面。 企业信息化公司：研发的核心价值有三个层次：第一层是运用技术更好的去支撑业务；第二层是用技术推动业务，用自身业务经验（服务很多客户）帮助客户；第三层是去用经验积累去影响行业。 解决特定场景">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/%E5%85%A8%E9%93%BE%E8%B7%AF%E6%8A%80%E6%9C%AF%E8%A7%84%E8%8C%83.jpg">
+<meta property="og:image" content="http://example.com/images/%E5%85%A8%E9%93%BE%E8%B7%AF%E4%B8%9A%E5%8A%A1%E5%8F%AF%E9%85%8D%E7%BD%AE%E8%A7%86%E5%9B%BE.jpg">
+<meta property="og:image" content="http://example.com/images/%E6%97%A5%E5%B8%B8%E7%AD%94%E7%96%91%E7%9A%84%E5%8D%8F%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg">
+<meta property="og:image" content="http://example.com/images/%E9%A1%B9%E7%9B%AE%E8%BF%87%E7%A8%8B%E7%AE%A1%E7%90%86.jpg">
+<meta property="og:image" content="http://example.com/images/%E6%88%98%E5%BD%B9%E6%A8%A1%E6%9D%BF.jpg">
+<meta property="article:published_time" content="2022-12-29T22:30:30.000Z">
+<meta property="article:modified_time" content="2023-08-13T14:20:29.793Z">
+<meta property="article:author" content="merric">
+<meta property="article:tag" content="研发效能">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E5%85%A8%E9%93%BE%E8%B7%AF%E6%8A%80%E6%9C%AF%E8%A7%84%E8%8C%83.jpg">
+
+
+<link rel="canonical" href="http://example.com/2022/12/29/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD%E7%9A%84%E6%80%9D%E8%80%83%E6%80%BB%E7%BB%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/12/29/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD%E7%9A%84%E6%80%9D%E8%80%83%E6%80%BB%E7%BB%93/","path":"2022/12/29/研发管理/研发效能的思考总结/","title":"研发效能的思考总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>研发效能的思考总结 | Myoboku</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Myoboku</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E6%80%9D%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">个人思考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E8%83%BD%E6%8C%87%E6%A0%87"><span class="nav-number">3.</span> <span class="nav-text">效能指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">merric</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/29/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD%E7%9A%84%E6%80%9D%E8%80%83%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="研发效能的思考总结 | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          研发效能的思考总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-12-29 22:30:30" itemprop="dateCreated datePublished" datetime="2022-12-29T22:30:30+00:00">2022-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">研发管理</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在谈效能之前，我想先谈谈作为一个技术人或者技术TL，研发的核心价值是什么？</p>
+<p>之前看了一篇文章，比较有意思，分享一下观念：</p>
+<ul>
+<li>T外包公司：最核心的竞争力不是技术，而是快速响应、资源调配整合、项目成本控制等方面。</li>
+<li>企业信息化公司：研发的核心价值有三个层次：第一层是运用技术更好的去支撑业务；第二层是用技术推动业务，用自身业务经验（服务很多客户）帮助客户；第三层是去用经验积累去影响行业。</li>
+<li>解决特定场景和问题的产品公司：核心价值就在于技术，专注与做技术深度。</li>
+</ul>
+<p>那我们的核心价值是什么？</p>
+<p>（1）高效支撑业务：一个是支撑，一个是高效</p>
+<ul>
+<li>支撑：对我们的要求就是：阶段性与业务目标，落地产品对齐。</li>
+<li>高效：研发效能的思考落地。用数据说明我们的价值</li>
+</ul>
+<p>（2）用技术影响行业：这个需要持续的积累和思考。</p>
+<p>（3）建技术壁垒和技术基建，确保系统稳定，业务健康和持久发展。</p>
+<p>很多时候，我们一直在思考如何高效支撑业务这个课题上。阿里技术分享平台或者网上都有非常多的文章分享，每个TL针对自己团队的状况也有一套自己的方法论。今天我结合自己所面临的状况，把自己的思考总结分享一下。</p>
+<h3 id="个人思考"><a href="#个人思考" class="headerlink" title="个人思考"></a>个人思考</h3><p>从几个维度分别进行思考：</p>
+<p>1、研发的流程效能：拆分阶段，发现关键问题，提出方案</p>
+<p><strong>1）需求阶段</strong></p>
+<p>问题：需求反复，需求不清晰，需求争议</p>
+<p>解决方案：</p>
+<p>（1）确保需求的有效期，明确业务价值和需求范围，并确保需求理解的一致性。</p>
+<p>（2）需求内容，先小范围内沟通对焦；等需求讨论清晰，再拉落地相关同学参与。</p>
+<p>（3）需求有争议时，为避免反复，拉上相关同学一起对焦。</p>
+<p>（4）日常需求，定期排期，通晒。</p>
+<p><strong>2）研发阶段：这个在研发的生产效能单独说明。</strong></p>
+<p><strong>3）联调与测试阶段：</strong></p>
+<p>问题：联调效率低，环境不可用，提测代码质量低</p>
+<p>解决方案：</p>
+<p>（1）前后端分离，各自具备Mock的能力</p>
+<p>（2）日常环境治理，降级系统服务的依赖，确保测试环境问题</p>
+<p>（3）基准测试用例，冒烟测试，自动化脚本测试，确保提测质量。</p>
+<p><strong>4）发布阶段：</strong></p>
+<p>问题：发布频率高；定位问题耗时；部署系统时长</p>
+<p>解决方案：</p>
+<p>（1）对同一时间的发布系统做适当合并。</p>
+<p>（2）与业务约定发布频率，控制发布周期。</p>
+<p>（3）系统依赖治理，缩短部署时长；并提前打包</p>
+<p>（4）针对排查问题耗时，提供相应的问题排查工具。</p>
+<p><strong>2、研发的生产效能</strong></p>
+<p>针对研发的过程生产，我们从如下几个方面去提升研发效能：</p>
+<p>（1）全链路技术规范：<br><img src="/images/%E5%85%A8%E9%93%BE%E8%B7%AF%E6%8A%80%E6%9C%AF%E8%A7%84%E8%8C%83.jpg" alt="全链路技术规范"></p>
+<p>每一个过程，通过规范文档统一标准，并通过宣传和考试的方式，让大家都熟知内容。并通过典型案例通晒，强化规范内容的价值。</p>
+<p>（2）全链路业务可配置</p>
+<ul>
+<li>u页面可配：表单页，列表页，详情页，单据页等中后台页面可配置。</li>
+<li>典型案例：宜搭的页面搭建</li>
+<li>u逻辑可配：业务参数可配置；业务规则可配置；</li>
+<li>典型案例：类目特征；</li>
+<li>u模型可配：用元数据方式定义数据表或业务模型+扩展字段两种方式</li>
+<li>典型案例：类目属性 ；NBF建模平台</li>
+<li>u服务&amp;流程编排：基于原子服务能力进行二次组合。</li>
+<li>典型案例：AECP的服务编排；NBF的服务编排等</li>
+</ul>
+<p>基于上诉的原子工具能力，再结合产品工厂和解决方案能力，把横向和纵向的业务配置化能力链接在一起，形成一个分层的全链路业务可配置视图。</p>
+<p><img src="/images/%E5%85%A8%E9%93%BE%E8%B7%AF%E4%B8%9A%E5%8A%A1%E5%8F%AF%E9%85%8D%E7%BD%AE%E8%A7%86%E5%9B%BE.jpg" alt="全链路业务可配置视图"></p>
+<p>（3）统一横向支撑工具</p>
+<p>拉通团队内部共性的支撑工具，共建一份。比如excel批量导入导出，审批流，通知工具等。</p>
+<p>（4）非功能性代码</p>
+<ul>
+<li>应用脚手架：一键生成应用工程，包括依赖的jar包等。</li>
+<li>代码规范的模板：错误码模板；日志模板；工程结构等</li>
+<li>中间件隔离层：包括使用的案例</li>
+<li>通用工具类：外部开源的工具类；业务抽象的通用类；自研抽象的通用工具类；</li>
+<li>业务标准拦截：用户登录；服务异常处理；dao的执行时间等</li>
+<li>稳定性：限流；应用自检；</li>
+</ul>
+<p>把所有应用的共性代码抽象，沉淀为jar，在工程中默认引入。</p>
+<p>（5）部署交付：部署手册指导；统一的问题排查工具；</p>
+<p>（6）接口文档化：web层统一遵循swagger规范；能力中心&#x2F;工具遵循接口规范的文档和client的使用案例说明等。</p>
+<p>（7）系统协作的清晰边界</p>
+<p>我们在落地过程中，往往会存在系统调用，系统依赖等问题，建议在启动初期，把这些关键问题定义出来，然后寻找TL或pm协调解决。</p>
+<p>3、研发的协作效能</p>
+<p>通过流程规范和模板，约定大家的协作模式</p>
+<p>1）日常答疑的协作流程<br><img src="/images/%E6%97%A5%E5%B8%B8%E7%AD%94%E7%96%91%E7%9A%84%E5%8D%8F%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg" alt="日常答疑的协作流程"></p>
+<p>2）项目过程管理</p>
+<p><img src="/images/%E9%A1%B9%E7%9B%AE%E8%BF%87%E7%A8%8B%E7%AE%A1%E7%90%86.jpg" alt="项目过程管理"></p>
+<p>通过如下战役模板，同步项目进展：</p>
+<p><img src="/images/%E6%88%98%E5%BD%B9%E6%A8%A1%E6%9D%BF.jpg" alt="战役模板"></p>
+<p>3）日常需求排期</p>
+<p>约定需求排期周期，固定时间，并沟通需求通过协作管理工具。</p>
+<p>后续可通过协作管理工具，分析统计数据。</p>
+<p>4、研发的人员效能</p>
+<p>（1）学习与培训：</p>
+<p>通过持续的学习，或借力其他团队的方式，提升技术水平。</p>
+<p>通过沉淀团队规范，文档，案例等方案，让大家补齐知识。</p>
+<p>通过复盘总结，沉淀典型案例，内部分享，避免重复采坑。</p>
+<p>（2）考试</p>
+<p>光学习肯定是不行的，还需要通过考试的方式强化。可以使用这个工具：阿里在线考试系统。</p>
+<h3 id="效能指标"><a href="#效能指标" class="headerlink" title="效能指标"></a>效能指标</h3><p>制定过程的指标数据，每月通晒与对比，分析数据，定位效能问题。关键指标可参考：</p>
+<p>（1）需求交付周期，需求交付数，项目数</p>
+<p>（2）代码提交量</p>
+<p>（3）Bug数</p>
+<p>（4）线上问题与故障</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>通过优化研发过程，并有明确的数据量化，证明研发对业务的价值。<br>（转自阿里云）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD/" rel="tag"># 研发效能</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/26/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/HIVE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="Hive学习笔记">
+                  <i class="fa fa-angle-left"></i> Hive学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E4%B8%AD%E9%97%B4%E4%BB%B6/%E5%88%9D%E8%A7%81TiDB/" rel="next" title="初见TiDB">
+                  初见TiDB <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2020 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">merric</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
