@@ -118,18 +118,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -2236,6 +2236,96 @@ Last-Modified: Wed, 5 August 1996 15:55:28 GMT
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/10/%E6%8A%98%E8%85%BE/%E9%80%9A%E8%BF%87acme%E7%BB%99nginx%E9%85%8D%E7%BD%AESSL%E8%AF%81%E4%B9%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/10/%E6%8A%98%E8%85%BE/%E9%80%9A%E8%BF%87acme%E7%BB%99nginx%E9%85%8D%E7%BD%AESSL%E8%AF%81%E4%B9%A6/" class="post-title-link" itemprop="url">通过acme对nginx配置SSL证书</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-09-10 22:53:43" itemprop="dateCreated datePublished" datetime="2021-09-10T22:53:43+00:00">2021-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>docker中启动neilpang&#x2F;acme.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -itd -v &quot;$(pwd)/out&quot;:/acme.sh --net=host --name=[acme.sh](http://acme.sh/) neilpang/acme.sh daemon</span><br></pre></td></tr></table></figure>
+<p>注册</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec [acme.sh](http://acme.sh/) --register-account -m [zhangqian9111@gmail.com](mailto:zhangqian9111@gmail.com)</span><br></pre></td></tr></table></figure>
+<p>生成证书</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec [acme.sh](http://acme.sh/) --issue -d xx.merric.top --standalone</span><br></pre></td></tr></table></figure>
+
+
+<p>生成的证书在$(pwd)&#x2F;out目录下</p>
+<p>将证书配置到nginx配置</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">        listen <span class="number">80</span>;</span><br><span class="line">        server_name xx.<span class="property">merric</span>.<span class="property">top</span>;</span><br><span class="line">        rewrite ^(.*) <span class="attr">https</span>:<span class="comment">//$server_name$1 permanent;</span></span><br><span class="line">    &#125;  </span><br><span class="line">       </span><br><span class="line">    server&#123;</span><br><span class="line">        listen <span class="number">443</span> ssl;   </span><br><span class="line">        server_name xx.<span class="property">merric</span>.<span class="property">top</span>; </span><br><span class="line">        root html;</span><br><span class="line">        index index.<span class="property">html</span> index.<span class="property">htm</span>;</span><br><span class="line">        ssl_certificate /app/acme.<span class="property">sh</span>/out/xx.<span class="property">merric</span>.<span class="property">top_ecc</span>/fullchain.<span class="property">cer</span>;  </span><br><span class="line">        ssl_certificate_key /app/acme.<span class="property">sh</span>/out/xx.<span class="property">merric</span>.<span class="property">top_ecc</span>/xx.<span class="property">merric</span>.<span class="property">top</span>.<span class="property">key</span>; </span><br><span class="line">        ssl_session_timeout 5m;</span><br><span class="line">        ssl_ciphers <span class="variable constant_">ECDHE</span>-<span class="variable constant_">RSA</span>-<span class="title class_">AES128</span>-<span class="variable constant_">GCM</span>-<span class="title class_">SHA256</span>:<span class="attr">ECDHE</span>:<span class="attr">ECDH</span>:<span class="attr">AES</span>:<span class="attr">HIGH</span>:!<span class="attr">NULL</span>:!<span class="attr">aNULL</span>:!<span class="title class_">MD5</span>:!<span class="attr">ADH</span>:!<span class="title class_">RC4</span>;</span><br><span class="line">        ssl_protocols <span class="title class_">TLSv1</span><span class="number">.1</span> <span class="title class_">TLSv1</span><span class="number">.2</span> <span class="title class_">TLSv1</span><span class="number">.3</span>;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass <span class="attr">http</span>:<span class="comment">//localhost:8001;</span></span><br><span class="line">            proxy_set_header <span class="variable constant_">HOST</span> $host;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Forwarded</span>-<span class="title class_">Proto</span> $scheme;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Real</span>-<span class="variable constant_">IP</span> $remote_addr;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Forwarded</span>-<span class="title class_">For</span> $proxy_add_x_forwarded_for;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动nginx</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/UDP%E5%92%8CTCP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2886,86 +2976,6 @@ Last-Modified: Wed, 5 August 1996 15:55:28 GMT
 <li>手动通过URL传值、隐藏表单传递Session ID。</li>
 <li>用文件、数据库等形式保存Session ID，在跨页过程中手动调用。</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/10/%E9%9A%8F%E7%AC%94/%E7%BA%BF%E4%B8%8A%E6%95%85%E9%9A%9C%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="merric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/09/10/%E9%9A%8F%E7%AC%94/%E7%BA%BF%E4%B8%8A%E6%95%85%E9%9A%9C%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/" class="post-title-link" itemprop="url">线上故障引发的思考</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2020-09-10 22:53:43" itemprop="dateCreated datePublished" datetime="2020-09-10T22:53:43+00:00">2020-09-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>1、养成自己的编码规范清单很重要，清单不需要太多，最重要的几条列在前面要严格遵守</p>
-<p>2、我的编码规范清单:<br>a.要严格识别出写的代码是强依赖、弱依赖，弱依赖不能引起核心流程受阻。<br>反例:一个查询国家列表的下游接口(弱依赖)挂了导致整个收银台挂掉。</p>
-<p>3、对一些原则要有敬畏之心，比如: 开闭原则，单一原则。不遵守原则，大概率会发生一些你意料不到的case(你觉得考虑全面了，但实际被打脸)，但遵守原则，会避免很多意料不到的 case。</p>
 
       
     </div>
