@@ -212,12 +212,12 @@
 <p>PostgreSQL vs.MySQL 是在选择开源关系型数据库管理系统时的重要决策。PostgreSQL和 MySQL 都是经过时间验证的解决方案，可以与企业级解决方案（如 Oracle 和 SQL Server） 竞争。MySQL 因其易用性和速度而闻名，而 PostqreSQL 则拥有更多高级功能，这也是 PostgreQL 经常被描述为开源版 racle 的原<br>下表对比了 PostgreSQL和MySQL的特性</p>
 <h4 id="特性对比"><a href="#特性对比" class="headerlink" title="特性对比"></a>特性对比</h4><p>PostgreSQL和 MySQL 都作为关系型数据库管理系统提供了广泛的功能，但两者之间存在一些关键差异:</p>
 <p><strong>数据类型：</strong> PostqresQL 支持更广泛的高级数据类型，包括数组、hstore（键值存储）和JSONB（二进制JSON）。另一方面MySQL 的数据类型集合较为有限，更适用于简单的 Web 应用程序。MySQL 的JSON 二进制存储格式可以与 PostgreSQL的JSONB 进行比较。实际上，MySQL的JSON 存储非常适合简单的JSON 结构和直接的 Web 应用程序。</p>
-<p><strong>地理空间支持：</strong>PostgreSQL 强力支持地理空间数据，包括用于处理地理数据的丰富的数据类型、函数和操作符。MySQL 在地理空间支持方面虽有一些功能，但在这个领域可能还需要更多的改进。</p>
-<p><strong>索引</strong>：在 MVSOI中，默认的索引类型是 B-tree，非常适合大多数使用情况。PostareSOL比 MVSOL 拥有更为精细的索引系统包括对 B-treeGiST（广义搜索树）和 GIN （广义反向索引）索引的支持。这些提供了更多优化查询性能和数据检索的选项。</p>
-<p><strong>复制：</strong>PostreSQL和 MySQL 都支持主从数据库复制，但复制的方法和选项有所不同PostreSQL 支持使用第三方扩展实现多主复制。MySQL 最近引入了一种名为 Group Replication 的新的复制模型，但它仍然是一个相对较新的功能，有一些限制。</p>
-<p>**事务：PostqresQL和 MysQL lnnoDB 都使用 MVCC（多版本并发控制）来处理并发数据访问然而，PostgreSQL 提供了更先进的事务管理功能，如事务隔离级别、原子事务和保存点。相比之下，MySQL 的事务管理选项较为有限。对于需要高并发或复杂事务逻辑的应用程序，PostgreSQL可能更加合适。</p>
-<p><strong>存储过程：</strong>PostqreSQL和 MySQL 都支持存储过程，但存储过程的语言和功能有所不同。PostgreSQL 支持使用多种语言编写存储过程，包括 PL&#x2F;pgSQL、PL&#x2F;Tcl、PL&#x2F;Perl 等。而MySQL 主要支持使用SQL编写存储过程。</p>
-<p><strong>扩展：</strong>PostgresQL 拥有一个强大的扩展框架，允许开发人员添加自定义功能并扩展数据库的核心特性。虽然 MySQL 对扩展有定支持，但与 PostgreSQL 相比，其扩展性有所不同。</p>
+<p><strong>地理空间支持：</strong> PostgreSQL 强力支持地理空间数据，包括用于处理地理数据的丰富的数据类型、函数和操作符。MySQL 在地理空间支持方面虽有一些功能，但在这个领域可能还需要更多的改进。</p>
+<p><strong>索引：</strong> 在 MVSOI中，默认的索引类型是 B-tree，非常适合大多数使用情况。PostareSOL比 MVSOL 拥有更为精细的索引系统包括对 B-treeGiST（广义搜索树）和 GIN （广义反向索引）索引的支持。这些提供了更多优化查询性能和数据检索的选项。</p>
+<p><strong>复制：</strong> PostreSQL和 MySQL 都支持主从数据库复制，但复制的方法和选项有所不同PostreSQL 支持使用第三方扩展实现多主复制。MySQL 最近引入了一种名为 Group Replication 的新的复制模型，但它仍然是一个相对较新的功能，有一些限制。</p>
+<p><strong>事务：</strong> PostqresQL和 MysQL lnnoDB 都使用 MVCC（多版本并发控制）来处理并发数据访问然而，PostgreSQL 提供了更先进的事务管理功能，如事务隔离级别、原子事务和保存点。相比之下，MySQL 的事务管理选项较为有限。对于需要高并发或复杂事务逻辑的应用程序，PostgreSQL可能更加合适。</p>
+<p><strong>存储过程：</strong> PostqreSQL和 MySQL 都支持存储过程，但存储过程的语言和功能有所不同。PostgreSQL 支持使用多种语言编写存储过程，包括 PL&#x2F;pgSQL、PL&#x2F;Tcl、PL&#x2F;Perl 等。而MySQL 主要支持使用SQL编写存储过程。</p>
+<p><strong>扩展：</strong> PostgresQL 拥有一个强大的扩展框架，允许开发人员添加自定义功能并扩展数据库的核心特性。虽然 MySQL 对扩展有定支持，但与 PostgreSQL 相比，其扩展性有所不同。</p>
 <p>放一个官网的表格</p>
 <table>
 <thead>
