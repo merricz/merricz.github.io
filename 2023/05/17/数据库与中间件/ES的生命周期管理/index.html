@@ -35,8 +35,9 @@
 <meta property="og:image" content="http://example.com/images/es_ilm/1691817840919.png">
 <meta property="og:image" content="http://example.com/images/es_ilm/1691817954788.png">
 <meta property="og:image" content="http://example.com/images/es_ilm/1691818897925.jpg">
+<meta property="og:image" content="http://example.com/images/es_ilm/1692063483655.jpg">
 <meta property="article:published_time" content="2023-05-17T22:30:00.000Z">
-<meta property="article:modified_time" content="2023-08-14T14:49:18.478Z">
+<meta property="article:modified_time" content="2023-08-15T01:40:11.909Z">
 <meta property="article:author" content="merric">
 <meta property="article:tag" content="ES">
 <meta property="article:tag" content="大数据">
@@ -309,7 +310,7 @@
 <p>假设历史A索引中存在一条x数据，当前索引为B索引</p>
 <p>当再次更新这个x数据的时候，不会更新A索引中的这条数据，而是会插入到B索引中，此时再去查询x数据就会查询到两条。</p>
 <p>原因：Rollover策略实现自动滚动索引后，历史索引的is_write_index属性会被设置为false，当通过索引别名来PUT数据时，只会从当前索引中判断是同存在相同数据。由于数据存在历史索引中，所以会在新索引中创建记录</p>
-<p>![d1aca159ba370fc83db4043922a2521](C:\Users\Ryan\AppData\Local\Temp\WeChat Files\d1aca159ba370fc83db4043922a2521.png)</p>
+<p><img src="/images/es_ilm/1692063483655.jpg" alt="1692063483655.jpg"></p>
 <p>解决方法：更新数据时先查询当前数据所在的索引，更新时带上索引</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>通过ES的索引生命周期管理，我们可以根据业务需求，设置分片数与滚动策略，不用担心索引分片数不够，或者分片容量太大的问题。合理使用分片策略可以满足大部分订单类系统查询需求。</p>
 
