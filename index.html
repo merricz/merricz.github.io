@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1368,6 +1368,107 @@ Query OK, 0 rows affected (0.00 sec)
 </ul>
 <p><img src="https://book.tidb.io/res/session1/chapter6/pessimistic-txn/2.png" alt="2.png"></p>
 <p>死锁检测器基于 Raft 实现了高可用，等锁事务也会定期发送死锁检测请求给死锁检测器的 leader，从而保证了即使之前 leader<br>宕机的情况下也能检测到死锁。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/02/10/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E8%A7%A3%E5%86%B324%E7%A7%8D%E4%BB%A3%E7%A0%81%E5%9D%8F%E5%91%B3%E9%81%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/info/head.jpg">
+      <meta itemprop="name" content="merric">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Myoboku">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/02/10/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/%E8%A7%A3%E5%86%B324%E7%A7%8D%E4%BB%A3%E7%A0%81%E5%9D%8F%E5%91%B3%E9%81%93/" class="post-title-link" itemprop="url">解决24种代码坏味道(1)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-10 22:30:00" itemprop="dateCreated datePublished" datetime="2023-02-10T22:30:00+00:00">2023-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">研发管理</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>1.神秘命名<br>如果想不出一个好的名字，说明背后很可能隐藏着更深的设计问题<br>看最新的《阿里开发规范1.7 黄山版》<br><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/888697">https://developer.aliyun.com/article/888697</a></p>
+<p>2.重复代码<br>优化：禁止复制粘贴，巧用Method Exact。<br><img src="/images/badcode/1692107737850.png" alt="1692107737850"><br>坏味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 计算水果总价（同一个类的两个函数含有相同的表达式）</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">public class FruitsCost &#123;</span><br><span class="line">    public double computeMoneyWithoutPrivileges(String type, int numbers) &#123;</span><br><span class="line">        double prices;</span><br><span class="line">        switch (type) &#123;</span><br><span class="line">            case &quot;apple&quot;:</span><br><span class="line">                prices = 5.5;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;banana&quot;:</span><br><span class="line">                prices = 4.0;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;strawberry&quot;:</span><br><span class="line">                prices = 10.5;</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                throw new IllegalArgumentException(&quot;Illegal type : &quot; + type);</span><br><span class="line">        &#125;</span><br><span class="line">        return prices * numbers;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double computeMoneyWithPrivileges(String type, double numbers, double discount) &#123;</span><br><span class="line">        double prices;</span><br><span class="line">        switch (type) &#123;</span><br><span class="line">            case &quot;apple&quot;:</span><br><span class="line">                prices = 5.5;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;banana&quot;:</span><br><span class="line">                prices = 4.0;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;strawberry&quot;:</span><br><span class="line">                prices = 10.5;</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                throw new IllegalArgumentException(&quot;Illegal type : &quot; + type);</span><br><span class="line">        &#125;</span><br><span class="line">        return prices * numbers * discount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>好味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class FruitsCost &#123;</span><br><span class="line">    public double computeMoneyWithoutPrivileges(String type, int numbers) &#123;</span><br><span class="line">        double prices = getPrices(type);</span><br><span class="line">        return prices * numbers;</span><br><span class="line">    &#125;</span><br><span class="line">    private double getPrices(String type) &#123;</span><br><span class="line">        double prices;</span><br><span class="line">        switch (type) &#123;</span><br><span class="line">            case &quot;apple&quot;:</span><br><span class="line">                prices = 5.5;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;banana&quot;:</span><br><span class="line">                prices = 4.0;</span><br><span class="line">                break;</span><br><span class="line">            case &quot;strawberry&quot;:</span><br><span class="line">                prices = 10.5;</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                throw new IllegalArgumentException(&quot;Illegal type : &quot; + type);</span><br><span class="line">        &#125;</span><br><span class="line">        return prices;</span><br><span class="line">    &#125;</span><br><span class="line">    public double computeMoneyWithPrivileges(String type, double numbers, double discount) &#123;</span><br><span class="line">        double prices = getPrices(type);</span><br><span class="line">        return prices * numbers * discount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3.过长函数<br>优化：每个函数建议不超过80行代码，条件、循环、公共集中的过程提取处理<br>坏味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void doSth3()&#123;</span><br><span class="line">    List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    for(String sjs : list)&#123;</span><br><span class="line">        //doSth,60行</span><br><span class="line">        sjs = sjs + &quot;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void doSth3()&#123;</span><br><span class="line">    List&lt;String&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    for(String sjs : list)&#123;</span><br><span class="line">        doloop(sjs);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">private static void doloop(String sjs) &#123;</span><br><span class="line">    //doSth,60行</span><br><span class="line">    sjs = sjs + &quot;&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4.过长参数列表<br>优化：使用对象合并参数<br>坏味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class Case2 &#123;</span><br><span class="line">    public void createUser(String username,String password , Float height , Float weight,Integer age)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好味道</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">好味道</span><br><span class="line">public class Case2 &#123;</span><br><span class="line">    public void createUser(User user)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class User &#123;</span><br><span class="line">    private String username</span><br><span class="line">    private String password;</span><br><span class="line">    //...Getter and Setter</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>5.全局数据<br>优化：合并数据到方法、类成员中，最小范围原则<br>坏味道<br><img src="/images/badcode/%E4%BB%A3%E7%A0%81%E9%97%AE%E9%A2%98.png" alt="代码问题"></p>
+<p><img src="/images/badcode/%E4%BB%A3%E7%A0%81%E5%BD%B1%E5%93%8D.png" alt="代码影响"><br>好味道<br><img src="/images/badcode/%E5%B0%81%E8%A3%85%E5%8F%98%E9%87%8F.png" alt="封装变量"></p>
+<p>6.可变数据<br>优化：函数式编程、数据永不改变<br>什么是可变数据（Mutable Data）<br>定义：可变数据——对数据的修改经常导致出乎意料的结果和难以发现的Bug。</p>
+<p>影响：影响可维护性，在一处修改数据，却在另一处造成难以发现的破坏</p>
+<p>改进目标：应用“数据不可变”：不可变性是强大的代码防腐剂</p>
+<p>方法：封装变量、拆分变量、提炼函数、移除设值函数、查询取代派生、Builder模式创建不可变对象、引用对象改为值对象、函数式编程等</p>
+<p>注：并非所有可变类型都是不良的，这里关注描述数据的可变类型</p>
+<p>坏味道<br><img src="/images/badcode/%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE1.png" alt="可变数据1"><br>好味道<br><img src="/images/badcode/%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE2.png" alt="可变数据2"><br><img src="/images/badcode/%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE3.png" alt="可变数据3"></p>
+<p>可变数据症状<br>一个变量用作不同目的<br>数据类型中，用public修饰非final成员<br>有set方法（或其它改变数据的方法）<br>一个成员变量的值可通过其他字段计算得到<br>对外暴露内部变量的可变引用</p>
+<p>改进手法<br>封装变量<br>拆分变量（用提取函数）：Ctrl+Atl+M<br>移除设值函数：用内联移除、直接删除（Ctrl+Alt+N、Alt+Del）<br>Builder模式创建不可变对象</p>
 
       
     </div>
@@ -2679,96 +2780,6 @@ Last-Modified: Wed, 5 August 1996 15:55:28 GMT
 <p>如上图所示，红色部分是 Stream Frame 的报文头部，有认证。绿色部分是报文内容，全部经过加密。</p>
 <h4 id="向前纠错机制"><a href="#向前纠错机制" class="headerlink" title="向前纠错机制"></a>向前纠错机制</h4><p>QUIC 协议有一个非常独特的特性，称为向前纠错 (Forward Error<br>Correction，FEC)，每个数据包除了它本身的内容之外，还包括了部分其他数据包的数据，因此少量的丢包可以通过其他包的冗余数据直接组装而无需重传。向前纠错牺牲了每个数据包可以发送数据的上限，但是减少了因为丢包导致的数据重传，因为数据重传将会消耗更多的时间(包括确认数据包丢失、请求重传、等待新数据包等步骤的时间消耗)</p>
 <p>假如说这次我要发送三个包，那么协议会算出这三个包的异或值并单独发出一个校验包，也就是总共发出了四个包。当出现其中的非校验包丢包的情况时，可以通过另外三个包计算出丢失的数据包的内容。<br><strong>当然这种技术只能使用在丢失一个包的情况下，如果出现丢失多个包就不能使用纠错机制了，只能使用重传的方式了</strong> 。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/10/%E6%8A%98%E8%85%BE/%E9%80%9A%E8%BF%87acme%E7%BB%99nginx%E9%85%8D%E7%BD%AESSL%E8%AF%81%E4%B9%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/info/head.jpg">
-      <meta itemprop="name" content="merric">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Myoboku">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/09/10/%E6%8A%98%E8%85%BE/%E9%80%9A%E8%BF%87acme%E7%BB%99nginx%E9%85%8D%E7%BD%AESSL%E8%AF%81%E4%B9%A6/" class="post-title-link" itemprop="url">通过acme对nginx配置SSL证书</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2021-09-10 22:53:43" itemprop="dateCreated datePublished" datetime="2021-09-10T22:53:43+00:00">2021-09-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%8A%98%E8%85%BE/" itemprop="url" rel="index"><span itemprop="name">折腾</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>docker中启动neilpang&#x2F;acme.sh</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -itd -v &quot;$(pwd)/out&quot;:/acme.sh --net=host --name=[acme.sh](http://acme.sh/) neilpang/acme.sh daemon</span><br></pre></td></tr></table></figure>
-<p>注册</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec [acme.sh](http://acme.sh/) --register-account -m [zhangqian9111@gmail.com](mailto:zhangqian9111@gmail.com)</span><br></pre></td></tr></table></figure>
-<p>生成证书</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec [acme.sh](http://acme.sh/) --issue -d xx.merric.top --standalone</span><br></pre></td></tr></table></figure>
-
-
-<p>生成的证书在$(pwd)&#x2F;out目录下</p>
-<p>将证书配置到nginx配置</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">        listen <span class="number">80</span>;</span><br><span class="line">        server_name xx.<span class="property">merric</span>.<span class="property">top</span>;</span><br><span class="line">        rewrite ^(.*) <span class="attr">https</span>:<span class="comment">//$server_name$1 permanent;</span></span><br><span class="line">    &#125;  </span><br><span class="line">       </span><br><span class="line">    server&#123;</span><br><span class="line">        listen <span class="number">443</span> ssl;   </span><br><span class="line">        server_name xx.<span class="property">merric</span>.<span class="property">top</span>; </span><br><span class="line">        root html;</span><br><span class="line">        index index.<span class="property">html</span> index.<span class="property">htm</span>;</span><br><span class="line">        ssl_certificate /app/acme.<span class="property">sh</span>/out/xx.<span class="property">merric</span>.<span class="property">top_ecc</span>/fullchain.<span class="property">cer</span>;  </span><br><span class="line">        ssl_certificate_key /app/acme.<span class="property">sh</span>/out/xx.<span class="property">merric</span>.<span class="property">top_ecc</span>/xx.<span class="property">merric</span>.<span class="property">top</span>.<span class="property">key</span>; </span><br><span class="line">        ssl_session_timeout 5m;</span><br><span class="line">        ssl_ciphers <span class="variable constant_">ECDHE</span>-<span class="variable constant_">RSA</span>-<span class="title class_">AES128</span>-<span class="variable constant_">GCM</span>-<span class="title class_">SHA256</span>:<span class="attr">ECDHE</span>:<span class="attr">ECDH</span>:<span class="attr">AES</span>:<span class="attr">HIGH</span>:!<span class="attr">NULL</span>:!<span class="attr">aNULL</span>:!<span class="title class_">MD5</span>:!<span class="attr">ADH</span>:!<span class="title class_">RC4</span>;</span><br><span class="line">        ssl_protocols <span class="title class_">TLSv1</span><span class="number">.1</span> <span class="title class_">TLSv1</span><span class="number">.2</span> <span class="title class_">TLSv1</span><span class="number">.3</span>;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass <span class="attr">http</span>:<span class="comment">//localhost:8001;</span></span><br><span class="line">            proxy_set_header <span class="variable constant_">HOST</span> $host;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Forwarded</span>-<span class="title class_">Proto</span> $scheme;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Real</span>-<span class="variable constant_">IP</span> $remote_addr;</span><br><span class="line">            proxy_set_header X-<span class="title class_">Forwarded</span>-<span class="title class_">For</span> $proxy_add_x_forwarded_for;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>启动nginx</p>
 
       
     </div>
